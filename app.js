@@ -3,6 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 
+const UserController = require('./controller/UserController');
+
 const app = express();
 
 /** 
@@ -24,6 +26,8 @@ app.use(express.static(path.join(__dirname, "public_html")));
 const testPath = path.join(__dirname, "public_html", "landing.html");
 
 app.get("/", (req, res) => res.sendFile(testPath));
+
+app.post('/registeruser', UserController.register);
 
 
 module.exports = app;

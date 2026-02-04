@@ -32,7 +32,7 @@ exports.read = async function(id){
     return user;
 }
 
-exports.create = async function(id){
+exports.create = async function(newuser){
     let user = new userModel(newuser);
     await user.save();
     return user;
