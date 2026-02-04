@@ -29,5 +29,7 @@ app.get("/", (req, res) => res.sendFile(testPath));
 
 app.post('/registeruser', UserController.register);
 
+app.get('/users', UserController.getAllUsers);
+
 
 module.exports = app;

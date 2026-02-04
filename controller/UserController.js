@@ -20,4 +20,18 @@ exports.register = async function(req, res) {
     }
 }
 
+exports.getAllUsers = async function(req, res){
+    try{
+        let users = await UserDao.readAll();
+        res.status(200);
+        res.json(users);
+    } catch (error){
+        console.error('error in getAllUsers: ', error);
+        res.status(500);
+        res.json({error: 'failed to fetch users'});
+    }
+    
+
+}
+
 
