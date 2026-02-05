@@ -31,7 +31,7 @@ app.post('/registeruser', UserController.register);
 
 app.get('/users', UserController.getAllUsers);
 
-app.get('/deleteuser/:id', UserController.deleteUser);
+app.delete('/deleteuser/:id', UserController.deleteUser);
 
 
 module.exports = app;
