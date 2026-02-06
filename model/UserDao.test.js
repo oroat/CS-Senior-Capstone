@@ -1,12 +1,14 @@
 const dbcon = require('../dbconnection') //add db connection file
 const dao = require('./UserDao');
 
+require("dotenv").config();
+
 beforeAll(async function(){
-    await dbcon.connect('test') //add test db connection
+    await dbcon.connect('test'); //add test db connection
 });
 afterAll(async function(){
     await dao.deleteAll();
-    dbcon.disconnect();
+    await dbcon.disconnect();
 });
 
 beforeEach(async function(){
@@ -62,14 +64,14 @@ test('Read All', async function(){
     expect(lstUsers[0].email).toBe(user1.email);
 });
 
-test('Find Login username', async function(){
+test('Find email for login', async function(){
     let newdata = {name:'Test Test', 
         role: 1, 
         email: 'test@coolsys.com',
         password: 'test123'};
 
     let created = await dao.create(newdata);
-    let logged = await dao.findLogin(newdata.username);
+    let logged = await dao.findLogin(newdata.email);
 
     expect(logged).not.toBeNull();
     expect(logged._id).toEqual(created._id);
