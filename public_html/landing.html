@@ -3,10 +3,16 @@
     <head>
         <meta charset="UTF-8">
         <title>CoolSys</title>
+
+        <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
     </head>
     <body>
 
-        <h1>CoolSys HVAC</h1>
+        <div id="header"></div>
+
+        <!--<h1>CoolSys HVAC</h1>-->
         <p>IDK</p>
 
         <form action="registeruser" method="post">
@@ -36,8 +42,14 @@
         </form>
 
         <div id="userList"></div>
+
+        <img src="/view/images/CoolSys-Logo.png" alt="CoolSys Logo" >
+
+        <script src="js/users.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#header").load('header.html');
+            });
+        </script>
     </body>
-
-    <script src="js/users.js"></script>
-
 </html>
