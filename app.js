@@ -33,5 +33,7 @@ app.get('/users', UserController.getAllUsers);
 
 app.delete('/deleteuser/:id', UserController.deleteUser);
 
+app.put('/updaterole/:id', UserController.updateRole);
+
 
 module.exports = app;

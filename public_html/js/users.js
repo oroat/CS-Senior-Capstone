@@ -23,6 +23,10 @@ async function viewUsers(){
                 deleteBtn.onclick = () => deleteUser(user._id);
                 userDiv.appendChild(deleteBtn);
 
+                const updateBtn = document.createElement('button');
+                updateBtn.onclick = () => updateRole(user._id);
+                userDiv.appendChild(updateBtn);
+
                 userList.appendChild(userDiv);
             });
         } else{
@@ -52,6 +56,34 @@ async function deleteUser(userId){
     } catch (error){
         console.error('Error during delete: ', error);
         alert('Error. Please try again');
+    }
+}
+
+async function updateRole(userId){
+    const answer = prompt('Enter the new role');
+    let newRole = Number(answer);
+    if (Number.isNaN(newRole)){
+        window.alert('Please enter a number (0 = admin, 1 = PM, ...)');
+        return;
+    }
+    else{
+        try{
+            const response = await fetch(`/updaterole/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({role: newRole})
+            });
+    
+            if (response.ok){
+                alert('User role updated successfully. Please refresh page to see changes. ');
+            } else{
+                const result = response.json();
+                alert('Failed to edit review: ' + (result.error || "Unknown error."));
+            }
+        } catch (error){
+            console.error('Network error during update:', error);
+            alert("Network error. Please try again.");
+        }
     }
 }
 
