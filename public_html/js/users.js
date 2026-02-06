@@ -40,7 +40,7 @@ async function viewUsers(){
 }
 
 async function deleteUser(userId){
-    if (!confirm("Are you sure you want to delete this review?")) return;
+    if (!confirm("Are you sure you want to delete this user?")) return;
 
     try{
         const response = await fetch(`/deleteuser/${userId}`, {
@@ -60,7 +60,7 @@ async function deleteUser(userId){
 }
 
 async function updateRole(userId){
-    const answer = prompt('Enter the new role');
+    const answer = prompt('Enter a new role (0 for admin, 1 for PM, ...)');
     let newRole = Number(answer);
     if (Number.isNaN(newRole)){
         window.alert('Please enter a number (0 = admin, 1 = PM, ...)');
@@ -75,7 +75,7 @@ async function updateRole(userId){
             });
     
             if (response.ok){
-                alert('User role updated successfully. Please refresh page to see changes. ');
+                alert('User role updated successfully. Please refresh page to see changes.');
             } else{
                 const result = response.json();
                 alert('Failed to edit review: ' + (result.error || "Unknown error."));
