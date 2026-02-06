@@ -1,6 +1,4 @@
-
-
-async function viewUsers(){
+async function viewUsers(filterApplied){
     try{
         const response = await fetch('/users');
         console.log("response status: ", response.status);
@@ -10,24 +8,27 @@ async function viewUsers(){
             //window.alert("response ok ", users);
 
             userList = document.getElementById('userList');
+            filter = document.getElementById("filteredRole").value;
             userList.innerHTML = '';
-
+            
             users.forEach(user => {
-                const userDiv = document.createElement('div');
+                if (!filterApplied || filter == user.role){
+                    const userDiv = document.createElement('div');
 
-                userDiv.innerHTML = `
-                    <p>${user.name}, role: ${user.role}, email: ${user.email}, id: ${user._id}
-            `   ;
+                    userDiv.innerHTML = `
+                        <p>${user.name}, role: ${user.role}, email: ${user.email}, id: ${user._id}
+                `   ;
 
-                const deleteBtn = document.createElement('button');
-                deleteBtn.onclick = () => deleteUser(user._id);
-                userDiv.appendChild(deleteBtn);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.onclick = () => deleteUser(user._id);
+                    userDiv.appendChild(deleteBtn);
 
-                const updateBtn = document.createElement('button');
-                updateBtn.onclick = () => updateRole(user._id);
-                userDiv.appendChild(updateBtn);
+                    const updateBtn = document.createElement('button');
+                    updateBtn.onclick = () => updateRole(user._id);
+                    userDiv.appendChild(updateBtn);
 
-                userList.appendChild(userDiv);
+                    userList.appendChild(userDiv);
+                }
             });
         } else{
         
@@ -89,5 +90,5 @@ async function updateRole(userId){
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await viewUsers();
+    await viewUsers(false);
 });
