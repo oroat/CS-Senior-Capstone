@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Project - CoolSys</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <div id="header"></div>
+
+    <h2>Edit Project</h2>
+
+    <form id="editProjectForm">
+
+        <div>
+            <input type="text" id="name" required>
+            <label>Project Name</label>
+        </div>
+
+        <div>
+            <input type="text" id="location" required>
+            <label>Location</label>
+        </div>
+
+        <div>
+            <input type="text" id="manager" required>
+            <label>Manager (User ID)</label>
+        </div>
+
+        <div>
+            <input type="text" id="workers">
+            <label>Workers (comma separated IDs)</label>
+        </div>
+
+        <button type="submit">Update Project</button>
+
+    </form>
+
+    <script src="js/editProject.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#header").load('header.html');
+        });
+    </script>
+
+</body>
+</html>
