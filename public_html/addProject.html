@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Add Project - CoolSys</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+
+        <div id="header"></div>
+
+        <h2>Create New Project</h2>
+
+        <form id="projectForm">
+            <div class="form mb-3">
+                <input type="text" id="name" name="name" placeholder="placeholder" required>
+                <label for="name">Project Name</label>
+            </div>
+
+            <div class="form mb-3">
+                <input type="text" id="location" name="location" placeholder="placeholder" required>
+                <label for="location">Location</label>
+            </div>
+
+            <div class="form mb-3">
+                <input type="text" id="manager" name="manager" placeholder="Manager User ID" required>
+                <label for="manager">Manager (User ID)</label>
+            </div>
+
+            <div class="form mb-3">
+                <input type="text" id="workers" name="workers" placeholder="Worker IDs comma separated">
+                <label for="workers">Workers (comma separated IDs)</label>
+            </div>
+
+            <div class="text-center">
+                <button type="submit">Create Project</button>
+            </div>
+        </form>
+
+        <hr>
+
+        <h3>All Projects</h3>
+        <div id="projectList"></div>
+
+        <script src="js/projects.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $("#header").load('header.html');
+            });
+        </script>
+
+    </body>
+</html>
+
