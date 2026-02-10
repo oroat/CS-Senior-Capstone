@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>CoolSys</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/users.js"></script>
+        
+        <style>
+            .center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #27f5da; 
+            margin: 10px
+          }
+        </style>
+    </head>
+
+    <div id="header"></div>
+
+    
+        <div class="container-sm center">
+            
+            
+                <form action="registeruser" method="post">
+                    <div style="margin: 10px">
+                        <label for="name" class="form-label">First and Last Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div style="margin: 10px">
+                        <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    </div>
+            
+                    <div style="margin: 10px">
+                        <label for="pass" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
+                    </div>  
+                    
+                    <div class="text-center"style="margin: 10px">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            
+        </div>
+
+        <div id="userList"></div>
+
+        <p>Filter Users by Role</p>
+        <div class="filter-input-group">
+            <input type="text" id="filteredRole" placeholder="Enter Role..." required>
+            <button onclick="viewUsers(true)">Apply Filter</button>
+            <button class="clear-filter-btn" onclick="viewUsers(false)">Clear Filter</button>
+        </div>
+    
+    
+
+
+    <!-- <form action="registeruser" method="post">
+        <div class="form mb-3">
+            <input type="text" class="form" id="name" name="name" placeholder="placeholder" required>
+            <label for="name">First and Last Name</label>
+        </div>
+
+        <div class="form mb-3">
+            <input type= "email" class="form" id="email" name="email" placeholder="placeholder" required>
+            <label for="email">Email</label>
+        </div>
+
+        <div class="form mb-3">
+            <input type="password" class="form" id="pass" name="pass" placeholder="placeholder" required>
+            <label for="pass">Password</label>
+        </div>
+
+        ADD CONFIRM PASSWORD
+        <div class="form mb-3">
+
+        </div>
+
+        <div class="text-center">
+            <button type="submit">Register</button>
+        </div>
+    </form> -->
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#header").load('header.html');
+        });
+    </script>
+</html>

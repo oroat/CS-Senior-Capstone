@@ -13,10 +13,10 @@ exports.register = async function(req, res) {
 
         let user = UserDao.create(userInfo);
         console.log('Successfully registered user');
-        res.redirect('/landing.html');
+        res.redirect('/users.html');
     } else{
         console.log('User already exists with that email');
-        res.redirect('/landing.html');
+        res.redirect('/users.html');
     }
 }
 

@@ -1,7 +1,6 @@
 async function viewUsers(filterApplied){
     try{
         const response = await fetch('/users');
-        console.log("response status: ", response.status);
 
         if (response.ok) {
             const users = await response.json();
@@ -35,8 +34,7 @@ async function viewUsers(filterApplied){
         }
         } catch (error){
             console.error('Network error during review retrieval:', error); 
-            alert("Network error. Please try again. ");
-            alert(error);
+            alert(`Network error: ${error}`);
         }   
 }
 
