@@ -1,0 +1,455 @@
+\documentclass{article}
+
+%%%%% packages to import %%%%%%
+\usepackage{graphicx} % Required for inserting images
+\usepackage[useregional]{datetime2}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{subcaption}
+
+%%%%% title information %%%%%%
+\title{CS496 Software Project: \\ 
+Web-Based HVAC Inventory App}
+\author{Oscar Roat, Dylan Morales}
+\date{\today}
+
+\begin{document}
+\maketitle % make title information appear here
+
+\section{Client Information}
+By sharing this client information and the rest of this document, you are stating that this client has provided this project as something they want (not something you created and asked if they wanted), and that they are interested in having you complete this project for your capstone.
+% Complete the list items about your client
+\begin{itemize}
+    \item Client name: William Tikiob 
+    \item Client title: Project Manager Engineer
+    \item Client email address: william.tikiob@coolsys.com
+    \item Client employer: CoolSys
+    \item How you know the client: Introduced to by Dr. Isaacman
+\end{itemize}
+
+\section{Project Description}
+% You must complete the following 4 subsections. The instructor will use this information to determine if your project might be feasible or not.
+
+% Comment out the bracketed instructions as you finish subsections
+\subsection{Overview}
+%[Add a few paragraphs describing your project succinctly. What problem are you trying to solve, what is the purpose of your project? Why does your client want this project?]
+
+The main priority of this software, and the problem we are trying to solve, is the tracking of materials for jobs. Tracking materials is divided among two roles. The project managers order the needed materials and keep track of the purchase orders (PO's) in files on a shared drive. At the job sites, the foremen receive the materials and sign off on the delivery. Currently, there is no way for the foremen to verify that all of the materials were actually shipped, which has lead to delays because of missing things. 
+
+Our app would centralize the ordered materials in a place for everyone in the company to see. They would be organized by job, so comparing expected and delivered materials would be as simple as finding the appropriate job on the app. Project managers would be able to take photos of PO's, and - possibly using Optical Character Recognition (OCR) - the materials and their quantities would be inserted into a database. In addition, the people on site for these jobs should be able to take a photo of the packing slip, and the app would compare that list to the expected numbers in the database. 
+
+Those on job sites will require an easy-to-use mobile app. It makes sense to make a system that will work both on a computer and on mobile devices. 
+
+If the former is complete, there are secondary additions that the client requested. These are equipment serial capture and tool tracking. Tool tracking would allow all users to know what tools are currently allocated to certain people/jobs. Serial capture would allow the automation of inserting these tools into a DB. 
+
+\subsection{Key Features}
+%[At this point you should have a basic understanding of your client's needs. List out the key features of the software system the client wants you to build.]
+\begin{itemize}
+    \item Inserting material list into central DB (Project Manager)
+    \item Organizing materials by job
+    \item Comparing delivered materials to expected material list (Foremen)
+    \item Automating insertion and comparison, possibly via OCR (client's recommendation)
+    \item Custom role-based UI's (the simpler, the better)
+    \item Mobile App design
+    \item (stretch goal) Tracking tools by job and/or person 
+    \item (stretch goal) Equipment serial capture
+\end{itemize}
+
+\subsection{Why this Project is Interesting}
+%[Why did you decide this project was interesting enough to you to be a capstone project? What about this project is enticing? Why should anyone care?]
+(Oscar) I like this project because of the high-level simplicity. The material lists are the primary data. All we want to do is provide a way for project managers to upload the lists and organize them, and for the foremen to review them. Obviously, it will be more difficult to implement than how I described it, but dealing with the logic of only one major data type is something that I am prepared to deal with. I also understand the perspective of the foremen and the confusion and anger that comes with incomplete orders on job sites. Being able to help their work run more smoothly is a bonus. 
+
+\subsection{Areas of CS required}
+[What subfields of computer science seem most likely to be relevant to your project? A capstone must involve multiple.]
+\begin{enumerate}
+    \item Software Engineering
+    \item Web/Mobile App Development
+    \item DB Management
+    \item (possibly) Optical Character Recognition
+\end{enumerate}
+
+\subsection{Potential Concerns and Questions}
+%[Is there any aspect of this project that makes you unsure if it will work, either due to your own interests/background, or that you aren't sure if it fits the requirements? Are there questions you have about this project that you want instructor feedback about?]
+It is unclear whether or not we will be able to get to the secondary additions to the app. Going into the project, it seems that organizing and tracking tools should be similar to the material lists. Tool tracking could be moved from being a stretch goal to part of the main requirements. 
+ 
+One concern we have is integrating OCR into the project. The company offered to pay for AWS Textract, which (according to them) has the necessary capabilities. This is interesting, but we are unsure of how this contributes to the difficulty of the project. While this is a concern, the focus at first should be on the presentation of the data. 
+
+There are also a few questions we have, both for the client and in general:
+\begin{enumerate}
+    \item How would we get OCR to handle different PO formats, if necessary?
+    \item How should we differentiate tools being used \textit{at a job site} versus \textit{by a specific person}?
+    \item Should admin create accounts or should users create their own accounts?
+    \item Who manages the tools (admin, pm, somebody else)?
+    \item How do you handle delivery status?
+\end{enumerate}
+
+%\subsection{Summary of Efforts to Find a Project}
+%(Not necessary for 482) [Briefly list out when/how you've discussed with this client, and if you've discussed with other clients who either didn't work out or didn't respond. If you considered a different project and it didn't work out, why didn't it work out?] 
+
+%[Most CS495 projects end here. The sections below are for CS482 and CS496 software projects].
+
+%\subsection{Comparison to Draft}
+%[For CS496 only, focus on highlighting the major differences between the draft proposal in CS495 and this one here. If there are no major differences, you can remove this subsection.]
+
+\section{Requirements}
+
+\subsection{Non-Functional Requirements}
+[Non-functional requirements are just as important as functional requirements. Dont forget to specify them.]\\
+
+Table~\ref{tab:nfr} presents the NFRs for this software project.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c l c p{9cm}}
+\hline
+\textbf{ID} & \textbf{NFR Title} & \textbf{Category} & \textbf{Description} \\
+\hline
+1 & Color Scheme & Visual / Design & No specifc colors required, but primary blue and red to match company colors \\ \hline
+2 & Simple UI  & Visual / Design & The simpler the UI, the better \\ \hline
+3 & Role-specific UI  & Portability & Different UI for different roles \\ \hline
+4 & Mobile App  & Portability & Mobile version for foremen \\ \hline
+2 & OCR Handling  & Reliability & OCR should account for different PO/Packing slip formats \\ \hline
+\end{tabular}
+\caption{Non-Functional requirements}\label{tab:nfr}
+\end{table}
+
+
+\subsection{Functional Requirements (User Stories)}
+[In CS482, all functional requirements are written as User Stories. In CS496, some projects may use a different template to write the requirements. The table below is an example of writing the Stories. Adapt accordingly to different templates or if you want to display more info.]\\
+
+Table~\ref{tab:functional-req} presents the functional requirements for this software project.
+
+\begin{longtable}[h]{c l c p{10cm}}
+\hline
+\textbf{ID} & \textbf{Story Title} & \textbf{Points} & \textbf{Description} \\
+\hline
+		
+A1 & User Accounts & 8 & As a/an Admin, I want to create, update, and delete user accounts, so that each user has access to needed information \\ \hline
+P1 & Material Lists & 3 & As a/an Project Manager, I want to upload a photo of a purchase order, so that I can avoid tidious input and errors \\ \hline
+P2 & PO Photo & 3 & As a/an Project Manager, I want to upload a photo of a purchase order, so that I can avoid tidious input and errors \\ \hline
+D1 & Projects & 5 & As a/an Project Manager, I want to create, update, and delete projects, so that I can keep projects up to date \\ \hline
+D2 & Organize Material & 3 & As a/an Project Manager, I want to separate material lists by project, so that lists are organized \\ \hline
+D3 & Assign Users &	2 & As a/an Project Manager, I want to assign users to specific projects, so that they are not distracted by other projects \\ \hline
+D4 & Material List Status &	5 & As a/an Project Manager, I want to see the status of material deliveries across all projects, so that I can easily keep track of accuarcy and progress \\ \hline
+D5 & Shipment Notification & 2 & As a/an Foreman/Logistics, I want a notification when materials are ordered, so that I know when to expect them at a project site \\ \hline
+T1 & Tool Management & 8 & As a/an Foreman, I want to create, read, update, and delete company tools, so that I can manage them \\ \hline
+D6 & Assign/Unassign Tools & 3 & As a/an Foreman, I want to assign tools to specific projects/people, so that users know what tools are in use and where \\ \hline
+S1 & Record Shipment & 2 & As a/an Logistics, I want to input delivered materials , so that I can create a shipment and read a PO to compare for accuacy \\ \hline
+S2 & Shipment Accuarcy & 5 & As a/an Logistics, I want to compare packing lists to material lists, so that I know if any materials are missing \\ \hline
+S3 & Shipment Photo Upload & 3 & As a/an Logistics, I want to upload a photo of a packing slip, so that delivered materials can be automatically recorded \\ \hline
+D7 & Tool Allocation & 2 & As a/an Foreman/Logistics, I want to see my tool when I am assigned to a project, so that other users know where a specific tool is \\ \hline
+Q1 & Project Details on Forms &	2 & As a/an Quality Control, I want documentation to populate with project details, so that time is saved and error is minimized on projects \\ \hline
+Q2 & Equipment Serial Capture &	5 & As a/an Quality Control, I want to take a photo of a serial nameplate and input its details onto QC form, so that time is saved and error is minimized on projects \\ \hline
+M1 & Persistent Login and Logout & 3 & As a/an User, I want to login, remain logged in, and logout of my account, so that my information is secure and maintained \\ \hline
+
+\multicolumn{2}{r}{\bf Total: } & 64 & \\ \hline
+
+\caption{Functional requirements as User Stories.}\label{tab:functional-req}
+\end{longtable}
+
+\section{System Design}
+% Reminder: Comment out the [bracketed instructions] as you finish subsections
+
+\subsection{Architecture}
+%[Which type of software architecture are you team following? Layered architecture, MVC, other? What are the main modules for your software?]
+%[Main modules are not the same as Layers. If you adopted any form of layered architecture (MVC included), then your layers already group components based on responsibility. Therefore, for modules, think about semantically related components. For example, in a parking lot, I could have a User, Payment, Parking (Vehicles), Contact/Issues modules.]
+
+Our team has chosen to utilize the MVC structured architecture to allow for obvious focus point on our development. Using MVC we can split up our work into 3 main categories: Model, View, and Controller. Using this style of structure will promote scalability, mendability, and maintenance as we move further down the road. It will allow for developers to handle different parts of the project, avoiding the conflict of waiting on another group member to finish before starting your work. When it comes to tools we will use for each part of MVC that will be explained in our Technology section. The module will be the main branch that handles our data that will contain important information for the game consistently and securely. The controller is 2 the link between the model and the view. It will take in requests data from the user and retrieve data from the model to display on the view. The view is the display of the structure and it allows for the user to see the information our software is displaying. Many benefits will be created from using this structure that will allow for efficiency, debugging, organization, modular development, team collaboration, and maintainable software.
+
+\subsection{Diagrams}
+%[CS482, on sprints/iterations 2-3, you need to create and update a diagram (check Iteration 2-3 assignment for which type of diagram). On CS496, since before sprint/iteration 1, you should have a class diagram and keep it up-to-date. In CS496, if your class diagram changes at each sprint, then create a Class Diagram subsection for the sprints, and show the changes; while keeping the one here the most up-to-date version. ]
+
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=\linewidth]{Diagrams/Class1.jpeg}
+    \caption{Current Class Diagram}
+    \label{fig:currclassdiagram}
+\end{figure}
+
+See figure \ref{fig:currclassdiagram} for the current class diagram. I have a few notes for the current diagram:
+\begin{itemize}
+    \item Every job has one project manager and multiple logistics/foremen associated with it. I'm not sure if there's a way to differentiate them, since they are both 'Users,' so I wrote the appropriate role next to each arrow. 
+    \item The arrow pointing from Job (should be 'Project') to Material references the Material List from the purchase order. The arrow pointing from Shipment Slip to Material refers to the list of actually delivered materials.
+\end{itemize}
+
+\subsection{Technology}
+%[ Which technologies are you going to use to implement your project? This should include the chosen programming language, main frameworks/libraries, and database or data storage. Testing framework is essential here as well.]
+
+For our project we have planned out some crucial technology that will allow us to produce a product to out client exactly as he wants. We plan to use java script for our main programming language, NodeJS for our server side run time environment, Express for the web application framework for building APIs, HTML/React/CSS for our front end framework to create a present and interactive view of the users of this app. We will focus on using react for our mobile app and HTML + CSS for our web app. For our testing we are going to use Jest to make proper tests to make sure our software work effectively. Our client asked for OCR to be used in our project to convert photos with text to database ready text. We plan to implement Tesseract.js or AWS Textract for this function of our web app. For our database we will user MongoDB to store all of our information in order to produce accurate real time information to our users. Also bcrypt for hashing our passwords for better security. 
+
+\subsection{Coding Standards}
+[Are your team going to follow any coding standards? For example, using a naming convention for Database tables (like only singular lowercase names). Another example, only allowing code with unit tests and above 60\% coverage to be committed (good convention since testing is going to be evaluated). If you need inspiration to define your coding standards, the Extreme Programming approach has a set of coding, design, and test rules.]
+
+NoSQL data structure
+
+Users
+    (
+        (
+        \_id: ObjectId,
+        id\_user: 1,
+        username: 'sample123',
+        password: ('123'), \#hashed
+        name: 'sample user',
+        id\_tools: (()),
+        role: 'ProjectManager'
+        )
+        ...
+    )
+Projects
+    (
+        (
+        \_id: ObjectId,
+        id\_manager: 1,
+        id\_workers: (()),
+        id\_materials: (()),
+        location: 'sample'
+        )
+    )
+
+Tables should have a capital first letter but following letters are lowercase
+
+Backend
+
+/models
+/controllers
+/routes
+/middleware
+/services
+/tests
+app.js
+
+Consistent naming conventions
+
+Modular architecture
+
+Minimum 50\% test coverage before a commit
+
+Make sure both partners can agree with new code before commit to git
+
+Secure authentication practices like hashing password and page restrictions
+
+
+
+
+\subsection{Data}
+%[What is the main structure of your data? In SQL-like databases, this would be the planning of the main tables, their attributes, and interactions with other tables (basically an ER diagram). In NoSQL databases, this would be the main collections and general attributes of the JSON you will store in each collection.]
+
+%[Tip to better find and write the data your system will need. Go back to your User Stories and for each one, think to yourself: which attributes/fields do I need to store for this to work?]
+
+%[Tip 2. When a system has many different roles for people, those are usually done in a single User table/collection. Especially when they share many common attributes/fields.]
+\begin{itemize}
+    \item Material - name, quantity
+    \item User - type (Admin, Project Manager, Logistics, Foreman), name, username/email, password, tools being used
+    \item Tools - serial number, model, in use (bool)
+    \item Project - location, PM, L/F on site, material list
+    \item Equipment - serial number, model, ..., location
+\end{itemize}
+
+The '...' under the equipment data refers to attributes that I am not sure of yet. It could include different voltage levels, quality, or other things. Dealing with the equipment is still a stretch goal for now, so this is something we will worry about later. 
+
+\subsection{UI Mocks}
+%[Define and draw/sketch/code the main UIs your user will interact with in your software. Add your UI mocks here and a short caption about it. Do not forget about the main forms and CRUD UIs.]
+
+\begin{figure}[h]
+    \centering
+
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{UI Mocks/IMG_2820.jpeg}
+        \caption{Jobs Page for Project Managers}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{UI Mocks/IMG_2821.jpeg}
+        \caption{User Profile Page}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{UI Mocks/IMG_2822.jpeg}
+        \caption{Tools Page for Foremen}
+    \end{subfigure}
+    
+    \vspace{1em}
+
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{UI Mocks/IMG_2823.jpeg}
+        \caption{Admin Page}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{UI Mocks/IMG_2824.jpeg}
+        \caption{Job Page for Logistics/Foremen}
+    \end{subfigure}
+    
+    \vspace{1em}
+    \caption{UI Mocks}
+    \label{fig:UIMock}
+\end{figure}
+
+The color scheme will probably match the company colors, blue and red, though the client said that color was not a big deal.
+
+
+\section{Iterations}
+
+\subsection{Iteration Planning}
+%% Reminder **CS482**: Update your iteration planning at each sprint
+% Reminder: Comment out the bracketed instructions as you finish subsections
+[In CS496, you plan all iterations beforehand. In CS482, you update the planning here at each iteration. ]\\
+
+Table~\ref{tab:it-planning} shows the iteration planning.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c l p{7cm} c c}
+\hline
+ & & & \multicolumn{2}{c}{\bf Points }  \\
+\textbf{It.} & \textbf{Dates} & \textbf{Stories} & \textbf{Planned} & \textbf{Done} \\
+\hline
+1 & 01/29 - 02/10 & A1 User Accounts, P1 Material Lists, D1 Projects & 16 & 16\\ \hline
+2 & 02/01 - 03/01 & D2 Organize Materials, D3 Assign Users, T1 Tool Management & 13 & ?? \\ \hline
+3 & 03/01 - 04/01 & D6 Assign/Unassign Tools, S1 Record Shipment, S2 Shipment Accuracy & 10 & ?? \\ \hline
+4 & 04/01 - 05/01 & D4 Material List Status, P2 PO Photo, S3 Shipment Photo & 10+ & ??\\ \hline
+5 & 05/01 - 06/01 & D5 Shipment Notification, Q1 Project Details on Forms, Q2 Equipment Serial Capture & 09 & ?? \\ \hline
+\multicolumn{3}{r}{\bf Total: } & 58+ & 65 \\ \hline
+\end{tabular}
+\caption{Iteration Planning for Incremental Deliveries}\label{tab:it-planning}
+\end{table}
+
+[Note that the original planning was limited because we did not have all of the details for the project at the time. The specific iterations will have more stories done.]
+
+\subsection{Iteration/Sprint 1}
+\subsubsection{Planning}
+%[Which stories did you plan for this iteration/sprint. Add the total points for this plan. You can also explain the reason behind your planning, and what major feature(s) your team is focusing on delivering by completing these stories. You may use a table for a summary display of the planning, but elaborate in text more detail in your focus and feature plan.]
+\begin{itemize}
+    \item Oscar:
+        \begin{enumerate}
+            \item A1 User Accounts (8 Points)
+        \end{enumerate}
+
+        \item Dylan:
+            \begin{enumerate}
+                \item D1 Projects P1 Material list (8 points)
+            \end{enumerate}
+
+    \item Total Points Planned: 8+
+\end{itemize}
+
+For the first iteration, we focused on setting up the essential DAO's and their controllers, those being users and projects. Also, setting up basic UI should try to get done to keep frontend and backend on the same track. 
+
+
+\subsubsection{Work Done}
+%[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
+
+\begin{itemize}
+    \item Oscar:
+        \begin{enumerate}
+            \item A1 User Accounts (8 Points)
+        \end{enumerate}
+
+        \item Dylan:
+            \begin{enumerate}
+                \item D1 Projects (8 points)
+            \end{enumerate}
+
+    \item Total Points Done: 8+
+\end{itemize}
+
+\textbf{Oscar:} I completed model and controller for users, which includes full CRUD functionality. Basic UI was also set up for the users, including a form to register and a list of users. While the UI is simple, there are still improvements that can be made on the style.
+
+\textbf{Dylan:} I had planned to most of projects crud and and a portion of material list but decided to just complete the full crud for Projects. I have created two UIs which was one to handle create view and delete but also added a button to make updates to a desired project. I still see room for alot of improvement in how users are added to projects.
+
+\subsubsection{Testing Coverage}
+[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Iteration1Coverage.png}
+    \caption{Iteration 1 test coverage report}
+    \label{fig:placeholder}
+\end{figure}
+
+I think our coverage is done very well because it reaches close to perfect coverage in all fields. I think there is room for very little improvements just because we are almost near perfection. User controller test is missing some lines just because they arent very important for testing but in time could easily be covered in the next iteration. This is the first iteration of testing and cant be compared to anything in previous iterations.
+
+
+
+
+
+\subsubsection{Retroespective \& Reflection}
+%[What were the pitfalls, challenges, and issues you had in this iteration? How can you address them to improve the process in the next iteration? Did anything not go according to plan? Why so and how to avoid the same mistake? Write a personal reflection on what you learned in this iteration (even if a small technical thing like Database storage).]
+
+\textbf{Oscar:} The only thing that I wasn't able to do this iteration was the testing for the functions in the script on the users admin page. I will have to make that up eventually. However, both the user DAO and controller files are above 80\% coverage, so I am still confident in the user functionality on the website. I also did some work on working with Bootstrap. While I used it in my software engineering project, I mostly copied from my teammates and did not really learn it. Learning Bootstrap will be something that I build on throughtout this project. 
+
+\textbf{Dylan:} When it comes to how well the usability of the projects I think it could a little work on selecting users. I ran out of time and just created a simple method of just adding the user ID manually instead of having a drop down. I belive once the drop down is added I will not have to add much work the the project crud. I think I could have spent more time researching how we could possibly use a camera to input information from documents because I think this will be a very strenuous problem later on.  
+
+
+\subsection{Iteration/Sprint 2}
+\subsubsection{Planning}
+[Which stories did you plan for this iteration/sprint. Add the total points for this plan. You can also explain the reason behind your planning, and what major feature(s) your team is focusing on delivering by completing these stories. You may use a table for a summary display of the planning, but elaborate in text more detail in your focus and feature plan.]
+
+\subsubsection{Work Done}
+[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
+
+\subsubsection{Testing Coverage}
+[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
+
+\subsubsection{Retroespective \& Reflection}
+[What were the pitfalls, challenges, and issues you had in this iteration? How can you address them to improve the process in the next iteration? Did anything not go according to plan? Why so and how to avoid the same mistake? Write a personal reflection on what you learned in this iteration (even if a small technical thing like Database storage).]
+
+\subsection{Iteration/Sprint 3}
+\subsubsection{Planning}
+[Which stories did you plan for this iteration/sprint. Add the total points for this plan. You can also explain the reason behind your planning, and what major feature(s) your team is focusing on delivering by completing these stories. You may use a table for a summary display of the planning, but elaborate in text more detail in your focus and feature plan.]
+
+\subsubsection{Work Done}
+[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
+
+\subsubsection{Testing Coverage}
+[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
+
+\subsubsection{Retroespective \& Reflection}
+[What were the pitfalls, challenges, and issues you had in this iteration? How can you address them to improve the process in the next iteration? Did anything not go according to plan? Why so and how to avoid the same mistake? Write a personal reflection on what you learned in this iteration (even if a small technical thing like Database storage).]
+
+\subsection{Iteration/Sprint 4}
+[CS496 has 5 sprints. CS482 only has only 3 sprints (remove Iterations 4 and 5 from this doc if you are writing a doc for 482]
+
+\subsubsection{Planning}
+[Which stories did you plan for this iteration/sprint. Add the total points for this plan. You can also explain the reason behind your planning, and what major feature(s) your team is focusing on delivering by completing these stories. You may use a table for a summary display of the planning, but elaborate in text more detail in your focus and feature plan.]
+
+\subsubsection{Work Done}
+[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
+
+\subsubsection{Testing Coverage}
+[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
+
+\subsubsection{Retroespective \& Reflection}
+[What were the pitfalls, challenges, and issues you had in this iteration? How can you address them to improve the process in the next iteration? Did anything not go according to plan? Why so and how to avoid the same mistake? Write a personal reflection on what you learned in this iteration (even if a small technical thing like Database storage).]
+
+\subsection{Iteration/Sprint 5}
+\subsubsection{Planning}
+[Which stories did you plan for this iteration/sprint. Add the total points for this plan. You can also explain the reason behind your planning, and what major feature(s) your team is focusing on delivering by completing these stories. You may use a table for a summary display of the planning, but elaborate in text more detail in your focus and feature plan.]
+
+\subsubsection{Work Done}
+[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
+
+\subsubsection{Testing Coverage}
+[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
+
+\subsubsection{Retroespective \& Reflection}
+[What were the pitfalls, challenges, and issues you had in this iteration? How can you address them to improve the process in the next iteration? Did anything not go according to plan? Why so and how to avoid the same mistake? Write a personal reflection on what you learned in this iteration (even if a small technical thing like Database storage).]
+
+\section{Final Remarks}
+
+\subsection{Overall Progress}
+[Have you completed everything? If so, present evidence on how you brought value to your client, and the overall client satisfaction. Otherwise, estimate how much progress you done and how long it would take to finish this project. Be concrete about your progress, you know how many story points your software is, how many points you completed (this shows your progress). You also how many points your team delivers at each iteration, therefore you can estimate how many more iterations it would take to finish the leftover points (show the math).]
+
+\subsection{Project Reflection}
+[Your personal reflection on the project. What lessons did you learned. What would you have done differently? How can you do better work in future projects? You may write this as a team or per person (or both --- if all your iterations were team reflections, then it would be better to write individual reflections here)]
+
+\section*{Appendix}
+[Appendix section if needed]
+
+
+\end{document}
