@@ -1,19 +1,14 @@
-const ProjectDao = require('../model/ProjectDao');
-
+const dao = require('../model/ProjectDao');
 
 exports.createProject = async function(req, res) {
     try {
-        let projectInfo = {
-            name: req.body.name,
-            manager: req.body.manager,
-            location: req.body.location,
-            workers: req.body.workers || []
-        };
-
-        let project = await ProjectDao.create(projectInfo);
-
+        const project = await dao.create(req.body);
         console.log('Successfully created project');
-        res.status(201).json(project);
+
+        res.status(201).json({
+            success: true,
+            project: project
+        });
 
     } catch (error) {
         console.error('Error creating project:', error);
@@ -21,57 +16,55 @@ exports.createProject = async function(req, res) {
     }
 };
 
+exports.getAllProjects = async function(req, res) {
+    try {
+        const projects = await dao.readAll();
 
-exports.getAllProjects = async function(req, res){
-    try{
-        let projects = await ProjectDao.readAll();
         res.status(200).json(projects);
-    } catch (error){
-        console.error('error in getAllProjects: ', error);
-        res.status(500).json({error: 'failed to fetch projects'});
+
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        res.status(500).json({ error: 'Failed to fetch projects' });
     }
 };
 
-
-exports.getProjectById = async function(req, res){
-    const { id } = req.params;
-
-    try{
-        let project = await ProjectDao.read(id);
-
-        if (!project){
-            return res.status(404).json({ error: "Project not found" });
-        }
+exports.getProjectById = async function(req, res) {
+    try {
+        const project = await dao.read(req.params.id);
 
         res.status(200).json(project);
 
-    } catch (error){
-        res.status(500).json({error: "Failed to fetch project", details: error.message});
+    } catch (error) {
+        console.error('Error fetching project:', error);
+        res.status(500).json({ error: 'Failed to fetch project' });
     }
 };
 
+exports.updateProject = async function(req, res) {
+    try {
+        const updatedProject = await dao.update(req.params.id, req.body);
 
-exports.deleteProject = async function(req, res){
-    const { id } = req.params;
+        res.status(200).json({
+            success: true,
+            updatedProject
+        });
 
-    try{
-        await ProjectDao.del(id);
-        res.status(200).json({ success: true });
-
-    } catch (error){
-        res.status(500).json({ error: "Failed to delete project", details: error.message });
+    } catch (error) {
+        console.error('Error updating project:', error);
+        res.status(500).json({ error: 'Failed to update project' });
     }
 };
 
+exports.deleteProject = async function(req, res) {
+    try {
+        await dao.del(req.params.id);
 
-exports.updateProject = async function(req, res){
-    const { id } = req.params;
+        res.status(200).json({
+            success: true
+        });
 
-    try{
-        const updatedProject = await ProjectDao.update(id, req.body);
-        res.status(200).json({ success: true, updatedProject });
-
-    } catch (error){
-        res.status(500).json({ error: "Failed to update project", details: error.message });
+    } catch (error) {
+        console.error('Error deleting project:', error);
+        res.status(500).json({ error: 'Failed to delete project' });
     }
 };
