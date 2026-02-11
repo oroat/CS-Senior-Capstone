@@ -1,118 +1,149 @@
-const dbcon = require('../dbconnection') //add db connection file
-const dao = require('./UserDao');
+const dbcon = require('../dbconnection');
+const projectDao = require('./ProjectDao');
+const userDao = require('./UserDao');
 
 require("dotenv").config();
 
 beforeAll(async function(){
-    await dbcon.connect('test'); //add test db connection
+    await dbcon.connect('test');
 });
+
 afterAll(async function(){
-    await dao.deleteAll();
+    await projectDao.deleteAll();
+    await userDao.deleteAll();
     await dbcon.disconnect();
 });
 
 beforeEach(async function(){
-    await dao.deleteAll();
+    await projectDao.deleteAll();
+    await userDao.deleteAll();
 });
 
-test('Create new user test', async function(){
-    let newdata = {name:'Test Test', 
-                    role: 1, 
-                    email: 'test@coolsys.com',
-                    password: 'test123'};
-    let created = await dao.create(newdata);
-    let found = await dao.read(created._id);
+
+async function createTestUsers() {
+    const manager = await userDao.create({
+        name: 'Manager User',
+        role: 1,
+        email: 'manager@test.com',
+        password: 'pass'
+    });
+
+    const worker1 = await userDao.create({
+        name: 'Worker One',
+        role: 2,
+        email: 'worker1@test.com',
+        password: 'pass'
+    });
+
+    const worker2 = await userDao.create({
+        name: 'Worker Two',
+        role: 2,
+        email: 'worker2@test.com',
+        password: 'pass'
+    });
+
+    return { manager, worker1, worker2 };
+}
+
+
+test('Create new project', async function(){
+    const { manager, worker1, worker2 } = await createTestUsers();
+
+    const newProject = {
+        name: 'Project',
+        manager: manager._id,
+        location: 'Baltimore',
+        workers: [worker1._id, worker2._id]
+    };
+
+    const created = await projectDao.create(newProject);
+    const found = await projectDao.read(created._id);
 
     expect(created._id).not.toBeNull();
-    expect(created.email).toBe(found.email); 
+    expect(found.name).toBe('Project');
+    expect(found.workers.length).toBe(2);
 });
 
-test('Delete User', async function(){
-    let newdata = {name:'Test Test', 
-        role: 2, 
-        email: 'test@coolsys.com',
-        password: 'test123'};
-    let created = await dao.create(newdata);
-    let deleted = await dao.del(created._id);
-    let found = await dao.read(created._id);
-    
+
+test('Read all projects', async function(){
+    const { manager } = await createTestUsers();
+
+    await projectDao.create({
+        name: 'Project1',
+        manager: manager._id,
+        location: 'Baltimore',
+        workers: []
+    });
+
+    await projectDao.create({
+        name: 'Project2',
+        manager: manager._id,
+        location: 'New Jersey',
+        workers: []
+    });
+
+    const projects = await projectDao.readAll();
+
+    expect(projects.length).toBe(2);
+});
+
+
+test('Update project', async function(){
+    const { manager } = await createTestUsers();
+
+    const created = await projectDao.create({
+        name: 'Old Name',
+        manager: manager._id,
+        location: 'New Jersey',
+        workers: []
+    });
+
+    const updated = await projectDao.update(created._id, {
+        name: 'Updated Name'
+    });
+
+    expect(updated.name).toBe('Updated Name');
+});
+
+
+test('Delete project', async function(){
+    const { manager } = await createTestUsers();
+
+    const created = await projectDao.create({
+        name: 'Test Delete',
+        manager: manager._id,
+        location: 'Baltimore',
+        workers: []
+    });
+
+    const deleted = await projectDao.del(created._id);
+    const found = await projectDao.read(created._id);
+
     expect(found).toBeNull();
-    expect(deleted._id).toEqual(created._id);
+    expect(deleted._id.toString()).toBe(created._id.toString());
 });
 
-test('Read All', async function(){
-    let newdata1 = {name:'Test1 Test', 
-        role: 1, 
-        email: 'test1@coolsys.com',
-        password: 'test123'};
-    let newdata2 = {name:'Test2 Test', 
-        role: 2, 
-        email: 'test2@coolsys.com',
-        password: 'test123'};
-    let newdata3 = {name:'Test3 Test', 
-        role: 3, 
-        email: 'test3@coolsys.com',
-        password: 'test123'};
 
-    let user1 = await dao.create(newdata1);
-    let user2 = await dao.create(newdata2);
-    let user3 = await dao.create(newdata3);
+test('Delete all projects', async function(){
+    const { manager } = await createTestUsers();
 
-    let lstUsers = await dao.readAll();
+    await projectDao.create({
+        name: 'Project1',
+        manager: manager._id,
+        location: 'Baltimore',
+        workers: []
+    });
 
-    expect(lstUsers.length).toBe(3);
-    expect(lstUsers[0].email).toBe(user1.email);
-});
+    await projectDao.create({
+        name: 'Project2',
+        manager: manager._id,
+        location: 'CA',
+        workers: []
+    });
 
-test('Find email for login', async function(){
-    let newdata = {name:'Test Test', 
-        role: 1, 
-        email: 'test@coolsys.com',
-        password: 'test123'};
+    await projectDao.deleteAll();
 
-    let created = await dao.create(newdata);
-    let logged = await dao.findLogin(newdata.email);
+    const projects = await projectDao.readAll();
 
-    expect(logged).not.toBeNull();
-    expect(logged._id).toEqual(created._id);
-    expect(logged.email).toEqual(created.email);
-});
-
-test('Login not found', async function(){
-    let newdata = {name:'Test Test', 
-        role: 2, 
-        email: 'test@coolsys.com',
-        password: 'test123'};
-    
-        let created = await dao.create(newdata);
-        let badLogged = await dao.findLogin('not the login', 'not the password');
-
-        expect(badLogged).toBeNull();
-});
-
-test('Update user', async function(){
-    let newdata = {name:'Test Test', 
-        role: 2, 
-        email: 'test@coolsys.com',
-        password: 'test123'};
-
-    let created = await dao.create(newdata);
-
-    let updates = { name: 'Updated Test', 
-                    role: 1};
-    let updated = await dao.update(created._id, updates);
-
-    expect(updated.name).toBe('Updated Test');
-    expect(updated.role).toBe(1);
-});
-
-test('Find user by role', async function(){
-    let newdata = {name:'Test Test', 
-        role: 2, 
-        email: 'test@coolsys.com',
-        password: 'test123'};
-
-    let created = await dao.create(newdata);
-    let foundUsers = await dao.findByRole(2);
-    expect(foundUsers.length).toBe(1);
+    expect(projects.length).toBe(0);
 });
