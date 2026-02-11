@@ -13,18 +13,44 @@ async function viewUsers(filterApplied){
             users.forEach(user => {
                 if (!filterApplied || filter == user.role){
                     const userDiv = document.createElement('div');
+                    userDiv.classList.add('row');
 
-                    userDiv.innerHTML = `
-                        <p>${user.name}, role: ${user.role}, email: ${user.email}, id: ${user._id}
-                `   ;
+                    const nameDiv = document.createElement('div');
+                    nameDiv.classList.add('col');
+                    nameDiv.style.border = 'solid #27f5da'
+                    nameDiv.innerHTML = `${user.name}`;
+                    userDiv.appendChild(nameDiv);
+
+                    const roleDiv = document.createElement('div');
+                    roleDiv.classList.add('col');
+                    roleDiv.style.border = 'solid #27f5da'
+                    roleDiv.innerHTML = `${user.role}`;
+                    userDiv.appendChild(roleDiv);
+
+                    const emailDiv = document.createElement('div');
+                    emailDiv.classList.add('col');
+                    emailDiv.style.border = 'solid #27f5da'
+                    emailDiv.innerHTML = `${user.email}`;
+                    userDiv.appendChild(emailDiv);
+
+                    const buttonsDiv = document.createElement('div');
+                    buttonsDiv.classList.add('col');
 
                     const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('btn');
+                    deleteBtn.classList.add('btn-outline-danger');
+                    deleteBtn.innerHTML = 'Delete';
                     deleteBtn.onclick = () => deleteUser(user._id);
-                    userDiv.appendChild(deleteBtn);
+                    buttonsDiv.appendChild(deleteBtn);
 
                     const updateBtn = document.createElement('button');
+                    updateBtn.classList.add('btn-outline-danger');
+                    updateBtn.classList.add('btn-outline-secondary');
+                    updateBtn.innerHTML = 'Update Role';
                     updateBtn.onclick = () => updateRole(user._id);
-                    userDiv.appendChild(updateBtn);
+                    buttonsDiv.appendChild(updateBtn);
+
+                    userDiv.appendChild(buttonsDiv);
 
                     userList.appendChild(userDiv);
                 }
