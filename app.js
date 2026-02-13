@@ -2,12 +2,21 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const memorystore = require("memorystore")(session);
 
 const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
 
 
 const app = express();
+
+app.use(session({
+    secret: 'Pineapple - Guava - Orange',
+    cookie: {maxAge: 86400000 }, // = 1000*60*60*24 = 24Hours
+    store: new memorystore({ checkPeriod:86400000 }),
+    resave: false,
+    saveUninitialized: true
+  }));
 
 /** 
 const sessionM = session({
@@ -40,6 +49,8 @@ app.get('/users', UserController.getAllUsers);
 app.delete('/deleteuser/:id', UserController.deleteUser);
 
 app.put('/updaterole/:id', UserController.updateRole);
+
+app.post('/login', UserController.login);
 
 //Project routes
 app.post('/projects', ProjectController.createProject);

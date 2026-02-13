@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CoolSys</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <style>
+            .center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #27f5da; 
+            margin: 10px
+          }
+        </style>
+    </head>
+
+    <div id="header"></div>
+
+    <div class="container-sm center">
+
+        <h1>Login</h1>
+
+        <form action="login" method="post">
+
+            <div style="margin: 10px">
+                <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+    
+            <div style="margin: 10px">
+                <label for="pass" class="form-label">Password</label>
+                <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
+            </div>  
+
+            <div class="text-center"style="margin: 10px">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+        </form>
+
+        <div class="container">
+            <div class="row">
+              <div class="col-md-6" id="msg-display">
+                  <!-- Error messages will be dynamically displayed here -->
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#header").load('header.html');
+        });
+    </script>
+
+<script type="text/javascript">
+    const params = new URLSearchParams(window.location.search);    
+    let error = params.get('error');
+    let msg = null;
+    if(error === '1'){
+        msg = `
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Error!</strong> Incorrect Login.
+            </div>
+        `;
+        document.getElementById("msg-display").innerHTML = msg;
+    } 
+    else if (error === '2'){
+        msg = `
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Error!</strong> Incorrect Password.
+            </div>
+        `;
+        document.getElementById("msg-display").innerHTML = msg;
+    }
+    //window.alert('Login or Password Incorrect');
+</script>
+
+</html>
