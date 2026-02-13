@@ -51,6 +51,8 @@ app.delete('/deleteuser/:id', UserController.deleteUser);
 app.put('/updaterole/:id', UserController.updateRole);
 
 app.post('/login', UserController.login);
+app.get('/logout', UserController.logout);
+app.get('/logged', UserController.logged);
 
 //Project routes
 app.post('/projects', ProjectController.createProject);

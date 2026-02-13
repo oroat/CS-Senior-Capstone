@@ -50,11 +50,10 @@
                     <span class="bi-person-circle"></span>
                   </a>
                   <ul class="dropdown-menu list-unstyled">
-                    <li><a class="dropdown-item" href="landing.html">Sign Up</a></li>
-                    <li><a class="dropdown-item" href="login.html">Login</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    <li id="nav-signup"><a class="dropdown-item" href="landing.html">Sign Up</a></li>
+                    <li id="nav-login"><a class="dropdown-item" href="login.html">Login</a></li>
+                    <li id="nav-profile" style="display:none"><a class="dropdown-item" href="#">Profile</a></li>
+                    <li id="nav-logout" style="display:none"><a class="dropdown-item" href="/logout">Logout</a></li>
                   </ul>
                 
               </li>
@@ -63,5 +62,21 @@
           </div>
         </div>
       </nav>
+
+      <script>
+        async function checkLogged(){
+          let response = await fetch('/logged');
+          let user = await response.json();
+
+          if (user != null){
+            document.getElementById("nav-signup").style.display = "none";
+            document.getElementById("nav-login").style.display = "none";
+            document.getElementById("nav-profile").style.display = "inherit";
+            document.getElementById("nav-logout").style.display = "inherit";
+          }
+        }
+
+        checkLogged();
+      </script>
       
 </html>

@@ -56,11 +56,9 @@ exports.updateRole = async function(req, res){
 
 exports.login = async function(req, res){
     let login = req.body.email;
-    console.log("login: ", login);
-    console.log("password: ", req.body.pass);
 
     let user = await UserDao.findLogin(login);
-    console.log("user: ", user);
+
     if (user == null){
         res.redirect('/login.html?error=1')
     } else{
@@ -72,6 +70,20 @@ exports.login = async function(req, res){
             res.redirect('/login.html?error=2');
         }
     }
+}
+
+exports.logged = function(req, res){
+    res.status(200);
+    if (req.session.user)
+        res.send(req.session.user);
+    else
+        res.json(null);
+    res.end();
+}
+
+exports.logout = async function(req, res){
+    req.session.user = null;
+    res.redirect('/landing.html');
 }
 
 
