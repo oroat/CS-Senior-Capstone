@@ -63,7 +63,6 @@ exports.login = async function(req, res){
         res.redirect('/login.html?error=1')
     } else{
         if (req.body.pass == user.password){
-            console.log('successful login');
             req.session.user = user;
             res.redirect('/landing.html');
         } else{

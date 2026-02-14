@@ -30,7 +30,7 @@ test('Successful registration', async function(){
     
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
     expect(dao.create).toHaveBeenCalled();
-    expect(res.redirect).toHaveBeenCalledWith('/landing.html')
+    expect(res.redirect).toHaveBeenCalledWith('/users.html')
 });
 
 test('Registration fails because email already exists in database', async function(){
@@ -48,7 +48,7 @@ test('Registration fails because email already exists in database', async functi
 
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
     expect(console.log).toHaveBeenCalledWith('User already exists with that email');
-    expect(res.redirect).toHaveBeenCalledWith('/landing.html');
+    expect(res.redirect).toHaveBeenCalledWith('/users.html');
 });
 
 test('Successfully fetch all users', async function(){
@@ -93,5 +93,83 @@ test('Update role', async function(){
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({success: true, updatedUser});
 });
+
+test('Successful login', async function(){
+    let req = {body: {email: 'test@coolsys.com', pass: 'test123'},
+                session: {user: null}};
+    let res = {redirect: jest.fn()};
+    dao.findLogin = jest.fn(async() => ({email: 'test@coolsys.com', password: 'test123'}));
+
+    await controller.login(req, res);
+    expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
+    expect(req.session.user).not.toBeNull();
+    expect(res.redirect).toHaveBeenCalledWith('/landing.html');
+});
+
+test('Login w/ wrong password', async function(){
+    let req = {body: {email: 'test@coolsys.com', pass: 'wrong password'},
+                session: {user: null}};
+    let res = {redirect: jest.fn()};
+    dao.findLogin = jest.fn(async() => ({email: 'test@coolsys.com', password: 'test123'}));
+
+    await controller.login(req, res);
+    
+    expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
+    expect(req.session.user).toBeNull();
+    expect(res.redirect).toHaveBeenCalledWith('/login.html?error=2');
+});
+
+test('Incorrect email', async function(){
+    let req = {body: {email: 'wrongemail@coolsys.com', pass: 'test123'},
+                session: {user: null}};
+    let res = {redirect: jest.fn()};
+    dao.findLogin = jest.fn(async() => null);
+
+    await controller.login(req, res);
+
+    expect(dao.findLogin).toHaveBeenCalled();
+    expect(req.session.user).toBeNull();
+    expect(res.redirect).toHaveBeenCalledWith('/login.html?error=1');
+});
+
+test('Fetch logged user', async function(){
+    let req = {session: {user: {_id: '1a', role:1}}};
+    let res = {status: jest.fn(),
+                send: jest.fn(),
+                end: jest.fn()
+            };
+
+    await controller.logged(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({_id: '1a', role:1});
+    expect(res.end).toHaveBeenCalled();
+});
+
+test('Fetch no logged user', async function(){
+    let req = {session: {user: null}};
+    let res = {status: jest.fn(),
+                json: jest.fn(),
+                end: jest.fn()
+            };
+
+    await controller.logged(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(null);
+    expect(res.end).toHaveBeenCalled();
+});
+
+test('Logout user', async function(){
+    let req = {session: {user: {_id: '1a', role:1}}};
+    let res = {redirect: jest.fn()};
+
+    await controller.logout(req, res);
+
+    expect(req.session.user).toBeNull();
+    expect(res.redirect).toHaveBeenCalledWith('/landing.html');
+});
+    
+
 
 
