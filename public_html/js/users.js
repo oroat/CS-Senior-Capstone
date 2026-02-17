@@ -44,7 +44,7 @@ async function viewUsers(filterApplied){
                     buttonsDiv.appendChild(deleteBtn);
 
                     const updateBtn = document.createElement('button');
-                    updateBtn.classList.add('btn-outline-danger');
+                    updateBtn.classList.add('btn');
                     updateBtn.classList.add('btn-outline-secondary');
                     updateBtn.innerHTML = 'Update Role';
                     updateBtn.onclick = () => updateRole(user._id);
