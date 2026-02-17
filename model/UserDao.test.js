@@ -61,7 +61,7 @@ test('Read All', async function(){
     let lstUsers = await dao.readAll();
 
     expect(lstUsers.length).toBe(3);
-    expect(lstUsers[0].email).toBe(user1.email);
+    expect(lstUsers[0]._id).toStrictEqual(user1._id);
 });
 
 test('Find email for login', async function(){
