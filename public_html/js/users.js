@@ -14,6 +14,7 @@ async function viewUsers(filterApplied){
                 if (!filterApplied || filter == user.role){
                     const userDiv = document.createElement('div');
                     userDiv.classList.add('row');
+                    userDiv.style.margin = '10px';
 
                     const nameDiv = document.createElement('div');
                     nameDiv.classList.add('col');
@@ -112,7 +113,38 @@ async function updateRole(userId){
     }
 }
 
+async function populateDropdown(){
+    try{
+        const response = await fetch('/users');
+
+        if (response.ok) {
+            const users = await response.json();
+            //window.alert("response ok ", users);
+
+            let dropdown = document.getElementById('usersdropdown');
+            
+            users.forEach( user => {
+                let opt = document.createElement('option');
+                opt.value = `${user._id}`;
+                opt.innerHTML = `${user.name}`;
+
+                dropdown.appendChild(opt);
+            })
+
+
+
+
+        } else{
+        
+        }
+    } catch (error){
+            console.error('Network error during review retrieval:', error); 
+            alert(`Network error: ${error}`);
+    }   
+}
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     await viewUsers(false);
+    await populateDropdown();
 });

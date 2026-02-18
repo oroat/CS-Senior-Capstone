@@ -8,21 +8,24 @@
         <script src="js/users.js"></script>
         
         <style>
+            .bborder {
+                border: 3px solid #27f5da; 
+            }
+
             .center {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: 3px solid #27f5da; 
             margin: 10px
-          }
+            }
         </style>
     </head>
 
     <div id="header"></div>
 
     
-        <div class="container-sm center">
+        <div class="container-sm center bborder">
             
                 <h1>Register New User</h1>
                 <form action="registeruser" method="post">
@@ -32,7 +35,7 @@
                     </div>
                     
                     <div style="margin: 10px">
-                        <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                        <label for="email" class="form-label">Email address</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
                     </div>
             
@@ -68,6 +71,57 @@
             <button onclick="viewUsers(true)">Apply Filter</button>
             <button class="clear-filter-btn" onclick="viewUsers(false)">Clear Filter</button>
         </div>
+
+        <!-- action="updaterole"  -->
+        <div class="container text-center center bborder">
+            <h2>Update User</h2>
+            <form id="updateform">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="usersdropdown">Options</label>
+                    </div>
+                    <select class="custom-select" id="usersdropdown" required>
+                      <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="rolesdropdown">Roles</label>
+                    </div>
+                    <select class="custom-select" name="rolesdropdown" id="rolesdropdown" required>
+                        <option value = "" selected>Choose...................</option>
+                        <option value="0">Admin</option>
+                        <option value="1">Project Manager</option>
+                        <option value="2">Foreman</option>
+                        <option value="3">Logistics</option>
+                        <option value="4">Warehouse</option>
+                    </select>
+                </div>
+
+                <div class="text-center"style="margin: 10px">
+                    <button type="submit" class="btn btn-secondary">Update Role</button>
+                </div>
+            </form>
+
+        </div>
+        
+        <script>
+            document.getElementById('updateform').addEventListener('submit', function (event) {
+              // Prevent the default form submission behavior
+              event.preventDefault();
+
+              let udropdown = document.getElementById('usersdropdown');
+              let rdropdown = document.getElementById('rolesdropdown');
+          
+              alert(`user id = ${udropdown.value}`);
+              alert(`new user role = ${rdropdown.value}`);
+          
+              // You can then use Fetch or XMLHttpRequest to send data programmatically
+              // e.g., fetch('/api/submit', { method: 'POST', body: new FormData(event.target) });
+            });
+          </script>
 
     <script>
         $(document).ready(function () {
