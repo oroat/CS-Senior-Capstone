@@ -1,10 +1,12 @@
-const dbcon = require('../dbconnection') //add db connection file
+const dbcon = require('../dbconnection'); //add db connection file
 const dao = require('../model/UserDao');
 const controller = require('./UserController');
+const hash = require('../util/Hashing')
 
 require("dotenv").config();
 
 jest.mock('../model/UserDao');
+jest.mock('../util/Hashing');
 
 beforeAll(async function(){
     await dbcon.connect('test'); //add test db connection
@@ -27,8 +29,10 @@ test('Successful registration', async function(){
     let res = {redirect: jest.fn()}
 
     await controller.register(req, res);
+    console.log(hash.hashString.mock.calls);
     
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
+    expect(hash.hashString).toHaveBeenCalled(); //.toHaveBeenCalledWith(req.body.password) not working
     expect(dao.create).toHaveBeenCalled();
     expect(res.redirect).toHaveBeenCalledWith('/users.html')
 });
@@ -99,9 +103,11 @@ test('Successful login', async function(){
                 session: {user: null}};
     let res = {redirect: jest.fn()};
     dao.findLogin = jest.fn(async() => ({email: 'test@coolsys.com', password: 'test123'}));
+    hash.compareHash = jest.fn(() => true);
 
     await controller.login(req, res);
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
+    expect(hash.compareHash).toHaveBeenCalled();
     expect(req.session.user).not.toBeNull();
     expect(res.redirect).toHaveBeenCalledWith('/landing.html');
 });
@@ -111,6 +117,7 @@ test('Login w/ wrong password', async function(){
                 session: {user: null}};
     let res = {redirect: jest.fn()};
     dao.findLogin = jest.fn(async() => ({email: 'test@coolsys.com', password: 'test123'}));
+    hash.compareHash = jest.fn(() => false);
 
     await controller.login(req, res);
     

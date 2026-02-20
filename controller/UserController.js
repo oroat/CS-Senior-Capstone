@@ -1,4 +1,5 @@
 const UserDao = require('../model/UserDao');
+const hash = require('../util/Hashing');
 
 exports.register = async function(req, res) {
     //ADD CONFIRM PASSWORD
@@ -8,7 +9,7 @@ exports.register = async function(req, res) {
             name: req.body.name,
             email: req.body.email,
             role: 1,
-            password: req.body.pass
+            password: hash.hashString(req.body.pass)
         }
 
         let user = UserDao.create(userInfo);
@@ -62,7 +63,7 @@ exports.login = async function(req, res){
     if (user == null){
         res.redirect('/login.html?error=1')
     } else{
-        if (req.body.pass == user.password){
+        if (hash.compareHash(req.body.pass,user.password)){
             req.session.user = user;
             res.redirect('/landing.html');
         } else{
