@@ -44,13 +44,24 @@
                         <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
                     </div>  
 
-                    <!-- NEED TO ADD CONFIRM PASSWORD SECTION -->
+                    <div style="margin: 10px">
+                        <label for="confirm_pass" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" placeholder="..." required>
+                    </div>
+
                     
                     <div class="text-center"style="margin: 10px">
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
-            
+        </div>
+
+        <div class="container">
+            <div class="row">
+              <div class="col-md-6" id="msg-display">
+                  <!-- Error messages will be dynamically displayed here -->
+              </div>
+            </div>
         </div>
 
         <div class="container text-center">
@@ -105,8 +116,25 @@
                 </div>
             </form>
 
+            
+
         </div>
         
+        <script type="text/javascript">
+            const params = new URLSearchParams(window.location.search);    
+            let error = params.get('error');
+            let msg = null;
+            if(error === '1'){
+                msg = `
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Error!</strong> Password and Confirm Password must match.
+                    </div>
+                `;
+                document.getElementById("msg-display").innerHTML = msg;
+            } 
+        </script>
+
         <script>
             document.getElementById('updateform').addEventListener('submit', function (event) {
               // Prevent the default form submission behavior

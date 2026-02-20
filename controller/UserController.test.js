@@ -24,18 +24,31 @@ test('Successful registration', async function(){
     let req = { body: {
         name: 'Test Test',
         email: 'test@coolsys.com',
-        password: 'password'
+        pass: 'password',
+        confirm_pass: 'password'
     }}
     let res = {redirect: jest.fn()}
 
     await controller.register(req, res);
-    console.log(hash.hashString.mock.calls);
     
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
     expect(hash.hashString).toHaveBeenCalled(); //.toHaveBeenCalledWith(req.body.password) not working
     expect(dao.create).toHaveBeenCalled();
     expect(res.redirect).toHaveBeenCalledWith('/users.html')
 });
+
+test('Registration fails because pass and confirm_pass dont match', async function(){
+    let req = { body: {
+        name: 'Test Test',
+        email: 'test@coolsys.com',
+        pass: 'password',
+        confirm_pass: 'wrong'
+    }}
+    let res = {redirect: jest.fn()}
+
+    await controller.register(req, res);
+    expect(res.redirect).toHaveBeenCalledWith('/users.html?error=1');
+})
 
 test('Registration fails because email already exists in database', async function(){
     let req = { body: {

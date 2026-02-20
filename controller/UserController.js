@@ -2,7 +2,12 @@ const UserDao = require('../model/UserDao');
 const hash = require('../util/Hashing');
 
 exports.register = async function(req, res) {
-    //ADD CONFIRM PASSWORD
+    if (req.body.pass != req.body.confirm_pass){
+        console.log("Password confirmation failed");
+        res.redirect('/users.html?error=1');
+        return;
+    }
+
     let existingEmail = await UserDao.findLogin(req.body.email);
     if (existingEmail == null){
         let userInfo = {
