@@ -9,9 +9,12 @@ async function viewUsers(filterApplied){
             userList = document.getElementById('userList');
             filter = document.getElementById("filteredRole").value;
             userList.innerHTML = '';
-            
-            users.forEach(user => {
-                if (!filterApplied || filter == user.role){
+
+            if (!filterApplied) document.getElementById('filteredRole').value = '';
+
+            for (const user of users){
+                let role = await roleIntToString(user.role);
+                if (!filterApplied || filter == role){
                     const userDiv = document.createElement('div');
                     userDiv.classList.add('row');
                     userDiv.style.margin = '10px';
@@ -25,7 +28,8 @@ async function viewUsers(filterApplied){
                     const roleDiv = document.createElement('div');
                     roleDiv.classList.add('col');
                     roleDiv.style.border = 'solid #27f5da'
-                    roleDiv.innerHTML = `${user.role}`;
+                    
+                    roleDiv.innerHTML = `${role}`;
                     userDiv.appendChild(roleDiv);
 
                     const emailDiv = document.createElement('div');
@@ -44,18 +48,65 @@ async function viewUsers(filterApplied){
                     deleteBtn.onclick = () => deleteUser(user._id);
                     buttonsDiv.appendChild(deleteBtn);
 
-                    const updateBtn = document.createElement('button');
+                    /**const updateBtn = document.createElement('button');
                     updateBtn.classList.add('btn');
                     updateBtn.classList.add('btn-outline-secondary');
                     updateBtn.innerHTML = 'Update Role';
                     updateBtn.onclick = () => updateRole(user._id);
-                    buttonsDiv.appendChild(updateBtn);
+                    buttonsDiv.appendChild(updateBtn);**/
 
                     userDiv.appendChild(buttonsDiv);
 
                     userList.appendChild(userDiv);
-                }
-            });
+            }}
+            
+            // users.forEach(user => async {
+            //     if (!filterApplied || filter == user.role){
+            //         const userDiv = document.createElement('div');
+            //         userDiv.classList.add('row');
+            //         userDiv.style.margin = '10px';
+
+            //         const nameDiv = document.createElement('div');
+            //         nameDiv.classList.add('col');
+            //         nameDiv.style.border = 'solid #27f5da'
+            //         nameDiv.innerHTML = `${user.name}`;
+            //         userDiv.appendChild(nameDiv);
+
+            //         const roleDiv = document.createElement('div');
+            //         roleDiv.classList.add('col');
+            //         roleDiv.style.border = 'solid #27f5da'
+            //         let role = await roleIntToString(user.role);
+            //         roleDiv.innerHTML = `${role}`;
+            //         userDiv.appendChild(roleDiv);
+
+            //         const emailDiv = document.createElement('div');
+            //         emailDiv.classList.add('col');
+            //         emailDiv.style.border = 'solid #27f5da'
+            //         emailDiv.innerHTML = `${user.email}`;
+            //         userDiv.appendChild(emailDiv);
+
+            //         const buttonsDiv = document.createElement('div');
+            //         buttonsDiv.classList.add('col');
+
+            //         const deleteBtn = document.createElement('button');
+            //         deleteBtn.classList.add('btn');
+            //         deleteBtn.classList.add('btn-outline-danger');
+            //         deleteBtn.innerHTML = 'Delete';
+            //         deleteBtn.onclick = () => deleteUser(user._id);
+            //         buttonsDiv.appendChild(deleteBtn);
+
+            //         /**const updateBtn = document.createElement('button');
+            //         updateBtn.classList.add('btn');
+            //         updateBtn.classList.add('btn-outline-secondary');
+            //         updateBtn.innerHTML = 'Update Role';
+            //         updateBtn.onclick = () => updateRole(user._id);
+            //         buttonsDiv.appendChild(updateBtn);**/
+
+            //         userDiv.appendChild(buttonsDiv);
+
+            //         userList.appendChild(userDiv);
+            //     }
+            // 
         } else{
         
         }
@@ -63,6 +114,32 @@ async function viewUsers(filterApplied){
             console.error('Network error during review retrieval:', error); 
             alert(`Network error: ${error}`);
         }   
+}
+
+async function roleIntToString(roleInt){
+    let roleStr;
+
+    switch (roleInt) {
+        case 0: 
+            roleStr = "Admin";
+            break;
+        case 1:
+            roleStr = "Project Manager"
+            break;
+        case 2:
+            roleStr = "Foreman";
+            break;
+        case 3:
+            roleStr = "Logistics";
+            break;
+        case 4:
+            roleStr = "Warehouse";
+            break;
+        default:
+            roleStr = "Unknown";
+            break;
+    }
+    return roleStr;
 }
 
 async function deleteUser(userId){
@@ -85,33 +162,56 @@ async function deleteUser(userId){
     }
 }
 
-async function updateRole(userId){
-    const answer = prompt('Enter a new role (0 for admin, 1 for PM, ...)');
-    let newRole = Number(answer);
-    if (Number.isNaN(newRole)){
-        window.alert('Please enter a number (0 = admin, 1 = PM, ...)');
-        return;
-    }
-    else{
-        try{
-            const response = await fetch(`/updaterole/${userId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({role: newRole})
-            });
-    
-            if (response.ok){
-                alert('User role updated successfully. Please refresh page to see changes.');
-            } else{
-                const result = response.json();
-                alert('Failed to edit review: ' + (result.error || "Unknown error."));
-            }
-        } catch (error){
-            console.error('Network error during update:', error);
-            alert("Network error. Please try again.");
+async function updateRole(){
+    let udropdown = document.getElementById('usersdropdown');
+    let rdropdown = document.getElementById('rolesdropdown');
+
+    try{
+        const response = await fetch(`/updaterole/${udropdown.value}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({role: rdropdown.value})
+        });
+
+        if (response.ok){
+            alert('User role updated successfully. Please refresh page to see changes.');
+        } else{
+            const result = response.json();
+            alert('Failed to edit review: ' + (result.error || "Unknown error."));
         }
+    } catch (error){
+        console.error('Network error during update:', error);
+        alert("Network error. Please try again.");
     }
 }
+
+// async function updateRoleOld(userId){
+//     const answer = prompt('Enter a new role (0 for admin, 1 for PM, ...)');
+//     let newRole = Number(answer);
+//     if (Number.isNaN(newRole)){
+//         window.alert('Please enter a number (0 = admin, 1 = PM, ...)');
+//         return;
+//     }
+//     else{
+//         try{
+//             const response = await fetch(`/updaterole/${userId}`, {
+//                 method: 'PUT',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({role: newRole})
+//             });
+    
+//             if (response.ok){
+//                 alert('User role updated successfully. Please refresh page to see changes.');
+//             } else{
+//                 const result = response.json();
+//                 alert('Failed to edit review: ' + (result.error || "Unknown error."));
+//             }
+//         } catch (error){
+//             console.error('Network error during update:', error);
+//             alert("Network error. Please try again.");
+//         }
+//     }
+// }
 
 async function populateDropdown(){
     try{
