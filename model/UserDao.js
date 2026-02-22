@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
         requried: true
     },
     role: {
-        type: Int32,
-        requried: true
+        type: Int32,    // 0 = Admin, 1 = Project Manager, 2 = Foreman
+        requried: true  // 3 = Logistics, 4 = Warehouse
     },
     email: {
         type: String,
