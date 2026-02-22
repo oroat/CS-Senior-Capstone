@@ -39,7 +39,7 @@ exports.create = async function(newuser){
 }
 
 exports.update = async function(id, updates){
-    let user = await userModel.findByIdAndUpdate(id, updates, { new: true});
+    let user = await userModel.findByIdAndUpdate(id, updates, { returnDocument: 'after'});
     return user;
 }
 
