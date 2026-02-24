@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CoolSys - Materials Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/materials.js"></script>
+    
+    <style>
+        .bborder { border: 3px solid #f5a623; } /* Orange theme for materials */
+        .center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        .header-row { font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px; }
+        .material-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div class="container-sm center bborder">
+        <h1>Register New Material</h1>
+        <form id="createMaterialForm">
+            <div style="margin: 10px">
+                <label for="matName" class="form-label">Material Name</label>
+                <input type="text" class="form-control" id="matName" name="name" placeholder="Steel Beam" required>
+            </div>
+            
+            <div style="margin: 10px">
+                <label for="matQty" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="matQty" name="quantity" placeholder="100" required>
+            </div>
+    
+            <div style="margin: 10px">
+                <label for="matUnit" class="form-label">Unit</label>
+                <input type="text" class="form-control" id="matUnit" name="unit" placeholder="kg, meters, units" required>
+            </div>  
+
+            <div style="margin: 10px">
+                <label for="projectDropdown" class="form-label">Assign to Project</label>
+                <select class="form-control" id="projectDropdown" name="project" required>
+                    <option value="" selected>Loading Projects...</option>
+                </select>
+            </div>
+
+            <div class="text-center" style="margin: 10px">
+                <button type="submit" class="btn btn-primary">Add Material</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container text-center" style="margin-top: 30px;">
+        <h2>Material Inventory</h2>
+        <div class="row header-row">
+            <div class="col-3">Material</div>
+            <div class="col-2">Qty</div>
+            <div class="col-2">Unit</div>
+            <div class="col-3">Project</div>
+            <div class="col-2">Action</div>
+        </div>
+        <div id="materialList">
+            </div>
+    </div>
+
+    <div class="container-sm center">
+        <p>Filter Materials by Project Name</p>
+        <div class="filter-input-group">
+            <input type="text" class="form-control" id="filteredProject" placeholder="Enter Project Name...">
+            <button class="btn btn-info" onclick="viewMaterials(true)">Apply Filter</button>
+            <button class="btn btn-info" onclick="viewMaterials(false)">Clear</button>
+        </div>
+    </div>
+
+    <div class="container text-center center bborder">
+        <h2>Update Stock</h2>
+        <form id="updateMaterialForm">
+            <div class="input-group mb-3">
+                <select class="custom-select" id="updateMatSelect" required>
+                    <option value="" selected>Select Material to Update...</option>
+                </select>
+            </div>
+
+            <div style="margin: 10px">
+                <label for="updateQty">New Quantity</label>
+                <input type="number" id="updateQty" class="form-control" required>
+            </div>
+
+            <div class="text-center" style="margin: 10px">
+                <button type="button" onclick="updateStock()" class="btn btn-secondary">Update Quantity</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="footer"></div>
+
+    <script>
+        $(document).ready(function () {
+            $("#header").load('header.html');
+            $('#footer').load('footer.html');
+            // Initial loads
+            loadProjectDropdown();
+            viewMaterials();
+        });
+    </script>
+</body>
+</html>
