@@ -4,7 +4,6 @@ async function viewUsers(filterApplied){
 
         if (response.ok) {
             const users = await response.json();
-            //window.alert("response ok ", users);
 
             userList = document.getElementById('userList');
             filter = document.getElementById("filteredRole").value;
@@ -48,67 +47,10 @@ async function viewUsers(filterApplied){
                     deleteBtn.onclick = () => deleteUser(user._id);
                     buttonsDiv.appendChild(deleteBtn);
 
-                    /**const updateBtn = document.createElement('button');
-                    updateBtn.classList.add('btn');
-                    updateBtn.classList.add('btn-outline-secondary');
-                    updateBtn.innerHTML = 'Update Role';
-                    updateBtn.onclick = () => updateRole(user._id);
-                    buttonsDiv.appendChild(updateBtn);**/
-
                     userDiv.appendChild(buttonsDiv);
 
                     userList.appendChild(userDiv);
             }}
-            
-            // users.forEach(user => async {
-            //     if (!filterApplied || filter == user.role){
-            //         const userDiv = document.createElement('div');
-            //         userDiv.classList.add('row');
-            //         userDiv.style.margin = '10px';
-
-            //         const nameDiv = document.createElement('div');
-            //         nameDiv.classList.add('col');
-            //         nameDiv.style.border = 'solid #27f5da'
-            //         nameDiv.innerHTML = `${user.name}`;
-            //         userDiv.appendChild(nameDiv);
-
-            //         const roleDiv = document.createElement('div');
-            //         roleDiv.classList.add('col');
-            //         roleDiv.style.border = 'solid #27f5da'
-            //         let role = await roleIntToString(user.role);
-            //         roleDiv.innerHTML = `${role}`;
-            //         userDiv.appendChild(roleDiv);
-
-            //         const emailDiv = document.createElement('div');
-            //         emailDiv.classList.add('col');
-            //         emailDiv.style.border = 'solid #27f5da'
-            //         emailDiv.innerHTML = `${user.email}`;
-            //         userDiv.appendChild(emailDiv);
-
-            //         const buttonsDiv = document.createElement('div');
-            //         buttonsDiv.classList.add('col');
-
-            //         const deleteBtn = document.createElement('button');
-            //         deleteBtn.classList.add('btn');
-            //         deleteBtn.classList.add('btn-outline-danger');
-            //         deleteBtn.innerHTML = 'Delete';
-            //         deleteBtn.onclick = () => deleteUser(user._id);
-            //         buttonsDiv.appendChild(deleteBtn);
-
-            //         /**const updateBtn = document.createElement('button');
-            //         updateBtn.classList.add('btn');
-            //         updateBtn.classList.add('btn-outline-secondary');
-            //         updateBtn.innerHTML = 'Update Role';
-            //         updateBtn.onclick = () => updateRole(user._id);
-            //         buttonsDiv.appendChild(updateBtn);**/
-
-            //         userDiv.appendChild(buttonsDiv);
-
-            //         userList.appendChild(userDiv);
-            //     }
-            // 
-        } else{
-        
         }
         } catch (error){
             console.error('Network error during review retrieval:', error); 
@@ -182,7 +124,6 @@ async function updateRole(){
     } catch (error){
         console.error('Network error during update:', error);
         alert("Network error. Please try again.");
-        alert(error);
     }
 }
 
@@ -220,7 +161,6 @@ async function populateDropdown(){
 
         if (response.ok) {
             const users = await response.json();
-            //window.alert("response ok ", users);
 
             let dropdown = document.getElementById('usersdropdown');
             
@@ -231,12 +171,6 @@ async function populateDropdown(){
 
                 dropdown.appendChild(opt);
             })
-
-
-
-
-        } else{
-        
         }
     } catch (error){
             console.error('Network error during review retrieval:', error); 
