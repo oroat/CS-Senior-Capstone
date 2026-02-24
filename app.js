@@ -6,6 +6,7 @@ const memorystore = require("memorystore")(session);
 
 const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
+const ToolController = require('./controller/ToolController');
 
 
 const app = express();
@@ -64,6 +65,13 @@ app.get('/projects/:id', ProjectController.getProjectById);
 app.put('/projects/:id', ProjectController.updateProject);
 
 app.delete('/projects/:id', ProjectController.deleteProject);
+
+//Tool routes
+app.post('/createtool', ToolController.create);
+
+app.get('/tools', ToolController.getAllTools);
+
+app.delete('/deletetool/:id', ToolController.deleteTool);
 
 
 module.exports = app;
