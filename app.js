@@ -77,6 +77,8 @@ app.get('/tools', ToolController.getAllTools);
 
 app.delete('/deletetool/:id', ToolController.deleteTool);
 
+app.post('/updatetool/:id', ToolController.update);
+
 //Materials routes
 app.post('/materials', MaterialController.createMaterial);
 
