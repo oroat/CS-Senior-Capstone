@@ -7,6 +7,7 @@ const memorystore = require("memorystore")(session);
 const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
 const ToolController = require('./controller/ToolController');
+const MaterialController = require('./controller/MaterialController');
 
 
 const app = express();
@@ -39,8 +40,11 @@ const testPath = path.join(__dirname, "public_html", "landing.html");
 
 const addProjectPath = path.join(__dirname,"public_html", "addProject.html")
 
+const materialPath = path.join(__dirname,"public_html","materials.html")
+
 app.get("/", (req, res) => res.sendFile(testPath));
 app.get("/addProject", (req, res) => res.sendFile(addProjectPath));
+app.get("/material", (req, res) => res.sendFile(materialPath));
 
 //User routes
 app.post('/registeruser', UserController.register);
@@ -73,5 +77,16 @@ app.get('/tools', ToolController.getAllTools);
 
 app.delete('/deletetool/:id', ToolController.deleteTool);
 
-app.post('/updatetool/:id', ToolController.update);
+//Materials routes
+app.post('/materials', MaterialController.createMaterial);
+
+app.get('/materials', MaterialController.getAllMaterials);
+
+app.get('/materials/:id', MaterialController.getMaterialById);
+
+app.put('/materials/:id', MaterialController.updateMaterial);
+
+app.delete('/materials/:id', MaterialController.deleteMaterial);
+
+
 module.exports = app;
