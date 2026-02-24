@@ -20,6 +20,13 @@
             margin: 10px
             }
         </style>
+
+        <script>
+            $(document).ready(function () {
+                $("#header").load('header.html');
+                $('#footer').load('footer.html');
+            });
+        </script>
     </head>
 
     <div id="header"></div>
@@ -88,39 +95,51 @@
         </div> -->
         
 
-        <!-- <div class="container text-center center bborder">
-            <h2>Update User</h2>
-            <form id="updateform" action="">
+        <div class="container text-center center bborder">
+            <h2>Update Tool</h2>
+            <form id="updateform">
 
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="usersdropdown">Options</label>
-                    </div>
-                    <select class="custom-select" id="usersdropdown" required>
-                      <option value = "" selected>Choose...</option>
-                    </select>
-                </div>
+                <div class="row">
 
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="rolesdropdown">Roles</label>
-                    </div>
-                    <select class="custom-select" name="rolesdropdown" id="rolesdropdown" required>
+                    <div class="input-group mb-3" style="justify-content: center;">
+                        <div class="input-group-prepend">
+                        <label class="input-group-text" for="toolsdropdown">Options</label>
+                        </div>
+                        <select class="custom-select" id="toolsdropdown" name = "toolsdropdown"required>
                         <option value = "" selected>Choose...</option>
-                        <option value="0">Admin</option>
-                        <option value="1">Project Manager</option>
-                        <option value="2">Foreman</option>
-                        <option value="3">Logistics</option>
-                        <option value="4">Warehouse</option>
-                    </select>
-                </div>
+                        </select>
+                    </div>
 
+                </div>
+                
+                <div class="row">
+
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <div style="margin: 10px">
+                                <label for="updateserial" class="form-label">New Serial Number</label>
+                                <input type="text" class="form-control" id="updateserial" name="updateserial" placeholder="..." required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <div style="margin: 10px">
+                                <label for="updatemodel" class="form-label">New Model</label>
+                                <input type="text" class="form-control" id="updatemodel" name="updatemodel" placeholder="..." required>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
                 <div class="text-center"style="margin: 10px">
-                    <button type="submit" onclick="updateRole()" class="btn btn-secondary">Update Role</button>
+                    <button type="submit" onclick="updateTool()" class="btn btn-secondary">Update Tool</button>
                 </div>
             </form>
 
-        </div> -->
+        </div>
 
         <div id="footer"></div>
         
@@ -139,10 +158,5 @@
             } 
         </script>
 
-    <script>
-        $(document).ready(function () {
-            $("#header").load('header.html');
-            $('#footer').load('footer.html');
-        });
-    </script>
+    
 </html>

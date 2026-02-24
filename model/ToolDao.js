@@ -39,7 +39,7 @@ exports.create = async function(newtool){
 }
 
 exports.update = async function(id, updates){
-    let tool = await toolModel.findByIdAndUpdate(id, updates, { new: true});
+    let tool = await toolModel.findByIdAndUpdate(id, updates, {returnDocument: 'after'});
     return tool;
 }
 

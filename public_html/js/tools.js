@@ -80,6 +80,57 @@ async function deleteTool(toolId){
     }
 }
 
+async function populateDropdown(){
+    try{
+        const response = await fetch('/tools');
+
+        if (response.ok) {
+            const tools = await response.json();
+
+            let dropdown = document.getElementById('toolsdropdown');
+            
+            tools.forEach( tool => {
+                let opt = document.createElement('option');
+                opt.value = `${tool._id}`;
+                opt.innerHTML = `${tool.model} (${tool.serialNum})`;
+
+                dropdown.appendChild(opt);
+            })
+        }
+    } catch (error){
+            console.error('Network error during review retrieval:', error); 
+            alert(`Network error: ${error}`);
+    }   
+}
+
+async function updateTool(){
+    let toolId = document.getElementById("toolsdropdown").value;
+
+    let userial = document.getElementById("updateserial").value;
+    let umodel = document.getElementById("updatemodel").value;
+    let updates = {serial: userial, model: umodel};
+
+    try{
+        window.alert('before update call');
+        const response = await fetch(`/updatetool/${toolId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        window.alert('after update call');
+
+        if (response.ok){
+            alert('Tool updated successfully. Please refresh page to see changes.');
+        } else{
+            const result = response.json();
+            alert('Failed to update tool: ' + (result.error || "Unknown error."));
+        }
+    } catch (error){
+        alert(`Network error during update: ${error}`);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await viewTools(false);
+    await populateDropdown();
 });
