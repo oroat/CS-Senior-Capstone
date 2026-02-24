@@ -1,10 +1,10 @@
-const dbcon = require('../dbconnection') //add db connection file
+const dbcon = require('../dbconnection') 
 const dao = require('./ToolDao');
 
 require("dotenv").config();
 
 beforeAll(async function(){
-    await dbcon.connect('test'); //add test db connection
+    await dbcon.connect('test');
 });
 afterAll(async function(){
     await dao.deleteAll();
