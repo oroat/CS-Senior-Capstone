@@ -60,3 +60,23 @@ test('Delete tool', async function(){
     expect(res.json).toHaveBeenCalledWith({success: true});
 });
 
+test('Update tool', async function(){
+    let req = {
+        params: {id: 'id'}, 
+        body: {serial: 'A234',
+                model: 'leak detector',
+                inUse: true,
+                usedBy: 'id2'
+        }
+    };
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    let updatedTool = await controller.update(req, res);
+
+    expect(dao.update).toHaveBeenCalledWith(req.params.id, {serialNum: req.body.serial,
+                                                            model: req.body.model,
+                                                            inUse: req.body.inUse,
+                                                            usedBy: req.body.usedBy});
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool});
+});
