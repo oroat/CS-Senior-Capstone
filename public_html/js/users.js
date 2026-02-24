@@ -182,6 +182,7 @@ async function updateRole(){
     } catch (error){
         console.error('Network error during update:', error);
         alert("Network error. Please try again.");
+        alert(error);
     }
 }
 

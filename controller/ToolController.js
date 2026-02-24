@@ -9,7 +9,7 @@ exports.create = async function(req, res){
 
     let tool = await ToolDao.create(toolInfo);
     console.log('Successfully created tool');
-    res.redirect('/landing.html');
+    res.redirect('/tools.html');
 }
 
 exports.getAllTools = async function(req, res){

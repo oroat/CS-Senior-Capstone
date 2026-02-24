@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>CoolSys</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/tools.js"></script>
+        
+        <style>
+            .bborder {
+                border: 3px solid #27f5da; 
+            }
+
+            .center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px
+            }
+        </style>
+    </head>
+
+    <div id="header"></div>
+
+    
+        <div class="container-sm center bborder">
+            
+                <h1>Register New Tool</h1>
+                <form action="createtool" method="post">
+                    <div style="margin: 10px">
+                        <label for="serial" class="form-label">Serial Number</label>
+                        <input type="text" class="form-control" id="serial" name="serial" placeholder="..." required>
+                    </div>
+                    
+                    <div style="margin: 10px">
+                        <label for="model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" placeholder="..." required>
+                    </div>
+            
+                    <!-- <div style="margin: 10px">
+                        <label for="pass" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
+                    </div>  
+
+                    <div style="margin: 10px">
+                        <label for="confirm_pass" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" placeholder="..." required>
+                    </div> -->
+
+                    
+                    <div class="text-center"style="margin: 10px">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+
+                </form>
+
+        </div>
+
+        <div class="container">
+            <div class="row">
+              <div class="col-md-6" id="msg-display">
+                  <!-- Error messages will be dynamically displayed here -->
+              </div>
+            </div>
+        </div>
+
+        <div class="container text-center">
+            <h2>Tool List</h2>
+            <div class="row">
+              <div class="col">Serial Number</div>
+              <div class="col">Model</div>
+              <div class="col">In Use?</div>
+              <div class="col"></div> <!--extra col to match the table -->
+            </div>
+          </div>
+
+        <div class="container text-center" id="toolList"></div>
+        
+        <!-- <div class="container-sm center">
+            <p>Filter Users by Role</p>
+            <div class="filter-input-group">
+                <input type="text" class="form-control" id="filteredRole" placeholder="Enter Role..." required>
+                <button class="btn btn-info" onclick="viewUsers(true)">Apply Filter</button>
+                <button class="btn btn-info" onclick="viewUsers(false)">Clear Filter</button>
+            </div>
+        </div> -->
+        
+
+        <!-- <div class="container text-center center bborder">
+            <h2>Update User</h2>
+            <form id="updateform" action="">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="usersdropdown">Options</label>
+                    </div>
+                    <select class="custom-select" id="usersdropdown" required>
+                      <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="rolesdropdown">Roles</label>
+                    </div>
+                    <select class="custom-select" name="rolesdropdown" id="rolesdropdown" required>
+                        <option value = "" selected>Choose...</option>
+                        <option value="0">Admin</option>
+                        <option value="1">Project Manager</option>
+                        <option value="2">Foreman</option>
+                        <option value="3">Logistics</option>
+                        <option value="4">Warehouse</option>
+                    </select>
+                </div>
+
+                <div class="text-center"style="margin: 10px">
+                    <button type="submit" onclick="updateRole()" class="btn btn-secondary">Update Role</button>
+                </div>
+            </form>
+
+        </div> -->
+        
+        <script type="text/javascript">
+            const params = new URLSearchParams(window.location.search);    
+            let error = params.get('error');
+            let msg = null;
+            if(error === '1'){
+                msg = `
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Error!</strong> Password and Confirm Password must match.
+                    </div>
+                `;
+                document.getElementById("msg-display").innerHTML = msg;
+            } 
+        </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#header").load('header.html');
+        });
+    </script>
+</html>
