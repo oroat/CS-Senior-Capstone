@@ -51,13 +51,3 @@ exports.del = async function(id){
 exports.deleteAll = async function(){
     await toolModel.deleteMany();
 }
-
-// exports.findLogin = async function(emailToFind){
-//     let user = await userModel.findOne({email: emailToFind});
-//     return user;
-// }
-
-// exports.findByRole = async function(roleToFind){
-//     let users = await userModel.find({role: roleToFind});
-//     return users;
-// }
