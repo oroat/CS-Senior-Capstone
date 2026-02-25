@@ -104,11 +104,11 @@ async function populateToolDropdowns(){
                     document.getElementById('toolsdropdown2')]
     
     for (const dropdown of dropdowns){
-        await popDropdown(dropdown);
+        await popToolDropdown(dropdown);
     }
 }
 
-async function popDropdown(dropdown){
+async function popToolDropdown(dropdown){
     try{
         const response = await fetch('/tools');
         const tools = await response.json();

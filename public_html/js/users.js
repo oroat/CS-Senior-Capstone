@@ -16,50 +16,53 @@ async function viewUsers(filterApplied){
             if (!filterApplied) document.getElementById('filteredRole').value = '';
 
             for (const user of users){
-                let role = await roleIntToString(user.role);
-                if (!filterApplied || filter == role){
-                    const userDiv = document.createElement('div');
-                    userDiv.classList.add('row');
-                    userDiv.style.margin = '10px';
-
-                    const nameDiv = document.createElement('div');
-                    nameDiv.classList.add('col');
-                    nameDiv.style.border = 'solid #27f5da'
-                    nameDiv.innerHTML = `${user.name}`;
-                    userDiv.appendChild(nameDiv);
-
-                    const roleDiv = document.createElement('div');
-                    roleDiv.classList.add('col');
-                    roleDiv.style.border = 'solid #27f5da'
-                    
-                    roleDiv.innerHTML = `${role}`;
-                    userDiv.appendChild(roleDiv);
-
-                    const emailDiv = document.createElement('div');
-                    emailDiv.classList.add('col');
-                    emailDiv.style.border = 'solid #27f5da'
-                    emailDiv.innerHTML = `${user.email}`;
-                    userDiv.appendChild(emailDiv);
-
-                    const buttonsDiv = document.createElement('div');
-                    buttonsDiv.classList.add('col');
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.classList.add('btn');
-                    deleteBtn.classList.add('btn-outline-danger');
-                    deleteBtn.innerHTML = 'Delete';
-                    deleteBtn.onclick = () => deleteUser(user._id);
-                    buttonsDiv.appendChild(deleteBtn);
-
-                    userDiv.appendChild(buttonsDiv);
-
-                    userList.appendChild(userDiv);
+                if (!filterApplied || filter == await roleIntToString(user.role)){
+                    addUserDiv(user, userList);
             }}
         }
         } catch (error){
             console.error('Network error during review retrieval:', error); 
             alert(`Network error: ${error}`);
         }   
+}
+
+async function addUserDiv(user, list){
+    const userDiv = document.createElement('div');
+    userDiv.classList.add('row');
+    userDiv.style.margin = '10px';
+
+    const nameDiv = document.createElement('div');
+    nameDiv.classList.add('col');
+    nameDiv.style.border = 'solid #27f5da'
+    nameDiv.innerHTML = `${user.name}`;
+    userDiv.appendChild(nameDiv);
+
+    const roleDiv = document.createElement('div');
+    roleDiv.classList.add('col');
+    roleDiv.style.border = 'solid #27f5da'
+    let role = await roleIntToString(user.role);
+    roleDiv.innerHTML = `${role}`;
+    userDiv.appendChild(roleDiv);
+
+    const emailDiv = document.createElement('div');
+    emailDiv.classList.add('col');
+    emailDiv.style.border = 'solid #27f5da'
+    emailDiv.innerHTML = `${user.email}`;
+    userDiv.appendChild(emailDiv);
+
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.classList.add('col');
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn');
+    deleteBtn.classList.add('btn-outline-danger');
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = () => deleteUser(user._id);
+    buttonsDiv.appendChild(deleteBtn);
+
+    userDiv.appendChild(buttonsDiv);
+
+    list.appendChild(userDiv);
 }
 
 async function roleIntToString(roleInt){
@@ -159,35 +162,39 @@ async function updateRole(){
 //     }
 // }
 
-async function populateDropdown(){
+async function populateUserDropdowns(){
     if (document.getElementById('usersdropdown') == null){
         return;
     }
 
+    //add to list if necessary
+    let dropdowns = [document.getElementById('usersdropdown')];
+
+    let users;
     try{
         const response = await fetch('/users');
-
-        if (response.ok) {
-            const users = await response.json();
-
-            let dropdown = document.getElementById('usersdropdown');
-            
-            users.forEach( user => {
-                let opt = document.createElement('option');
-                opt.value = `${user._id}`;
-                opt.innerHTML = `${user.name}`;
-
-                dropdown.appendChild(opt);
-            })
-        }
+        users = await response.json();
     } catch (error){
-            console.error('Network error during review retrieval:', error); 
-            alert(`Network error: ${error}`);
-    }   
+        alert(`Network error: ${error}`);
+    }
+
+    for (const dropdown of dropdowns){
+        await popUserDropdown(dropdown, users);
+    }
+}
+
+async function popUserDropdown(dropdown, users){
+    for (const user of users){
+        let opt = document.createElement('option');
+        opt.value = `${user._id}`;
+        opt.innerHTML = `${user.name}`;
+
+        dropdown.appendChild(opt);
+    }
 }
 
 
 document.addEventListener('DOMContentLoaded', async () => {
     await viewUsers(false);
-    await populateDropdown();
+    await populateUserDropdowns();
 });
