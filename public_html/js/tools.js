@@ -1,4 +1,8 @@
 async function viewTools(filterApplied){
+    if (document.getElementById('toolList') == null){
+        return;
+    }
+
     try{
         const response = await fetch('/tools');
 
@@ -16,48 +20,52 @@ async function viewTools(filterApplied){
 
                 //if (!filterApplied || filter == role){
                 if (!filterApplied){
-                    const toolDiv = document.createElement('div');
-                    toolDiv.classList.add('row');
-                    toolDiv.style.margin = '10px';
-
-                    const serialDiv = document.createElement('div');
-                    serialDiv.classList.add('col');
-                    serialDiv.style.border = 'solid #27f5da'
-                    serialDiv.innerHTML = `${tool.serialNum}`;
-                    toolDiv.appendChild(serialDiv);
-
-                    const modelDiv = document.createElement('div');
-                    modelDiv.classList.add('col');
-                    modelDiv.style.border = 'solid #27f5da'
-                    
-                    modelDiv.innerHTML = `${tool.model}`;
-                    toolDiv.appendChild(modelDiv);
-
-                    const useDiv = document.createElement('div');
-                    useDiv.classList.add('col');
-                    useDiv.style.border = 'solid #27f5da'
-                    useDiv.innerHTML = `${tool.inUse}`;
-                    toolDiv.appendChild(useDiv);
-
-                    const buttonsDiv = document.createElement('div');
-                    buttonsDiv.classList.add('col');
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.classList.add('btn');
-                    deleteBtn.classList.add('btn-outline-danger');
-                    deleteBtn.innerHTML = 'Delete';
-                    deleteBtn.onclick = () => deleteTool(tool._id);
-                    buttonsDiv.appendChild(deleteBtn);
-
-                    toolDiv.appendChild(buttonsDiv);
-
-                    toolList.appendChild(toolDiv);
+                    await addToolDiv(tool, toolList);
             }}   
         }
         } catch (error){
             console.error('Network error during review retrieval:', error); 
             alert(`Network error: ${error}`);
         }   
+}
+
+async function addToolDiv(tool, list){
+    const toolDiv = document.createElement('div');
+    toolDiv.classList.add('row');
+    toolDiv.style.margin = '10px';
+
+    const serialDiv = document.createElement('div');
+    serialDiv.classList.add('col');
+    serialDiv.style.border = 'solid #27f5da'
+    serialDiv.innerHTML = `${tool.serialNum}`;
+    toolDiv.appendChild(serialDiv);
+
+    const modelDiv = document.createElement('div');
+    modelDiv.classList.add('col');
+    modelDiv.style.border = 'solid #27f5da'
+                    
+    modelDiv.innerHTML = `${tool.model}`;
+    toolDiv.appendChild(modelDiv);
+
+    const useDiv = document.createElement('div');
+    useDiv.classList.add('col');
+    useDiv.style.border = 'solid #27f5da'
+    useDiv.innerHTML = `${tool.inUse}`;
+    toolDiv.appendChild(useDiv);
+
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.classList.add('col');
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn');
+    deleteBtn.classList.add('btn-outline-danger');
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = () => deleteTool(tool._id);
+    buttonsDiv.appendChild(deleteBtn);
+
+    toolDiv.appendChild(buttonsDiv);
+
+    list.appendChild(toolDiv);
 }
 
 async function deleteTool(toolId){
@@ -80,33 +88,30 @@ async function deleteTool(toolId){
     }
 }
 
-async function populateDropdowns(){
+async function populateToolDropdowns(){
+    let dropdowns = [document.getElementById('toolsdropdown'),
+                    document.getElementById('toolsdropdown2')]
+    
+    for (const dropdown of dropdowns){
+        await popDropdown(dropdown);
+    }
+}
+
+async function popDropdown(dropdown){
     try{
         const response = await fetch('/tools');
+        const tools = await response.json();
 
-        if (response.ok) {
-            const tools = await response.json();
+        tools.forEach( tool => {
+            let opt = document.createElement('option');
+            opt.value = `${tool._id}`;
+            opt.innerHTML = `${tool.model} (${tool.serialNum})`;
 
-            let dropdown = document.getElementById('toolsdropdown');
-            let dropdown2 = document.getElementById('toolsdropdown2');
-            
-            tools.forEach( tool => {
-                let opt = document.createElement('option');
-                opt.value = `${tool._id}`;
-                opt.innerHTML = `${tool.model} (${tool.serialNum})`;
-
-                dropdown.appendChild(opt);
-
-                let opt2 = document.createElement('option');
-                opt2.value = `${tool._id}`;
-                opt2.innerHTML = `${tool.model} (${tool.serialNum})`;
-                dropdown2.appendChild(opt2);
-            })
-        }
+            dropdown.appendChild(opt);
+        })
     } catch (error){
-            console.error('Network error during review retrieval:', error); 
-            alert(`Network error: ${error}`);
-    }   
+        alert(`Network error: ${error}`);
+    }
 }
 
 async function updateTool(){
@@ -160,5 +165,5 @@ async function addUserToTool(){
 
 document.addEventListener('DOMContentLoaded', async () => {
     await viewTools(false);
-    await populateDropdowns();
+    await populateToolDropdowns();
 });
