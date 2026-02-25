@@ -49,6 +49,8 @@ app.get("/material", (req, res) => res.sendFile(materialPath));
 //User routes
 app.post('/registeruser', UserController.register);
 
+app.get('/users/:id', UserController.getUserById);
+
 app.get('/users', UserController.getAllUsers);
 
 app.delete('/deleteuser/:id', UserController.deleteUser);

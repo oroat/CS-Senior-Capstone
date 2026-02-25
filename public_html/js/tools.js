@@ -16,7 +16,6 @@ async function viewTools(filterApplied){
             //if (!filterApplied) document.getElementById('filteredRole').value = '';
 
             for (const tool of tools){
-                //let role = await roleIntToString(user.role);
 
                 //if (!filterApplied || filter == role){
                 if (!filterApplied){
@@ -30,6 +29,16 @@ async function viewTools(filterApplied){
 }
 
 async function addToolDiv(tool, list){
+    let user;
+    try{
+        if (tool.inUse){
+            const response = await fetch(`/users/${tool.usedBy}`);
+            user = await response.json();
+        }
+    } catch (error){
+        alert(`Network error: ${error}`);
+    }
+    
     const toolDiv = document.createElement('div');
     toolDiv.classList.add('row');
     toolDiv.style.margin = '10px';
@@ -51,6 +60,7 @@ async function addToolDiv(tool, list){
     useDiv.classList.add('col');
     useDiv.style.border = 'solid #27f5da'
     useDiv.innerHTML = `${tool.inUse}`;
+    if (tool.inUse) useDiv.innerHTML += `, used by ${user.name}`;
     toolDiv.appendChild(useDiv);
 
     const buttonsDiv = document.createElement('div');
@@ -89,6 +99,7 @@ async function deleteTool(toolId){
 }
 
 async function populateToolDropdowns(){
+    //add more dropdowns here as needed
     let dropdowns = [document.getElementById('toolsdropdown'),
                     document.getElementById('toolsdropdown2')]
     
