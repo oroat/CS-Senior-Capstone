@@ -1,4 +1,8 @@
 async function viewUsers(filterApplied){
+    if (document.getElementById('userList') == null){
+        return;
+    }
+
     try{
         const response = await fetch('/users');
 
@@ -156,6 +160,10 @@ async function updateRole(){
 // }
 
 async function populateDropdown(){
+    if (document.getElementById('usersdropdown') == null){
+        return;
+    }
+
     try{
         const response = await fetch('/users');
 

@@ -88,6 +88,7 @@
 
         <div class="container text-center center bborder">
             <h2>Update User</h2>
+
             <form id="updateform" action="">
 
                 <div class="input-group mb-3">
@@ -119,7 +120,11 @@
             </form>
 
         </div>
+
         
+
+        <div id="footer"></div>
+
         <script type="text/javascript">
             const params = new URLSearchParams(window.location.search);    
             let error = params.get('error');
@@ -134,8 +139,6 @@
                 document.getElementById("msg-display").innerHTML = msg;
             } 
         </script>
-
-        <div id="footer"></div>
 
     <script>
         $(document).ready(function () {

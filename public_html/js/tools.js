@@ -80,7 +80,7 @@ async function deleteTool(toolId){
     }
 }
 
-async function populateDropdown(){
+async function populateDropdowns(){
     try{
         const response = await fetch('/tools');
 
@@ -88,6 +88,7 @@ async function populateDropdown(){
             const tools = await response.json();
 
             let dropdown = document.getElementById('toolsdropdown');
+            let dropdown2 = document.getElementById('toolsdropdown2');
             
             tools.forEach( tool => {
                 let opt = document.createElement('option');
@@ -95,6 +96,11 @@ async function populateDropdown(){
                 opt.innerHTML = `${tool.model} (${tool.serialNum})`;
 
                 dropdown.appendChild(opt);
+
+                let opt2 = document.createElement('option');
+                opt2.value = `${tool._id}`;
+                opt2.innerHTML = `${tool.model} (${tool.serialNum})`;
+                dropdown2.appendChild(opt2);
             })
         }
     } catch (error){
@@ -111,13 +117,35 @@ async function updateTool(){
     let updates = {serial: userial, model: umodel};
 
     try{
-        window.alert('before update call');
         const response = await fetch(`/updatetool/${toolId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
         });
-        window.alert('after update call');
+
+        if (response.ok){
+            alert('Tool updated successfully. Please refresh page to see changes.');
+        } else{
+            const result = response.json();
+            alert('Failed to update tool: ' + (result.error || "Unknown error."));
+        }
+    } catch (error){
+        alert(`Network error during update: ${error}`);
+    }
+}
+
+async function addUserToTool(){
+    let toolId = document.getElementById("toolsdropdown2").value;
+    let userId = document.getElementById("usersdropdown").value;
+
+    let updates = {inUse: true, usedBy: userId};
+
+    try{
+        const response = await fetch(`/updatetool/${toolId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
 
         if (response.ok){
             alert('Tool updated successfully. Please refresh page to see changes.');
@@ -132,5 +160,5 @@ async function updateTool(){
 
 document.addEventListener('DOMContentLoaded', async () => {
     await viewTools(false);
-    await populateDropdown();
+    await populateDropdowns();
 });

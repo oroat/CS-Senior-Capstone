@@ -6,6 +6,7 @@
         <title>CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="js/tools.js"></script>
+        <script src="js/users.js"></script>
         
         <style>
             .bborder {
@@ -96,7 +97,6 @@
         
 
         <div class="container text-center center bborder">
-            <h2>Update Tool</h2>
             <form id="updateform">
 
                 <div class="row">
@@ -139,6 +139,34 @@
                 </div>
             </form>
 
+        </div>
+
+        <div class="container text-center center bborder">
+            <h2>Add User to Tool</h2>
+            <form id="addtooltouser" action="">
+
+                <div class="input-group mb-3" style="justify-content: center;">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="toolsdropdown2">Options</label>
+                    </div>
+                    <select class="custom-select" id="toolsdropdown2" name = "toolsdropdown2"required>
+                    <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="usersdropdown">Options</label>
+                    </div>
+                    <select class="custom-select" id="usersdropdown" required>
+                      <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="text-center"style="margin: 10px">
+                    <button type="submit" onclick="addUserToTool()" class="btn btn-secondary">Update Tool</button>
+                </div>
+            </form>
         </div>
 
         <div id="footer"></div>
