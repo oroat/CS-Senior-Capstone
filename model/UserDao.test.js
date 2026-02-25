@@ -48,11 +48,11 @@ test('Read All', async function(){
     let newdata2 = {name:'Test2 Test', 
         role: 2, 
         email: 'test2@coolsys.com',
-        password: 'test123'};
+        password: 'test456'};
     let newdata3 = {name:'Test3 Test', 
         role: 3, 
         email: 'test3@coolsys.com',
-        password: 'test123'};
+        password: 'test789'};
 
     let user1 = await dao.create(newdata1);
     let user2 = await dao.create(newdata2);
