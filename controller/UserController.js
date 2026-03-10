@@ -34,7 +34,7 @@ exports.getUserById = async function(req, res) {
 
     } catch (error) {
         console.error('Error fetching user:', error);
-        res.status(500).json({ error: 'Failed to fetch project' });
+        res.status(500).json({ error: 'Failed to fetch user' });
     }
 };
 
