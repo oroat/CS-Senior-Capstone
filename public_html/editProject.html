@@ -15,25 +15,29 @@
 
         <div>
             <input type="text" id="name" required>
-            <label>Project Name</label>
+            <label for="name">Project Name</label>
         </div>
 
         <div>
             <input type="text" id="location" required>
-            <label>Location</label>
+            <label for="location">Location</label>
         </div>
 
         <div>
-            <input type="text" id="manager" required>
-            <label>Manager (User ID)</label>
+            <label for="manager">Manager</label><br>
+            <select id="manager" required>
+                <option value="">-- Select a Manager --</option>
+            </select>
         </div>
 
         <div>
-            <input type="text" id="workers">
-            <label>Workers (comma separated IDs)</label>
+            <label for="workers">Workers (Hold Ctrl/Cmd to select multiple)</label><br>
+            <select id="workers" multiple style="min-width: 200px; height: 100px;">
+                </select>
         </div>
 
         <button type="submit">Update Project</button>
+        <button type="button" onclick="window.location.href='/addProject'">Cancel</button>
 
     </form>
 
