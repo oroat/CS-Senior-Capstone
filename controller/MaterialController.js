@@ -1,74 +1,56 @@
-const dao = require('../model/MaterialDao');
+const materialDao = require('../model/MaterialDao');
+const mongoose = require('mongoose');
 
 exports.createMaterial = async function(req, res) {
     try {
-        const material = await dao.create(req.body);
-        console.log('Successfully created material');
+        const material = await materialDao.create(req.body);
 
-        res.status(201).json({
-            success: true,
-            material: material
-        });
-
-    } catch (error) {
-        console.error('Error creating material:', error);
-        res.status(500).json({ error: 'Failed to create material' });
-    }
-};
-
-exports.getAllMaterials = async function(req, res) {
-    try {
-        const materials = await dao.readAll();
-
-        res.status(200).json(materials);
-
-    } catch (error) {
-        console.error('Error fetching materials:', error);
-        res.status(500).json({ error: 'Failed to fetch materials' });
-    }
-};
-
-exports.getMaterialById = async function(req, res) {
-    try {
-        const material = await dao.read(req.params.id);
-
-        if (!material) {
-            return res.status(404).json({ error: 'Material not found' });
+        if (req.body.project) {
+            const Project = mongoose.model('projects');
+            await Project.findByIdAndUpdate(
+                req.body.project,
+                { $push: { materials: material._id } }
+            );
         }
 
-        res.status(200).json(material);
-
+        res.status(201).json({ success: true, material });
     } catch (error) {
-        console.error('Error fetching material:', error);
-        res.status(500).json({ error: 'Failed to fetch material' });
-    }
-};
-
-exports.updateMaterial = async function(req, res) {
-    try {
-        const updatedMaterial = await dao.update(req.params.id, req.body);
-
-        res.status(200).json({
-            success: true,
-            updatedMaterial
-        });
-
-    } catch (error) {
-        console.error('Error updating material:', error);
-        res.status(500).json({ error: 'Failed to update material' });
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create material' });
     }
 };
 
 exports.deleteMaterial = async function(req, res) {
     try {
-        await dao.del(req.params.id);
+        const materialId = req.params.id;
+        const material = await materialDao.read(materialId);
+        
+        if (material && material.project) {
+            const Project = mongoose.model('projects');
+            await Project.findByIdAndUpdate(material.project, {
+                $pull: { materials: materialId }
+            });
+        }
 
-        res.status(200).json({
-            success: true
-        });
-
+        await materialDao.del(materialId);
+        res.status(200).json({ success: true });
     } catch (error) {
-        console.error('Error deleting material:', error);
+        console.error(error);
         res.status(500).json({ error: 'Failed to delete material' });
     }
+};
+
+exports.getAllMaterials = async (req, res) => {
+    const materials = await materialDao.readAll();
+    res.status(200).json(materials);
+};
+
+exports.getMaterialById = async (req, res) => {
+    const material = await materialDao.read(req.params.id);
+    res.status(200).json(material);
+};
+
+exports.updateMaterial = async (req, res) => {
+    const updated = await materialDao.update(req.params.id, req.body);
+    res.status(200).json({ success: true, updated });
 };
