@@ -73,6 +73,13 @@ async function addToolDiv(tool, list){
     deleteBtn.onclick = () => deleteTool(tool._id);
     buttonsDiv.appendChild(deleteBtn);
 
+    const deallocateBtn = document.createElement('button');
+    deallocateBtn.classList.add('btn');
+    deallocateBtn.classList.add('btn-outline-warning');
+    deallocateBtn.innerHTML = 'Deallocate';
+    deallocateBtn.onclick = () => deallocateTool(tool);
+    buttonsDiv.appendChild(deallocateBtn);
+
     toolDiv.appendChild(buttonsDiv);
 
     list.appendChild(toolDiv);
@@ -171,6 +178,32 @@ async function addUserToTool(){
         }
     } catch (error){
         alert(`Network error during update: ${error}`);
+    }
+}
+
+async function deallocateTool(tool){
+    try{
+        if (!tool.inUse){
+            alert(`${tool.model} (${tool.serialNum}) not allocated`);
+            return;
+        }
+
+        let updates = {inUse: false};
+
+        const response = await fetch(`/updatetool/${tool._id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+
+        if (response.ok){
+            alert('Tool updated successfully. Please refresh page to see changes.');
+        } else{
+            const result = response.json();
+            alert('Failed to update tool: ' + (result.error || "Unknown error."));
+        }
+    } catch (error){
+        alert(`Error during update: ${error}`);
     }
 }
 

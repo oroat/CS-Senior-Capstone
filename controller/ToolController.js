@@ -42,6 +42,7 @@ exports.update = async function(req, res){
     if (req.body.serial != null) updates.serialNum = req.body.serial;
     if (req.body.model !=  null) updates.model = req.body.model;
     if (req.body.inUse != null) updates.inUse = req.body.inUse;
+    if (req.body.inUse == false) updates.usedBy = null;
     if (req.body.usedBy != null) updates.usedBy = req.body.usedBy;
     
     try{
