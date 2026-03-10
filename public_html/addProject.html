@@ -3,7 +3,6 @@
     <head>
         <meta charset="UTF-8">
         <title>Add Project - CoolSys</title>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
@@ -14,23 +13,26 @@
 
         <form id="projectForm">
             <div class="form mb-3">
-                <input type="text" id="name" name="name" placeholder="placeholder" required>
+                <input type="text" id="name" name="name" placeholder="Project Name" required>
                 <label for="name">Project Name</label>
             </div>
 
             <div class="form mb-3">
-                <input type="text" id="location" name="location" placeholder="placeholder" required>
+                <input type="text" id="location" name="location" placeholder="Location" required>
                 <label for="location">Location</label>
             </div>
 
             <div class="form mb-3">
-                <input type="text" id="manager" name="manager" placeholder="Manager User ID" required>
-                <label for="manager">Manager (User ID)</label>
+                <label for="manager">Project Manager</label><br>
+                <select id="manager" name="manager" required>
+                    <option value="">-- Select a Manager --</option>
+                </select>
             </div>
 
             <div class="form mb-3">
-                <input type="text" id="workers" name="workers" placeholder="Worker IDs comma separated">
-                <label for="workers">Workers (comma separated IDs)</label>
+                <label for="workers">Assign Workers (Hold Ctrl/Cmd)</label><br>
+                <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;">
+                </select>
             </div>
 
             <div class="text-center">
@@ -56,4 +58,3 @@
 
     </body>
 </html>
-
