@@ -70,14 +70,14 @@ async function addToolDiv(tool, list){
     deleteBtn.classList.add('btn');
     deleteBtn.classList.add('btn-outline-danger');
     deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteTool(tool._id);
+    deleteBtn.onclick = () => deleteTool(tool);
     buttonsDiv.appendChild(deleteBtn);
 
     const deallocateBtn = document.createElement('button');
     deallocateBtn.classList.add('btn');
     deallocateBtn.classList.add('btn-outline-warning');
     deallocateBtn.innerHTML = 'Deallocate';
-    deallocateBtn.onclick = () => deallocateTool(tool);
+    deallocateBtn.onclick = () => deallocateTool(tool, user);
     buttonsDiv.appendChild(deallocateBtn);
 
     toolDiv.appendChild(buttonsDiv);
@@ -85,11 +85,11 @@ async function addToolDiv(tool, list){
     list.appendChild(toolDiv);
 }
 
-async function deleteTool(toolId){
-    if (!confirm("Are you sure you want to delete this tool?")) return;
+async function deleteTool(tool){
+    if (!confirm(`Are you sure you want to delete ${tool.model} (${tool.serialNum})?`)) return;
 
     try{
-        const response = await fetch(`/deletetool/${toolId}`, {
+        const response = await fetch(`/deletetool/${tool._id}`, {
             method: 'DELETE'
         });
 
@@ -181,12 +181,13 @@ async function addUserToTool(){
     }
 }
 
-async function deallocateTool(tool){
+async function deallocateTool(tool, user){
     try{
         if (!tool.inUse){
             alert(`${tool.model} (${tool.serialNum}) not allocated`);
             return;
         }
+        if (!confirm(`Are you sure you want to deallocate ${tool.model} (${tool.serialNum}) from ${user.name}?`)) return;
 
         let updates = {inUse: false};
 
