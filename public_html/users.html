@@ -24,35 +24,60 @@
 
     <div id="header"></div>
 
-    
-        <div class="container-sm center bborder">
+
+
+        <div class="col-6 container-sm rounded" style="margin: 10px; background-color:#b8e5ff !important;">
             
-                <h1>Register New User</h1>
+                <h1 class="display-6">Register New User</h1>
                 <form action="registeruser" method="post">
-                    <div style="margin: 10px">
-                        <label for="name" class="form-label">First and Last Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
-                    </div>
-                    
-                    <div style="margin: 10px">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
-                    </div>
+                    <div class="row" style="margin: 10px" >
+                        
+                        <div class="col-4 justify-content">
+                            <label for="name" class="col-form-label">First and Last Name</label>
+                        </div>
             
-                    <div style="margin: 10px">
-                        <label for="pass" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
-                    </div>  
-
-                    <div style="margin: 10px">
-                        <label for="confirm_pass" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" placeholder="..." required>
+                        <div class="col-auto">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                        </div>
                     </div>
 
+                    <div class="row " style="margin: 10px">
+                        <div class="col-4 justify-content-end">
+                            <label for="email" class="col-form-label">Email address</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="row " style="margin: 10px">
+                        <div class="col-4 justify-content-end">
+                            <label for="pass" class="col-form-label">Password</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
+                        </div>
+                    </div>
+                
+                    <div class="row " style="margin: 10px">
+                        <div class="col-4 justify-content-end">
+                            <label for="confirm_pass" class="col-form-label">Confirm Password</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <input type="password" class="form-control justify-content-end" id="confirm_pass" name="confirm_pass" placeholder="..." required>
+                        </div>
+                    </div>
+        
+
+                    <div class="row">
+                        <div class="text-center" style="margin: 10px">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </div>
                     
-                    <div class="text-center"style="margin: 10px">
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </div>
                 </form>
         </div>
 
