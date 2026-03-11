@@ -25,14 +25,14 @@
     <div id="header"></div>
 
 
-
-        <div class="col-6 container-sm rounded" style="margin: 10px; background-color:#b8e5ff !important;">
-            
+            <!-- REGISTER CONTAINER -->
+            <div class="col-6 container rounded" style="margin: 20px; background-color:#b8e5ff !important;">
+                
                 <h1 class="display-6">Register New User</h1>
                 <form action="registeruser" method="post">
+    
                     <div class="row" style="margin: 10px" >
-                        
-                        <div class="col-4 justify-content">
+                        <div class="col-4 justify-content-end">
                             <label for="name" class="col-form-label">First and Last Name</label>
                         </div>
             
@@ -40,7 +40,7 @@
                             <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
                         </div>
                     </div>
-
+    
                     <div class="row " style="margin: 10px">
                         <div class="col-4 justify-content-end">
                             <label for="email" class="col-form-label">Email address</label>
@@ -50,7 +50,7 @@
                             <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
                         </div>
                     </div>
-
+    
                     <div class="row " style="margin: 10px">
                         <div class="col-4 justify-content-end">
                             <label for="pass" class="col-form-label">Password</label>
@@ -71,7 +71,7 @@
                         </div>
                     </div>
         
-
+    
                     <div class="row">
                         <div class="text-center" style="margin: 10px">
                             <button type="submit" class="btn btn-primary">Register</button>
@@ -79,7 +79,55 @@
                     </div>
                     
                 </form>
-        </div>
+            </div>
+            <!-- REGISTER CONTAINER END -->
+    
+            <!-- UPDATE CONTAINER -->
+            
+                <div class="col-3 container rounded" style="margin: 20px; background-color:#b8e5ff !important;">
+                    <h1 class="display-6">Update User Role</h1>
+            
+                    <form id="updateform" action="">
+            
+                        <div class="row" style="margin: 10px">
+                            <div class="col-4 text-end align-self-start">
+                                <label class="col-form-label" for="usersdropdown">User</label>
+                            </div>
+            
+                            <div class="col-auto align-self-start">
+                                <select class="form-select" id="usersdropdown" required>
+                                    <option value = "" selected>Choose...</option>
+                                </select>
+                            </div>
+                        </div>
+            
+                        <div class="row" style="margin: 10px">
+                            <div class="col-4 text-end">
+                                <label class="col-form-label" for="rolesdropdown">Role</label>
+                            </div>
+            
+                            <div class="col-auto">
+                                <select class="form-select" name="rolesdropdown" id="rolesdropdown" required>
+                                    <option value = "" selected>Choose...</option>
+                                    <option value="0">Admin</option>
+                                    <option value="1">Project Manager</option>
+                                    <option value="2">Foreman</option>
+                                    <option value="3">Logistics</option>
+                                    <option value="4">Warehouse</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div class="row">
+                            <div class=" text-center" style="margin: 10px">
+                                <button type="submit" onclick="updateRole()" class="btn btn-secondary">Update Role</button>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+    
+            <!-- UPDATE CONTAINER END -->       
 
         <div class="container">
             <div class="row">
@@ -88,6 +136,8 @@
               </div>
             </div>
         </div>
+
+        
 
         <div class="container text-center">
             <h2>User List</h2>
@@ -114,35 +164,7 @@
         <div class="container text-center center bborder">
             <h2>Update User</h2>
 
-            <form id="updateform" action="">
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="usersdropdown">Options</label>
-                    </div>
-                    <select class="custom-select" id="usersdropdown" required>
-                      <option value = "" selected>Choose...</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="rolesdropdown">Roles</label>
-                    </div>
-                    <select class="custom-select" name="rolesdropdown" id="rolesdropdown" required>
-                        <option value = "" selected>Choose...</option>
-                        <option value="0">Admin</option>
-                        <option value="1">Project Manager</option>
-                        <option value="2">Foreman</option>
-                        <option value="3">Logistics</option>
-                        <option value="4">Warehouse</option>
-                    </select>
-                </div>
-
-                <div class="text-center"style="margin: 10px">
-                    <button type="submit" onclick="updateRole()" class="btn btn-secondary">Update Role</button>
-                </div>
-            </form>
+            
 
         </div>
 
