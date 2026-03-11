@@ -55,7 +55,7 @@ async function addUserDiv(user, list){
 
     const deleteBtn = document.createElement('button');
     deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-outline-danger');
+    deleteBtn.classList.add('btn-danger');
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.onclick = () => deleteUser(user._id);
     buttonsDiv.appendChild(deleteBtn);

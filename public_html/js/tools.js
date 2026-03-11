@@ -68,14 +68,15 @@ async function addToolDiv(tool, list){
 
     const deleteBtn = document.createElement('button');
     deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-outline-danger');
+    deleteBtn.classList.add('btn-danger');
+    deleteBtn.style.margin = "10px";
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.onclick = () => deleteTool(tool);
     buttonsDiv.appendChild(deleteBtn);
 
     const deallocateBtn = document.createElement('button');
     deallocateBtn.classList.add('btn');
-    deallocateBtn.classList.add('btn-outline-warning');
+    deallocateBtn.classList.add('btn-warning');
     deallocateBtn.innerHTML = 'Deallocate';
     deallocateBtn.onclick = () => deallocateTool(tool, user);
     buttonsDiv.appendChild(deallocateBtn);
