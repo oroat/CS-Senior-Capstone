@@ -82,6 +82,20 @@ async function populateTables(){
     }
 }
 
+async function getProjects(){
+    let response = await fetch('/projects');
+    let projects = await response.json();
+    window.alert(projects.length);
+
+    for (let i = 0; i < projects.length; i++){
+        alert(projects[i].name);
+        alert(projects[i].manager.name);
+        for (let j = 0; j < projects[i].workers.length; j++){
+            alert(projects[i].workers[j].name);
+        }
+    }
+}
+
   
 document.addEventListener('DOMContentLoaded', async () => {
     await populateTitle();
