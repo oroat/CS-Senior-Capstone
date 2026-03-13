@@ -9,6 +9,14 @@
         <script src="js/users.js"></script> -->
         <script src="js/profile.js"></script>
         <link rel="stylesheet" href="css/main.css">
+        <style>
+          .table-custom-color {
+          --bs-table-bg: #ffebcd; /* Custom background color (e.g., bisque) */
+          --bs-table-color: #8b4513; /* Custom text color (e.g., saddle brown) */
+        }
+
+        </style>
+        
     </head>
 
 
@@ -53,15 +61,15 @@
                         </tr>
                         </thead>
                         <tbody id="toolTableBody">
-                          <!-- EXAMPLE TABLE INPUT -->
-                          <tr>
+                          <!-- EXAMPLE TOOL TABLE INPUT -->
+                          <!-- <tr>
                             <th scope="row">1</th>
                             <td>Mark</td>
                             <td>Otto</td>
                             <td style="place-items: center">
                                 <button type="button" class="btn btn-warning" onclick="getProjects()">Warning</button>
                             </td>
-                          </tr>
+                          </tr> -->
 
                         </tbody>
     
@@ -69,7 +77,7 @@
                 </div>
                 
     
-                <div class="col-6 container rounded " style="margin: 20px; margin-right: 30px; background-color: orange;">
+                <div class="col-6 container rounded " style="margin: 20px; margin-right: 30px; background-color: #F2E2C4;">
                     <h1 class="display-6 text-center">My Projects</h1>
     
                     <table class="table table-striped table-warning">
@@ -79,29 +87,19 @@
                               <th scope="col">#</th>
                               <th scope="col">Name</th>
                               <th scope="col">Location</th>
-                              <th scope="col">Managers</th>
+                              <th scope="col">Manager(s)</th>
                               
                             </tr>
                           </thead>
-                          <tbody>
-                            <tr>
+                          <tbody id="projectTableBody">
+                            <!-- EXAMPLE PROJECT TABLE INPUT -->
+                            <!-- <tr>
                               <th scope="row">1</th>
                               <td>Name 1</td>
                               <td>Location 1</td>
                               <td>Manager 1, Manager 2</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">2</th>
-                              <td>Name 2</td>
-                              <td>Location 2</td>
-                              <td>Manager 3, Manager 4</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">3</th>
-                              <td>Name 3</td>
-                              <td>Location 3</td>
-                              <td>Manager 5, Manager 6</td>
-                            </tr>
+                            </tr> -->
+                            
                           </tbody>
     
                     </table>

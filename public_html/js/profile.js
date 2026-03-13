@@ -38,62 +38,94 @@ async function populateTitle(){
 }
 
 async function populateTables(){
-    let response = await fetch('/tools');
-    const tools = await response.json();
 
     const user = await getLogged();
+
+    let response = await fetch('/tools');
+    let tools = await response.json();
+
+    response = await fetch('/projects');
+    let projects = await response.json();
+
     toolBody = document.getElementById('toolTableBody');
-    let i = 1;
+    projectBody = document.getElementById('projectTableBody');
+
+    let count = 1;
 
     for (const tool of tools){
         if (tool.usedBy == user._id){
-            const newRow = document.createElement('tr');
-
-            const num = document.createElement('th');
-            num.innerHTML = i;
-
-            const model = document.createElement('td');
-            model.innerHTML = tool.model;   
-
-            
-            const serial = document.createElement('td');
-            serial.innerHTML = tool.serialNum;
-            
-            const buttonTd = document.createElement('td');
-            buttonTd.style.placeItems = 'center';
-
-            const button = document.createElement('button');
-            button.classList.add('btn');
-            button.classList.add('btn-warning');
-            button.innerHTML = 'Warning';
-            buttonTd.appendChild(button);
-
-            newRow.appendChild(num);
-            newRow.appendChild(model);
-            newRow.appendChild(serial);
-            newRow.appendChild(buttonTd);
-
-            toolBody.appendChild(newRow);
-
-            i++;
-
+            addToolRow(toolBody, tool, count);
+            count++;
         } 
-        
     }
-}
-
-async function getProjects(){
-    let response = await fetch('/projects');
-    let projects = await response.json();
-    window.alert(projects.length);
-
+    
+    count = 1;
     for (let i = 0; i < projects.length; i++){
-        alert(projects[i].name);
-        alert(projects[i].manager.name);
         for (let j = 0; j < projects[i].workers.length; j++){
-            alert(projects[i].workers[j].name);
+            alert(projects[i].workers[j]);
+            if (projects[i].workers[j].name == user.name){
+                addProjectRow(projectBody, projects[i], count)
+                count++;
+            }
         }
     }
+
+}
+
+
+async function addToolRow(body, tool, count){
+     
+    const newRow = document.createElement('tr');
+
+    const num = document.createElement('th');
+    num.innerHTML = count;
+
+    const model = document.createElement('td');
+    model.innerHTML = tool.model;   
+
+            
+    const serial = document.createElement('td');
+    serial.innerHTML = tool.serialNum;
+            
+    const buttonTd = document.createElement('td');
+    buttonTd.style.placeItems = 'center';
+
+    const button = document.createElement('button');
+    button.classList.add('btn');
+    button.classList.add('btn-warning');
+    button.innerHTML = 'Unassign';
+    buttonTd.appendChild(button);
+
+    newRow.appendChild(num);
+    newRow.appendChild(model);
+    newRow.appendChild(serial);
+    newRow.appendChild(buttonTd);
+
+    body.appendChild(newRow);
+
+} 
+
+async function addProjectRow(body, project, count){  
+    const newRow = document.createElement('tr');
+
+    const num = document.createElement('th');
+    num.innerHTML = count;
+
+    const projectName = document.createElement('td');
+    projectName.innerHTML = project.name;
+
+    const location = document.createElement('td');
+    location.innerHTML = project.location;
+
+    const manager = document.createElement('td');
+    manager.innerHTML = project.manager.name;
+
+    newRow.appendChild(num);
+    newRow.appendChild(projectName);
+    newRow.appendChild(location);
+    newRow.appendChild(manager);
+
+    body.appendChild(newRow)
 }
 
   
