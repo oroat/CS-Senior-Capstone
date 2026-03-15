@@ -192,6 +192,16 @@
                 `;
                 document.getElementById("msg-display").innerHTML = msg;
             } 
+
+            else if(error === '2'){
+                msg = `
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Error!</strong> An account already exists with that email.
+                    </div>
+                `;
+                document.getElementById("msg-display").innerHTML = msg;
+            } 
         </script>
 
     <script>

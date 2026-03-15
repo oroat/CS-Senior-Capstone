@@ -19,7 +19,7 @@ exports.register = async function(req, res) {
         let user = UserDao.create(userInfo);
         res.redirect('/users.html');
     } else{
-        res.redirect('/users.html');
+        res.redirect('/users.html?error=2');
     }
 }
 

@@ -95,7 +95,7 @@ test('Registration fails because email already exists in database', async functi
     await controller.register(req, res);
 
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
-    expect(res.redirect).toHaveBeenCalledWith('/users.html');
+    expect(res.redirect).toHaveBeenCalledWith('/users.html?error=2');
 });
 
 test('Successfully fetch all users', async function(){
