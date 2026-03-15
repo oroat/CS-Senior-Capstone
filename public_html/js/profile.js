@@ -54,7 +54,7 @@ async function populateTables(){
 
     for (const tool of tools){
         if (tool.usedBy == user._id){
-            addToolRow(toolBody, tool, count);
+            addToolRow(toolBody, tool, user, count);
             count++;
         } 
     }
@@ -62,7 +62,7 @@ async function populateTables(){
     count = 1;
     for (let i = 0; i < projects.length; i++){
         for (let j = 0; j < projects[i].workers.length; j++){
-            alert(projects[i].workers[j]);
+            //alert(projects[i].workers[j]);
             if (projects[i].workers[j].name == user.name){
                 addProjectRow(projectBody, projects[i], count)
                 count++;
@@ -73,7 +73,7 @@ async function populateTables(){
 }
 
 
-async function addToolRow(body, tool, count){
+async function addToolRow(body, tool, user, count){
      
     const newRow = document.createElement('tr');
 
@@ -94,6 +94,7 @@ async function addToolRow(body, tool, count){
     button.classList.add('btn');
     button.classList.add('btn-warning');
     button.innerHTML = 'Unassign';
+    button.onclick = () => deallocateTool(tool, user);
     buttonTd.appendChild(button);
 
     newRow.appendChild(num);
@@ -126,6 +127,33 @@ async function addProjectRow(body, project, count){
     newRow.appendChild(manager);
 
     body.appendChild(newRow)
+}
+
+async function deallocateTool(tool, user){
+    try{
+        if (!tool.inUse){
+            alert(`${tool.model} (${tool.serialNum}) not allocated`);
+            return;
+        }
+        if (!confirm(`Are you sure you want to deallocate ${tool.model} (${tool.serialNum}) from ${user.name}?`)) return;
+
+        let updates = {inUse: false};
+
+        const response = await fetch(`/updatetool/${tool._id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+
+        if (response.ok){
+            alert('Tool updated successfully. Please refresh page to see changes.');
+        } else{
+            const result = response.json();
+            alert('Failed to update tool: ' + (result.error || "Unknown error."));
+        }
+    } catch (error){
+        alert(`Error during update: ${error}`);
+    }
 }
 
   
