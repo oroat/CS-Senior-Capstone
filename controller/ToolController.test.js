@@ -49,6 +49,19 @@ test('Successfully fetch all tools', async function(){
     expect(res.json).toHaveBeenCalledWith(mockTools);
 });
 
+test('Error in fetching all tools', async function(){
+    let req = {};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.readAll = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.getAllTools(req, res);
+
+    expect(dao.readAll).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: 'failed to fetch tools'});
+});
+
 test('Delete tool', async function(){
     let req = {params: {id: 'id'}};
     let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
@@ -59,6 +72,20 @@ test('Delete tool', async function(){
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({success: true});
 });
+
+test('Error in deleting tool', async function(){
+    let req = {params: {id: 'id'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.del = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.deleteTool(req, res);
+
+    expect(dao.del).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to delete tool", details: error.message});
+})
 
 test('Update tool', async function(){
     let req = {
@@ -96,4 +123,28 @@ test('Update only serial number & model', async function(){
                                                             model: req.body.model});
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({success: true, updatedTool});
+});
+
+test('Error in updating tool', async function(){
+    let req = {
+        params: {id: 'id'}, 
+        body: {serial: 'A234',
+                model: 'leak detector',
+                inUse: true,
+                usedBy: 'id2'
+        }
+    };
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.update = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    let updatedTool = await controller.update(req, res);
+
+    expect(dao.update).toHaveBeenCalledWith(req.params.id, {serialNum: req.body.serial,
+                                                            model: req.body.model,
+                                                            inUse: req.body.inUse,
+                                                            usedBy: req.body.usedBy});
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
 });
