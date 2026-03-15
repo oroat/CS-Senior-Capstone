@@ -30,11 +30,13 @@ exports.getUserById = async function(req, res) {
     try {
         const user = await UserDao.read(req.params.id);
 
-        res.status(200).json(user);
+        res.status(200);
+        res.json(user);
 
     } catch (error) {
         console.error('Error fetching user:', error);
-        res.status(500).json({ error: 'Failed to fetch user' });
+        res.status(500);
+        res.json({ error: 'Failed to fetch user' });
     }
 };
 

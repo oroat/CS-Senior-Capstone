@@ -37,6 +37,38 @@ test('Successful registration', async function(){
     expect(res.redirect).toHaveBeenCalledWith('/users.html')
 });
 
+test('Getting user by ID', async function(){
+    let user = {_id: 'u1', name: 'User A', role: 1, email: 'a@coolsys.com', password: 'passA'};
+    
+    let req = {params: {id: 'u1'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.read = jest.fn().mockResolvedValue(user);
+
+    await controller.getUserById(req, res);
+
+    expect(dao.read).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(user);
+
+});
+
+test('Error in getting user by ID', async function(){
+    let user = {_id: 'u1', name: 'User A', role: 1, email: 'a@coolsys.com', password: 'passA'};
+    
+    let req = {params: {id: 'u1'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.read = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.getUserById(req, res);
+
+    expect(dao.read).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: 'Failed to fetch user'});
+
+});
+
 test('Registration fails because pass and confirm_pass dont match', async function(){
     let req = { body: {
         name: 'Test Test',
@@ -86,6 +118,19 @@ test('Successfully fetch all users', async function(){
     expect(res.json).toHaveBeenCalledWith(mockUsers);
 });
 
+test('Error in fetching all users', async function(){
+    let req = {};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.readAll = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.getAllUsers(req, res);
+
+    expect(dao.readAll).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: 'failed to fetch users'});
+})
+
 test('Delete user', async function(){
     let req = {params: {id: 'id'}};
     let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
@@ -96,6 +141,20 @@ test('Delete user', async function(){
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({success: true});
 });
+
+test('Failed to delete user', async function(){
+    let req = {params: {id: 'id'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.del = jest.fn().mockRejectedValue(new Error('DB error'));
+    
+    await controller.deleteUser(req, res);
+
+    expect(dao.del).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to delete user", details: error.message});
+})
 
 test('Update role', async function(){
     let req = {
@@ -110,6 +169,23 @@ test('Update role', async function(){
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({success: true, updatedUser});
 });
+
+test('Fail to update role', async function(){
+    let req = {
+        params: {id: 'id'}, 
+        body: {role: 2}
+    };
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.update = jest.fn().mockRejectedValue(new Error('DB error'));
+    
+    await controller.updateRole(req, res);
+
+    expect(dao.update).toHaveBeenCalledWith(req.params.id, req.body);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
+})
 
 test('Successful login', async function(){
     let req = {body: {email: 'test@coolsys.com', pass: 'test123'},
