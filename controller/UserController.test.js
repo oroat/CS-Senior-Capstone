@@ -91,12 +91,10 @@ test('Registration fails because email already exists in database', async functi
     let res = {redirect: jest.fn()}
 
     dao.findLogin = jest.fn().mockResolvedValueOnce({email: 'test@coolsys.com'});
-    console.log = jest.fn();
 
     await controller.register(req, res);
 
     expect(dao.findLogin).toHaveBeenCalledWith(req.body.email);
-    expect(console.log).toHaveBeenCalledWith('User already exists with that email');
     expect(res.redirect).toHaveBeenCalledWith('/users.html');
 });
 

@@ -3,7 +3,6 @@ const hash = require('../util/Hashing');
 
 exports.register = async function(req, res) {
     if (req.body.pass != req.body.confirm_pass){
-        console.log("Password confirmation failed");
         res.redirect('/users.html?error=1');
         return;
     }
@@ -18,10 +17,8 @@ exports.register = async function(req, res) {
         }
 
         let user = UserDao.create(userInfo);
-        console.log('Successfully registered user');
         res.redirect('/users.html');
     } else{
-        console.log('User already exists with that email');
         res.redirect('/users.html');
     }
 }
@@ -34,7 +31,6 @@ exports.getUserById = async function(req, res) {
         res.json(user);
 
     } catch (error) {
-        console.error('Error fetching user:', error);
         res.status(500);
         res.json({ error: 'Failed to fetch user' });
     }
@@ -46,7 +42,6 @@ exports.getAllUsers = async function(req, res){
         res.status(200);
         res.json(users);
     } catch (error){
-        console.error('error in getAllUsers: ', error);
         res.status(500);
         res.json({error: 'failed to fetch users'});
     }

@@ -8,7 +8,6 @@ exports.create = async function(req, res){
     };
 
     let tool = await ToolDao.create(toolInfo);
-    console.log('Successfully created tool');
     res.redirect('/tools.html');
 }
 
@@ -18,7 +17,6 @@ exports.getAllTools = async function(req, res){
         res.status(200);
         res.json(tools);
     } catch (error){
-        console.error('error in getAllTools: ', error);
         res.status(500);
         res.json({error: 'failed to fetch tools'});
     }
