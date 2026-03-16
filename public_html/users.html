@@ -133,9 +133,6 @@
 
     </div>
 
-
-                
-
         <div class="container">
             <div class="row">
               <div class="col-md-6" id="msg-display">
@@ -144,39 +141,49 @@
             </div>
         </div>
 
-        
 
         <div class="container text-center">
-            <h2>User List</h2>
-            <div class="row">
-              <div class="col">Name</div>
-              <div class="col">Role</div>
-              <div class="col">Email</div>
-              <div class="col"></div> 
-            </div>
-          </div>
 
-        <div class="container text-center" id="userList"></div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Action(s)</th>
+                    </tr>
+
+                    <tbody id="userTableBody">
+                        <!-- EXAMPLE USER TABLE INPUT -->
+                        <!-- <tr>
+                            <td>John Doe</th>
+                            <td>Project Manager</td>
+                            <td>name@ex.com</td>
+                            <td style="place-items: center">
+                                <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
+                            </td> 
+                        </tr> -->
+
+                        <!-- User info will populate here -->
+                    </tbody>
+                </thead>
+            </table>
         
-        <div class="container-sm center">
-            <p>Filter Users by Role</p>
-            <div class="filter-input-group">
-                <input type="text" class="form-control" id="filteredRole" placeholder="Enter Role..." required>
-                <button class="btn btn-info" onclick="viewUsers(true)">Apply Filter</button>
-                <button class="btn btn-info" onclick="viewUsers(false)">Clear Filter</button>
-            </div>
         </div>
         
-
-        <div class="container text-center center bborder">
-            <h2>Update User</h2>
-
+        <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
             
 
+                    <h1 class="display-6">Filter Users by Role</h1>
+                    <div class="filter-input-group text-center" >
+                        <input type="text" class="form-control" style="margin: 10px" id="filteredRole" placeholder="Enter Role..." required>
+                        <button class="btn btn-info" style="margin: 10px" onclick="viewUsers(true)">Apply Filter</button>
+                        <button class="btn btn-info" onclick="viewUsers(false)">Clear Filter</button>
+                    </div>
+
+                
         </div>
-
         
-
         <div id="footer"></div>
 
         <script type="text/javascript">

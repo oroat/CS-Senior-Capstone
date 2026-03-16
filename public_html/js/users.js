@@ -1,5 +1,5 @@
 async function viewUsers(filterApplied){
-    if (document.getElementById('userList') == null){
+    if (document.getElementById('userTableBody') == null){
         return;
     }
 
@@ -9,15 +9,16 @@ async function viewUsers(filterApplied){
         if (response.ok) {
             const users = await response.json();
 
-            userList = document.getElementById('userList');
+            userBody = document.getElementById('userTableBody');
+            
             filter = document.getElementById("filteredRole").value;
-            userList.innerHTML = '';
+            userBody.innerHTML = '';
 
             if (!filterApplied) document.getElementById('filteredRole').value = '';
 
             for (const user of users){
                 if (!filterApplied || filter == await roleIntToString(user.role)){
-                    addUserDiv(user, userList);
+                    addUserRow(userBody, user);
             }}
         }
         } catch (error){
@@ -26,44 +27,39 @@ async function viewUsers(filterApplied){
         }   
 }
 
-async function addUserDiv(user, list){
-    const userDiv = document.createElement('div');
-    userDiv.classList.add('row');
-    userDiv.style.margin = '10px';
+async function addUserRow(body, user){
+     
+    const newRow = document.createElement('tr');
 
-    const nameDiv = document.createElement('div');
-    nameDiv.classList.add('col');
-    nameDiv.style.border = 'solid #27f5da'
-    nameDiv.innerHTML = `${user.name}`;
-    userDiv.appendChild(nameDiv);
+    const nameInput = document.createElement('td');
+    nameInput.innerHTML = user.name;
 
-    const roleDiv = document.createElement('div');
-    roleDiv.classList.add('col');
-    roleDiv.style.border = 'solid #27f5da'
+    const roleInput = document.createElement('td');
     let role = await roleIntToString(user.role);
-    roleDiv.innerHTML = `${role}`;
-    userDiv.appendChild(roleDiv);
+    roleInput.innerHTML = role;   
 
-    const emailDiv = document.createElement('div');
-    emailDiv.classList.add('col');
-    emailDiv.style.border = 'solid #27f5da'
-    emailDiv.innerHTML = `${user.email}`;
-    userDiv.appendChild(emailDiv);
+            
+    const emailInput = document.createElement('td');
+    emailInput.innerHTML = user.email;
+            
+    const buttonTd = document.createElement('td');
+    buttonTd.style.placeItems = 'center';
 
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('col');
+    const button = document.createElement('button');
+    button.classList.add('btn');
+    button.classList.add('btn-danger');
+    button.innerHTML = 'Delete';
+    button.onclick = () => deleteUser(user._id);
+    buttonTd.appendChild(button);
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-danger');
-    deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteUser(user._id);
-    buttonsDiv.appendChild(deleteBtn);
+    newRow.appendChild(nameInput);
+    newRow.appendChild(roleInput);
+    newRow.appendChild(emailInput);
+    newRow.appendChild(buttonTd);
 
-    userDiv.appendChild(buttonsDiv);
+    body.appendChild(newRow);
 
-    list.appendChild(userDiv);
-}
+} 
 
 async function roleIntToString(roleInt){
     let roleStr;
