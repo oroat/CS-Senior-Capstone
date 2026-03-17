@@ -51,3 +51,8 @@ exports.del = async function(id){
 exports.deleteAll = async function(){
     await toolModel.deleteMany();
 }
+
+exports.findBySerial = async function(serialToFind){
+    let tool = await toolModel.findOne({serialNum: serialToFind});
+    return tool;
+}

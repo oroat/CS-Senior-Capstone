@@ -68,3 +68,15 @@ test('Update tool', async function(){
     expect(updated.serialNum).toBe('updatedtool1');
     expect(updated.model).toBe('vacuum pump');
 });
+
+test('Find tool by its serial number', async function(){
+    let newdata = {serialNum:'tool1', 
+        model: 'leak detector'};
+
+    let created = await dao.create(newdata);
+    let found = await dao.findBySerial(newdata.serialNum);
+
+    expect(found).not.toBeNull();
+    expect(found._id).toEqual(created._id);
+    expect(found.serialNum).toEqual(created.serialNum);
+})
