@@ -53,7 +53,7 @@ exports.update = async function(req, res){
 
 exports.getToolBySerial = async function(req, res){
     try{
-        const tool = await ToolDao.getToolBySerial(req.body.serial);
+        const tool = await ToolDao.findBySerial(req.params.serial);
         res.status(200);
         res.json(tool);
 
