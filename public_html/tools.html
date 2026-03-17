@@ -33,71 +33,109 @@
 
     <div id="header"></div>
 
-    
-        <div class="container-sm center bborder">
-            
-                <h1>Register New Tool</h1>
-                <form action="createtool" method="post">
-                    <div style="margin: 10px">
+    <div class="row">
+        
+        <!-- CREATE CONTAINER -->
+        <div class="col-6 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
+                
+            <h1 class="display-6">Register New Tool</h1>
+            <form action="createtool" method="post">
+
+                <div class="row" style="margin: 10px" >
+                    <div class="col-4 justify-content-end">
                         <label for="serial" class="form-label">Serial Number</label>
+                    </div>
+        
+                    <div class="col-auto">
                         <input type="text" class="form-control" id="serial" name="serial" placeholder="..." required>
                     </div>
-                    
-                    <div style="margin: 10px">
+                </div>
+
+                <div class="row " style="margin: 10px">
+                    <div class="col-4 justify-content-end">
                         <label for="model" class="form-label">Model</label>
+                        
+                    </div>
+        
+                    <div class="col-auto">
                         <input type="text" class="form-control" id="model" name="model" placeholder="..." required>
                     </div>
-            
-                    <!-- <div style="margin: 10px">
-                        <label for="pass" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
-                    </div>  
+                </div>
 
-                    <div style="margin: 10px">
-                        <label for="confirm_pass" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" placeholder="..." required>
-                    </div> -->
-
-                    
-                    <div class="text-center"style="margin: 10px">
+                <div class="row">
+                    <div class="text-center" style="margin: 10px">
                         <button type="submit" class="btn btn-primary">Create</button>
                     </div>
+                </div>
+                
+            </form>
+        </div>
+        <!-- CREATE CONTAINER END -->
 
-                </form>
+        <!-- ADD USER CONTAINER -->
+        <div class="col-4 ms-auto container rounded" style="margin: 20px; margin-right: 30px; background-color:#b8e5ff !important;">
+
+            <h2 class="display-6">Add User to Tool</h2>
+            <form id="addtooltouser" action="">
+
+                <div class="input-group mb-3" style="justify-content: center;">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="toolsdropdown2">Tools</label>
+                    </div>
+                    <select class="custom-select" id="toolsdropdown2" name = "toolsdropdown2"required>
+                    <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3" style="justify-content: center;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="usersdropdown">Users</label>
+                    </div>
+                    <select class="custom-select"  id="usersdropdown" required>
+                      <option value = "" selected>Choose...</option>
+                    </select>
+                </div>
+
+                <div class="text-center"style="margin: 10px">
+                    <button type="submit" onclick="addUserToTool()" class="btn btn-secondary">Update Tool</button>
+                </div>
+            </form>
 
         </div>
+        <!-- ADD USER CONTAINER END -->
 
-        <div class="container">
+    </div>
+
+
+        <!-- <div class="container">
             <div class="row">
               <div class="col-md-6" id="msg-display">
-                  <!-- Error messages will be dynamically displayed here -->
+                    Error messages will be dynamically displayed here 
               </div>
             </div>
-        </div>
+         </div>  -->
 
         <div class="container text-center">
-            <h2>Tool List</h2>
-            <div class="row">
-              <div class="col">Serial Number</div>
-              <div class="col">Model</div>
-              <div class="col">In Use?</div>
-              <div class="col"></div> <!--extra col to match the table -->
-            </div>
-          </div>
 
-        <div class="container text-center" id="toolList"></div>
-        
-        <!-- <div class="container-sm center">
-            <p>Filter Users by Role</p>
-            <div class="filter-input-group">
-                <input type="text" class="form-control" id="filteredRole" placeholder="Enter Role..." required>
-                <button class="btn btn-info" onclick="viewUsers(true)">Apply Filter</button>
-                <button class="btn btn-info" onclick="viewUsers(false)">Clear Filter</button>
-            </div>
-        </div> -->
-        
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Serial Number</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">In Use?</th>
+                        <th scope="col">Action(s)</th>
+                    </tr>
+                </thead>
 
-        <div class="container text-center center bborder">
+                <tbody id="toolTableBody">
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
+            <h1 class="display-6">Update Tool</h1>
             <form id="updateform">
 
                 <div class="row">
@@ -142,33 +180,6 @@
 
         </div>
 
-        <div class="container text-center center bborder">
-            <h2>Add User to Tool</h2>
-            <form id="addtooltouser" action="">
-
-                <div class="input-group mb-3" style="justify-content: center;">
-                    <div class="input-group-prepend">
-                    <label class="input-group-text" for="toolsdropdown2">Options</label>
-                    </div>
-                    <select class="custom-select" id="toolsdropdown2" name = "toolsdropdown2"required>
-                    <option value = "" selected>Choose...</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="usersdropdown">Options</label>
-                    </div>
-                    <select class="custom-select" id="usersdropdown" required>
-                      <option value = "" selected>Choose...</option>
-                    </select>
-                </div>
-
-                <div class="text-center"style="margin: 10px">
-                    <button type="submit" onclick="addUserToTool()" class="btn btn-secondary">Update Tool</button>
-                </div>
-            </form>
-        </div>
 
         <div id="footer"></div>
         

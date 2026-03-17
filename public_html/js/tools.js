@@ -1,7 +1,7 @@
 async function viewTools(filterApplied){
-    if (document.getElementById('toolList') == null){
-        return;
-    }
+    // if (document.getElementById('toolList') == null){
+    //     return;
+    // }
 
     try{
         const response = await fetch('/tools');
@@ -9,9 +9,11 @@ async function viewTools(filterApplied){
         if (response.ok) {
             const tools = await response.json();
 
+            toolBody = document.getElementById('toolTableBody');
+
             toolList = document.getElementById('toolList');
             //filter = document.getElementById("filteredRole").value;
-            toolList.innerHTML = '';
+            toolBody.innerHTML = '';
 
             //if (!filterApplied) document.getElementById('filteredRole').value = '';
 
@@ -19,8 +21,9 @@ async function viewTools(filterApplied){
 
                 //if (!filterApplied || filter == role){
                 if (!filterApplied){
-                    await addToolDiv(tool, toolList);
+                    await addToolRow(toolBody, tool);
             }}   
+            //FILTER STUFF LEFT IN CASE A FILTER IS ADDED IN THE FUTURE
         }
         } catch (error){
             console.error('Network error during review retrieval:', error); 
@@ -28,7 +31,7 @@ async function viewTools(filterApplied){
         }   
 }
 
-async function addToolDiv(tool, list){
+async function addToolRow(body, tool){
     let user;
     try{
         if (tool.inUse){
@@ -38,52 +41,45 @@ async function addToolDiv(tool, list){
     } catch (error){
         alert(`Network error: ${error}`);
     }
+
+    const newRow = document.createElement('tr');
+
+    const serialInput = document.createElement('td');
+    serialInput.innerHTML = tool.serialNum;
+
+    const modelInput = document.createElement('td');
+    modelInput.innerHTML = tool.model; 
     
-    const toolDiv = document.createElement('div');
-    toolDiv.classList.add('row');
-    toolDiv.style.margin = '10px';
-
-    const serialDiv = document.createElement('div');
-    serialDiv.classList.add('col');
-    serialDiv.style.border = 'solid #27f5da'
-    serialDiv.innerHTML = `${tool.serialNum}`;
-    toolDiv.appendChild(serialDiv);
-
-    const modelDiv = document.createElement('div');
-    modelDiv.classList.add('col');
-    modelDiv.style.border = 'solid #27f5da'
-                    
-    modelDiv.innerHTML = `${tool.model}`;
-    toolDiv.appendChild(modelDiv);
-
-    const useDiv = document.createElement('div');
-    useDiv.classList.add('col');
-    useDiv.style.border = 'solid #27f5da'
-    useDiv.innerHTML = `${tool.inUse}`;
-    if (tool.inUse) useDiv.innerHTML += `, used by ${user.name}`;
-    toolDiv.appendChild(useDiv);
-
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('col');
+    
+    const useInput = document.createElement('td');
+    useInput.innerHTML = `${tool.inUse}`;
+    if (tool.inUse) useInput.innerHTML += `, used by ${user.name}`;
+            
+    const buttonTd = document.createElement('td');
+    buttonTd.style.placeItems = 'center';
 
     const deleteBtn = document.createElement('button');
+
     deleteBtn.classList.add('btn');
     deleteBtn.classList.add('btn-danger');
     deleteBtn.style.margin = "10px";
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.onclick = () => deleteTool(tool);
-    buttonsDiv.appendChild(deleteBtn);
+    buttonTd.appendChild(deleteBtn);
 
     const deallocateBtn = document.createElement('button');
     deallocateBtn.classList.add('btn');
     deallocateBtn.classList.add('btn-warning');
     deallocateBtn.innerHTML = 'Deallocate';
     deallocateBtn.onclick = () => deallocateTool(tool, user);
-    buttonsDiv.appendChild(deallocateBtn);
+    buttonTd.appendChild(deallocateBtn);
 
-    toolDiv.appendChild(buttonsDiv);
+    newRow.appendChild(serialInput);
+    newRow.appendChild(modelInput);
+    newRow.appendChild(useInput);
+    newRow.appendChild(buttonTd);
 
-    list.appendChild(toolDiv);
+    body.appendChild(newRow);
 }
 
 async function deleteTool(tool){
