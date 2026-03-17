@@ -51,3 +51,15 @@ exports.update = async function(req, res){
     }
 }
 
+exports.getToolBySerial = async function(req, res){
+    try{
+        const tool = await ToolDao.getToolBySerial(req.body.serial);
+        res.status(200);
+        res.json(tool);
+
+    } catch(error){
+        res.status(500)
+        res.json({error: "Failed to find tool", details: error.message});
+    }
+}
+

@@ -148,3 +148,34 @@ test('Error in updating tool', async function(){
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
 });
+
+test('Get tool by serial number', async function(){
+    let tool = {_id: 't1', serialNum: '1A', model: 'Pump', inUse: 'false'};
+
+    let req = {body: {serial: '1A'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.getToolBySerial = jest.fn().mockResolvedValue(tool);
+
+    await controller.getToolBySerial(req, res);
+
+    expect(dao.getToolBySerial).toHaveBeenCalledWith(req.body.serial);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(tool);
+});
+
+test('Error in getting tool by serial number', async function(){
+    let tool = {_id: 't1', serialNum: '1A', model: 'Pump', inUse: 'false'};
+
+    let req = {body: {serial: '1A'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.getToolBySerial = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.getToolBySerial(req, res);
+
+    expect(dao.getToolBySerial).toHaveBeenCalledWith(req.body.serial);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to find tool", details: error.message});
+});
