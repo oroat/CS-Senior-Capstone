@@ -42,9 +42,14 @@ const addProjectPath = path.join(__dirname,"public_html", "addProject.html")
 
 const materialPath = path.join(__dirname,"public_html","materials.html")
 
+const shipmentPath = path.join(__dirname,"public_html","shipments.html")
+
+
+
 app.get("/", (req, res) => res.sendFile(testPath));
 app.get("/addProject", (req, res) => res.sendFile(addProjectPath));
 app.get("/material", (req, res) => res.sendFile(materialPath));
+app.get("/shipment", (req, res) => res.sendFile(shipmentPath));
 
 //User routes
 app.post('/registeruser', UserController.register);
@@ -93,6 +98,17 @@ app.get('/materials/:id', MaterialController.getMaterialById);
 app.put('/materials/:id', MaterialController.updateMaterial);
 
 app.delete('/materials/:id', MaterialController.deleteMaterial);
+
+//Shipments routes
+app.post('/shipments', ShipmentController.createShipment);
+
+app.get('/shipments', ShipmentController.getAllShipments);
+
+app.get('/shipments/:id', ShipmentController.getShipmentById);
+
+app.put('/shipments/:id', ShipmentController.updateShipment);
+
+app.delete('/shipments/:id', ShipmentController.deleteShipment);
 
 
 module.exports = app;
