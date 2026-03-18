@@ -58,14 +58,17 @@ exports.deleteUser = async function(req, res){
 }
 
 exports.updateRole = async function(req, res){
-    const {id} = req.params;
-    const newRole = req.body.role;
+    const id = req.body.usersdropdown;
+    const newRole = req.body.rolesdropdown;
+    console.log(req.body);
     
     try{
         const updatedUser = await UserDao.update(id, {role: newRole});
-        res.status(200).json({success: true, updatedUser});
+        res.status(200);
+        res.json({success: true, updatedUser, redirect: '/users.html'});
     } catch (error){
-        res.status(500).json({error: "Failed to update user role", details: error.message});
+        res.status(500);
+        res.json({error: "Failed to update user role", details: error.message});
     }
 }
 

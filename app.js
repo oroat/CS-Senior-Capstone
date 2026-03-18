@@ -55,7 +55,7 @@ app.get('/users', UserController.getAllUsers);
 
 app.delete('/deleteuser/:id', UserController.deleteUser);
 
-app.put('/updaterole/:id', UserController.updateRole);
+app.put('/updaterole', UserController.updateRole);
 
 app.post('/login', UserController.login);
 app.get('/logout', UserController.logout);
@@ -80,6 +80,8 @@ app.get('/tools', ToolController.getAllTools);
 app.delete('/deletetool/:id', ToolController.deleteTool);
 
 app.post('/updatetool/:id', ToolController.update);
+
+app.get('/tools/:serial', ToolController.getToolBySerial);
 
 //Materials routes
 app.post('/materials', MaterialController.createMaterial);

@@ -107,28 +107,27 @@ async function deleteUser(userId){
     }
 }
 
-async function updateRole(){
+async function updateRole(event){
+    event.preventDefault();
     let udropdown = document.getElementById('usersdropdown');
     let rdropdown = document.getElementById('rolesdropdown');
 
-    try{
-        const response = await fetch(`/updaterole/${udropdown.value}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({role: rdropdown.value})
-        });
+    const response = await fetch(`/updaterole`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({usersdropdown: udropdown.value, rolesdropdown: rdropdown.value})
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Update Successful');
+        window.location.href = data.redirect; 
+    })
+    .catch(error => {
+        alert(`Error updating user`);
+    });
+} 
+    
 
-        if (response.ok){
-            alert('User role updated successfully. Please refresh page to see changes.');
-        } else{
-            const result = response.json();
-            alert('Failed to edit review: ' + (result.error || "Unknown error."));
-        }
-    } catch (error){
-        console.error('Network error during update:', error);
-        alert("Network error. Please try again.");
-    }
-}
 
 // async function updateRoleOld(userId){
 //     const answer = prompt('Enter a new role (0 for admin, 1 for PM, ...)');
