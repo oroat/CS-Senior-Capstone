@@ -8,6 +8,7 @@ const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
 const ToolController = require('./controller/ToolController');
 const MaterialController = require('./controller/MaterialController');
+const ShipmentController = require('./controller/ShipmentController');
 
 
 const app = express();
