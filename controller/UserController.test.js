@@ -156,31 +156,29 @@ test('Failed to delete user', async function(){
 
 test('Update role', async function(){
     let req = {
-        params: {id: 'id'}, 
-        body: {role: 2}
+        body: {usersdropdown: 'id', rolesdropdown: 2}
     };
-    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn(), redirect: jest.fn()};
 
     let updatedUser = await controller.updateRole(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.params.id, req.body);
+    expect(dao.update).toHaveBeenCalledWith(req.body.usersdropdown, {role: req.body.rolesdropdown});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedUser});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedUser, redirect: '/users.html'});
 });
 
 test('Fail to update role', async function(){
     let req = {
-        params: {id: 'id'}, 
-        body: {role: 2}
+        body: {usersdropdown: 'id', rolesdropdown: 2}
     };
-    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn(), redirect: jest.fn()};
     let error = {message: 'DB error'};
 
     dao.update = jest.fn().mockRejectedValue(new Error('DB error'));
     
     await controller.updateRole(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.params.id, req.body);
+    expect(dao.update).toHaveBeenCalledWith(req.body.usersdropdown, {role: req.body.rolesdropdown});
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
 })
