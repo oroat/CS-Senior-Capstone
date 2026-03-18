@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CoolSys - Shipments</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/shipments.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+
+    <style>
+        .bborder { border: 3px solid #27f5da; }
+        .center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+
+        /* Searchable dropdown */
+        .search-select-wrapper { position: relative; min-width: 260px; }
+        .search-select-wrapper input { width: 100%; }
+        .search-dropdown-list {
+            display: none;
+            position: absolute;
+            z-index: 999;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 0 0 4px 4px;
+            max-height: 180px;
+            overflow-y: auto;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .search-dropdown-list.open { display: block; }
+        .search-dropdown-list li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style: none;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .search-dropdown-list li:hover { background-color: #e9f7fd; }
+        .search-dropdown-list li.no-results { color: #999; cursor: default; font-style: italic; }
+        .selected-badge {
+            display: inline-block;
+            background: #27f5da22;
+            border: 1px solid #27f5da;
+            border-radius: 4px;
+            padding: 3px 10px;
+            margin-top: 5px;
+            font-size: 0.875rem;
+            color: #333;
+        }
+
+        /* Staged materials */
+        .material-check-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .material-check-row:last-child { border-bottom: none; }
+
+        .section-card {
+            background-color: #b8e5ff !important;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px auto;
+        }
+
+        .header-row { font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px; }
+        .shipment-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<div class="container">
+    <div class="row"><div class="col-md-8" id="msg-display"></div></div>
+</div>
+
+<!-- LOG NEW SHIPMENT -->
+<div class="container section-card bborder">
+    <h1 class="display-6">Log New Shipment</h1>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Sender</label></div>
+        <div class="col-auto">
+            <input type="text" class="form-control" id="senderInput" placeholder="Company or person name" style="min-width:260px;">
+        </div>
+    </div>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Date Received</label></div>
+        <div class="col-auto">
+            <input type="date" class="form-control" id="dtRecvdInput" style="min-width:260px;">
+        </div>
+    </div>
+
+    <!-- Project search -->
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Project</label></div>
+        <div class="col-auto">
+            <div class="search-select-wrapper">
+                <input type="text" class="form-control" id="projectSearch" placeholder="Search by project name..." autocomplete="off"
+                    oninput="filterList('projectSearch','projectList',allProjects,'name',selectProject)"
+                    onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
+                <ul class="search-dropdown-list" id="projectList"></ul>
+            </div>
+            <span class="selected-badge" id="projectBadge" style="display:none;"></span>
+            <input type="hidden" id="selectedProjectId">
+        </div>
+    </div>
+
+    <!-- Recipient search by email -->
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Recipient</label></div>
+        <div class="col-auto">
+            <div class="search-select-wrapper">
+                <input type="text" class="form-control" id="recipSearch" placeholder="Search by email..." autocomplete="off"
+                    oninput="filterList('recipSearch','recipList',allUsers,'email',selectRecip)"
+                    onfocus="openList('recipList')" onblur="closeListDelayed('recipList')">
+                <ul class="search-dropdown-list" id="recipList"></ul>
+            </div>
+            <span class="selected-badge" id="recipBadge" style="display:none;"></span>
+            <input type="hidden" id="selectedRecipId">
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Materials checklist -->
+    <h5 style="margin:10px 0 2px 0;">Materials Received</h5>
+    <small class="text-muted" style="margin-left:10px;">Select a project to load its materials, check each one received and enter the quantity</small>
+
+    <div style="margin:10px; background:white; border-radius:4px; border:1px solid #ced4da; min-height:60px; padding:8px;" id="materialChecklist">
+        <p class="text-muted" style="padding:10px;">Select a project to load its materials.</p>
+    </div>
+
+    <div class="text-center" style="margin:15px 10px 5px;">
+        <button class="btn btn-primary" onclick="createShipment()">Log Shipment</button>
+        <button class="btn btn-outline-secondary ms-2" onclick="clearForm()">Clear</button>
+    </div>
+</div>
+
+<!-- SHIPMENTS TABLE -->
+<div class="container text-center" style="margin-top:20px;">
+    <h2 class="display-6" style="text-align:left; margin-bottom:10px;">All Shipments</h2>
+    <div class="row header-row">
+        <div class="col-2">Sender</div>
+        <div class="col-2">Project</div>
+        <div class="col-2">Recipient</div>
+        <div class="col-2">Date Received</div>
+        <div class="col-3">Materials</div>
+        <div class="col-1">Action</div>
+    </div>
+    <div id="shipmentList"></div>
+</div>
+
+<!-- FILTER  -->
+<div class="container-sm center section-card" style="max-width:500px;">
+    <h5>Filter Shipments by Sender</h5>
+    <div class="filter-input-group text-center">
+        <input type="text" class="form-control" style="margin:10px;" id="filteredSender" placeholder="Enter sender name...">
+        <button class="btn btn-info" style="margin:10px;" onclick="viewShipments(true)">Apply Filter</button>
+        <button class="btn btn-info" onclick="viewShipments(false)">Clear Filter</button>
+    </div>
+</div>
+
+<!--  UPDATE SHIPMENT  -->
+<div class="container section-card bborder">
+    <h1 class="display-6">Update Shipment</h1>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Shipment</label></div>
+        <div class="col-auto">
+            <select class="form-select" id="updateShipmentDropdown" onchange="populateUpdateForm()" style="min-width:260px;">
+                <option value="" selected>Choose...</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Sender</label></div>
+        <div class="col-auto">
+            <input type="text" class="form-control" id="updateSender" placeholder="Sender" style="min-width:260px;">
+        </div>
+    </div>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Date Received</label></div>
+        <div class="col-auto">
+            <input type="date" class="form-control" id="updateDt" style="min-width:260px;">
+        </div>
+    </div>
+
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Recipient</label></div>
+        <div class="col-auto">
+            <div class="search-select-wrapper">
+                <input type="text" class="form-control" id="updateRecipSearch" placeholder="Search by email..." autocomplete="off"
+                    oninput="filterList('updateRecipSearch','updateRecipList',allUsers,'email',selectUpdateRecip)"
+                    onfocus="openList('updateRecipList')" onblur="closeListDelayed('updateRecipList')">
+                <ul class="search-dropdown-list" id="updateRecipList"></ul>
+            </div>
+            <span class="selected-badge" id="updateRecipBadge" style="display:none;"></span>
+            <input type="hidden" id="updateSelectedRecipId">
+        </div>
+    </div>
+
+    <div class="text-center" style="margin:10px;">
+        <button class="btn btn-secondary" onclick="updateShipment()">Update Shipment</button>
+    </div>
+</div>
+
+<div id="footer"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#header").load('header.html');
+        $('#footer').load('footer.html');
+    });
+</script>
+
+</body>
+</html>
