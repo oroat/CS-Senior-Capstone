@@ -25,38 +25,39 @@
         
         <div id="header"></div>
 
-    <div class="container-sm center">
+        <div class="row">
+            <div class="col-6 container rounded" style="margin: 20px; background-color:#b8e5ff !important;">
 
-        <h1>Login</h1>
+                <h1 class="display-6">Login</h1>
+                <form action="login" method="post">
 
-        <form action="login" method="post">
-
-            <div style="margin: 10px">
-                <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
-            </div>
+                    <div style="margin: 10px">
+                        <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    </div>
+            
+                    <div style="margin: 10px">
+                        <label for="pass" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
+                    </div>  
     
-            <div style="margin: 10px">
-                <label for="pass" class="form-label">Password</label>
-                <input type="password" class="form-control" id="pass" name="pass" placeholder="password" required>
-            </div>  
-
-            <div class="text-center"style="margin: 10px">
-                <button type="submit" class="btn btn-primary">Login</button>
+                    <div class="text-center"style="margin: 10px">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+    
+                </form>
             </div>
-
-        </form>
+        </div>
 
         <div class="container">
             <div class="row">
-              <div class="col-md-6" id="msg-display">
-                  <!-- Error messages will be dynamically displayed here -->
-              </div>
+                <div class="col-md-6" id="msg-display">
+                    <!-- Error messages will be dynamically displayed here -->
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="footer"></div>
+        <div id="footer"></div>
 
     </body>
     
