@@ -60,7 +60,6 @@ exports.deleteUser = async function(req, res){
 exports.updateRole = async function(req, res){
     const id = req.body.usersdropdown;
     const newRole = req.body.rolesdropdown;
-    console.log(req.body);
     
     try{
         const updatedUser = await UserDao.update(id, {role: newRole});
