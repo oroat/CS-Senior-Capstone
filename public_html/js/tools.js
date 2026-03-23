@@ -154,28 +154,35 @@ async function updateTool(){
     }
 }
 
-async function addUserToTool(){
+async function addUserToTool(event){
+    event.preventDefault();
     let toolId = document.getElementById("toolsdropdown2").value;
     let userId = document.getElementById("usersdropdown").value;
 
     let updates = {inUse: true, usedBy: userId};
 
-    try{
-        const response = await fetch(`/updatetool/${toolId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
+    const response = await fetch(`/updatetool`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id: toolId, updates})
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Update Successful');
+        window.location.href = data.redirect; 
+    })
+    .catch(error => {
+        alert(`Error updating tool`);
+    });
 
-        if (response.ok){
-            alert('Tool updated successfully. Please refresh page to see changes.');
-        } else{
-            const result = response.json();
-            alert('Failed to update tool: ' + (result.error || "Unknown error."));
-        }
-    } catch (error){
-        alert(`Network error during update: ${error}`);
-    }
+        // if (response.ok){
+        //     alert('Tool updated successfully. Please refresh page to see changes.');
+        // } else{
+        //     const result = response.json();
+        //     alert('Failed to update tool: ' + (result.error || "Unknown error."));
+        // }
+    
+        // alert(`Network error during update: ${error}`);
 }
 
 async function deallocateTool(tool, user){

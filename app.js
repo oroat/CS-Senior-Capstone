@@ -85,7 +85,7 @@ app.get('/tools', ToolController.getAllTools);
 
 app.delete('/deletetool/:id', ToolController.deleteTool);
 
-app.post('/updatetool/:id', ToolController.update);
+app.post('/updatetool', ToolController.update);
 
 app.get('/tools/:serial', ToolController.getToolBySerial);
 

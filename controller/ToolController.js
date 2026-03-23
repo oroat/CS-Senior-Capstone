@@ -33,21 +33,23 @@ exports.deleteTool = async function(req, res){
 }
 
 exports.update = async function(req, res){
-    const {id} = req.params;
+    const id = req.body.id;
     const updates = {};
 
     //might need to make the conditional check against "" instead of null
-    if (req.body.serial != null) updates.serialNum = req.body.serial;
-    if (req.body.model !=  null) updates.model = req.body.model;
-    if (req.body.inUse != null) updates.inUse = req.body.inUse;
-    if (req.body.inUse == false) updates.usedBy = null;
-    if (req.body.usedBy != null) updates.usedBy = req.body.usedBy;
+    if (req.body.updates.serial != null) updates.serialNum = req.body.udpates.serial;
+    if (req.body.updates.model !=  null) updates.model = req.body.updates.model;
+    if (req.body.updates.inUse != null) updates.inUse = req.body.updates.inUse;
+    if (req.body.updates.inUse == false) updates.usedBy = null;
+    if (req.body.updates.usedBy != null) updates.usedBy = req.body.updates.usedBy;
     
     try{
         const updatedTool = await ToolDao.update(id, updates);
-        res.status(200).json({success: true, updatedTool});
+        res.status(200);
+        res.json({success: true, updatedTool, redirect: '/tools.html'});
     } catch (error){
-        res.status(500).json({error: "Failed to update user role", details: error.message});
+        res.status(500);
+        res.json({error: "Failed to update user role", details: error.message});
     }
 }
 
