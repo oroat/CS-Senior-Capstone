@@ -90,48 +90,50 @@ test('Error in deleting tool', async function(){
 test('Update tool', async function(){
     let req = {
         params: {id: 'id'}, 
-        body: {serial: 'A234',
-                model: 'leak detector',
-                inUse: true,
-                usedBy: 'id2'
+        body: {id: 'id',
+                updates: {serial: 'A234',
+                            model: 'leak detector',
+                            inUse: true,
+                            usedBy: 'id2'}
         }
     };
     let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
 
     let updatedTool = await controller.update(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.params.id, {serialNum: req.body.serial,
-                                                            model: req.body.model,
-                                                            inUse: req.body.inUse,
-                                                            usedBy: req.body.usedBy});
+    expect(dao.update).toHaveBeenCalledWith(req.body.id, {serialNum: req.body.updates.serial,
+                                                            model: req.body.updates.model,
+                                                            inUse: req.body.updates.inUse,
+                                                            usedBy: req.body.updates.usedBy});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: '/tools.html'});
 });
 
 test('Update only serial number & model', async function(){
-    let req = {
-        params: {id: 'id'}, 
-        body: {serial: 'A234',
-                model: 'leak detector',
+    let req = { 
+        body: {id: 'id',
+            updates:{
+            serial: 'A234',
+                model: 'leak detector',}
         }
     };
     let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
 
     let updatedTool = await controller.update(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.params.id, {serialNum: req.body.serial,
-                                                            model: req.body.model});
+    expect(dao.update).toHaveBeenCalledWith(req.body.id, {serialNum: req.body.updates.serial,
+                                                            model: req.body.updates.model});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: '/tools.html'});
 });
 
 test('Error in updating tool', async function(){
-    let req = {
-        params: {id: 'id'}, 
-        body: {serial: 'A234',
+    let req = { 
+        body: {id: 'id',
+                updates: {serial: 'A234',
                 model: 'leak detector',
                 inUse: true,
-                usedBy: 'id2'
+                usedBy: 'id2'}
         }
     };
     let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
@@ -141,10 +143,10 @@ test('Error in updating tool', async function(){
 
     let updatedTool = await controller.update(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.params.id, {serialNum: req.body.serial,
-                                                            model: req.body.model,
-                                                            inUse: req.body.inUse,
-                                                            usedBy: req.body.usedBy});
+    expect(dao.update).toHaveBeenCalledWith(req.body.id, {serialNum: req.body.updates.serial,
+                                                            model: req.body.updates.model,
+                                                            inUse: req.body.updates.inUse,
+                                                            usedBy: req.body.updates.usedBy});
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
 });
