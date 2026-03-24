@@ -151,16 +151,6 @@ async function updateTool(event){
     .catch(error => {
         alert(`Error updating tool`);
     });
-
-    //     if (response.ok){
-    //         alert('Tool updated successfully. Please refresh page to see changes.');
-    //     } else{
-    //         const result = response.json();
-    //         alert('Failed to update tool: ' + (result.error || "Unknown error."));
-    //     }
-    
-    // alert(`Network error during update: ${error}`);
-    
 }
 
 async function addUserToTool(event){
@@ -183,19 +173,9 @@ async function addUserToTool(event){
     .catch(error => {
         alert(`Error updating tool`);
     });
-
-        // if (response.ok){
-        //     alert('Tool updated successfully. Please refresh page to see changes.');
-        // } else{
-        //     const result = response.json();
-        //     alert('Failed to update tool: ' + (result.error || "Unknown error."));
-        // }
-    
-        // alert(`Network error during update: ${error}`);
 }
 
 async function deallocateTool(tool, user){
-    try{
         if (!tool.inUse){
             alert(`${tool.model} (${tool.serialNum}) not allocated`);
             return;
@@ -204,22 +184,20 @@ async function deallocateTool(tool, user){
 
         let updates = {inUse: false};
 
-        const response = await fetch(`/updatetool/${tool._id}`, {
+        const response = await fetch(`/updatetool`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
+            body: JSON.stringify({id: tool._id, updates})
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Update Successful');
+            window.location.href = data.redirect; 
+        })
+        .catch(error => {
+            alert(`Error deallocating tool: ${error.message}`);
         });
-
-        if (response.ok){
-            alert('Tool updated successfully. Please refresh page to see changes.');
-        } else{
-            const result = response.json();
-            alert('Failed to update tool: ' + (result.error || "Unknown error."));
-        }
-    } catch (error){
-        alert(`Error during update: ${error}`);
     }
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
     await viewTools(false);

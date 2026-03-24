@@ -35,7 +35,6 @@ exports.deleteTool = async function(req, res){
 exports.update = async function(req, res){
     const id = req.body.id;
     const updates = {};
-    console.log(req.body);
 
     //might need to make the conditional check against "" instead of null
     if (req.body.updates.serial != null) updates.serialNum = req.body.updates.serial;
