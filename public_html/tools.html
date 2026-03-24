@@ -146,7 +146,7 @@
 
         <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
             <h1 class="display-6">Update Tool</h1>
-            <form id="updateform">
+            <form id="updateform" action="updatetool" method="post" onsubmit="updateTool(event)">
 
                 <div class="row">
 
@@ -184,7 +184,7 @@
                 </div>
                 
                 <div class="text-center"style="margin: 10px">
-                    <button type="submit" onclick="updateTool()" class="btn btn-secondary">Update Tool</button>
+                    <button type="submit" class="btn btn-secondary">Update Tool</button>
                 </div>
             </form>
 
