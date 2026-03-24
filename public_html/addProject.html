@@ -10,7 +10,60 @@
 
         <div id="header"></div>
 
-        <h2>Create New Project</h2>
+        <div class="row">
+            <div class="col-6 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
+                <h2 class="display-6">Create New Project</h2>
+
+                <form id="projectForm">
+
+                    <div class="row" style="margin: 10px" >
+                        <div class="col-4 justify-content-end">
+                            <label for="name" class="form-label">Project Name</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <input type="text" id="name" name="name" placeholder="Project Name" required>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin: 10px" >
+                        <div class="col-4 justify-content-end">
+                            <label for="location" class="form-label">Location</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <input type="text" id="location" name="location" placeholder="Location" required>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin: 10px" >
+                        <div class="col-4 justify-content-end">
+                            <label for="manager" class="form-label">Project Manager</label>
+                        </div>
+            
+                        <div class="col-auto">
+                            <select class="custom-select" id="manager" name = "manager"required>
+                                <option value="">-- Select a Manager --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form mb-3">
+                        <label for="workers">Assign Workers (Hold Ctrl/Cmd)</label><br>
+                        <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;">
+                        </select>
+                    </div>
+
+                    <div class="text-center" style="margin: 10px">
+                        <button class="btn btn-primary" type="submit">Create Project</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- <h2>Create New Project</h2>
 
         <form id="projectForm">
             <div class="form mb-3">
@@ -39,7 +92,7 @@
             <div class="text-center">
                 <button type="submit">Create Project</button>
             </div>
-        </form>
+        </form> -->
 
         <hr>
 
