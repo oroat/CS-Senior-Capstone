@@ -79,7 +79,7 @@ async function addToolRow(body, tool){
     popupBtn.classList.add('btn');
     popupBtn.classList.add('btn-primary');
     popupBtn.innerHTML = 'Open Popup';
-    popupBtn.onclick = () => openPopup();
+    popupBtn.onclick = () => openPopup(tool);
     buttonTd.appendChild(popupBtn);
 
     newRow.appendChild(serialInput);
@@ -92,8 +92,29 @@ async function addToolRow(body, tool){
 
 
 
-function openPopup(){
+async function openPopup(tool){
     let popup = document.getElementById('popup');
+    popup.innerHTML = '';
+
+    // let logo = document.createElement('img');
+    // logo.setAttribute('src', '/public_html/images/CoolSys-Logo.png')
+    // // logo.src = "images/CoolSys-Logo.png";
+    // popup
+
+    let title = document.createElement('h2');
+    title.innerHTML = 'Tool';
+    popup.appendChild(title);
+
+    let info = document.createElement("p");
+    info.innerHTML = `${tool.serialNum}, ${tool.model}`;
+    popup.appendChild(info);
+
+    let closeBtn = document.createElement('button');
+    closeBtn.innerHTML = 'Close';
+    closeBtn.onclick = () => closePopup();
+
+    popup.appendChild(closeBtn);
+
     popup.classList.add('open-popup');
 }
 function closePopup(){
