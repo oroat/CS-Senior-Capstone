@@ -62,7 +62,7 @@ async function addToolRow(body, tool){
 
     deleteBtn.classList.add('btn');
     deleteBtn.classList.add('btn-danger');
-    deleteBtn.style.margin = "10px";
+    deleteBtn.style.marginRight = "10px";
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.onclick = () => deleteTool(tool);
     buttonTd.appendChild(deleteBtn);
@@ -70,9 +70,17 @@ async function addToolRow(body, tool){
     const deallocateBtn = document.createElement('button');
     deallocateBtn.classList.add('btn');
     deallocateBtn.classList.add('btn-warning');
+    deallocateBtn.style.marginRight = "10px";
     deallocateBtn.innerHTML = 'Deallocate';
     deallocateBtn.onclick = () => deallocateTool(tool, user);
     buttonTd.appendChild(deallocateBtn);
+
+    const popupBtn = document.createElement('button');
+    popupBtn.classList.add('btn');
+    popupBtn.classList.add('btn-primary');
+    popupBtn.innerHTML = 'Open Popup';
+    popupBtn.onclick = () => openPopup();
+    buttonTd.appendChild(popupBtn);
 
     newRow.appendChild(serialInput);
     newRow.appendChild(modelInput);
@@ -80,6 +88,17 @@ async function addToolRow(body, tool){
     newRow.appendChild(buttonTd);
 
     body.appendChild(newRow);
+}
+
+
+
+function openPopup(){
+    let popup = document.getElementById('popup');
+    popup.classList.add('open-popup');
+}
+function closePopup(){
+    let popup = document.getElementById('popup');
+    popup.classList.remove('open-popup')
 }
 
 async function deleteTool(tool){

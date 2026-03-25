@@ -21,6 +21,51 @@
             align-items: center;
             margin: 10px
             }
+
+            .popup{
+                width: 400px;
+                background: #fff;
+                /* background: #E7F3FE; */
+                border-radius: 6px;
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%,-50%) scale(0.1);
+                text-align: center;
+                padding: 0 30px 30px;
+                color: #333;
+                visibility: hidden;
+                transition: transform 0.4s, top 0.4s;
+            }
+            .open-popup{
+                visibility: visible;
+                top: 50%;
+                transform: translate(-50%,-50%) scale(1);
+            }
+            .popup img{
+                width: 100px;
+                margin-top: -50px;
+                border-radius: 50%;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+            .popup h2{
+                font-size: 38px;
+                font-weight: 500;
+                margin: 30px 0 10px;
+            }
+            .popup button{
+                width: 100%;
+                margin-top: 50px;
+                padding: 10px 0;
+                background: #6fd649;
+                color: #fff;
+                outline: none;
+                font-size: 18px;
+                border-radius: 4px;
+                cursor: pointer;
+                box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+            }
+
         </style>
 
         <script>
@@ -142,6 +187,16 @@
                 </tbody>
 
             </table>
+        </div>
+
+        <div class="container">
+            <!-- <button type="submit" class="btn btn-primary" onclick="openPopup()">Submit</button> -->
+            <div class="popup" id="popup">
+                <!-- <img src="./images/checkmark.png"> -->
+                <h2>Thank You!</h2>
+                <p>Your details have been succesfully submitted! Thanks!</p>
+                <button type="button" onclick="closePopup()">OK</button>
+            </div>
         </div>
 
         <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
