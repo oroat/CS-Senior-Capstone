@@ -93,21 +93,60 @@ async function addToolRow(body, tool){
 
 
 async function openPopup(tool){
+    let user;
+    try{
+        if (tool.inUse){
+            const response = await fetch(`/users/${tool.usedBy}`);
+            user = await response.json();
+        }
+    } catch (error){
+        alert(`Network error: ${error}`);
+    }
+
     let popup = document.getElementById('popup');
     popup.innerHTML = '';
 
-    // let logo = document.createElement('img');
-    // logo.setAttribute('src', '/public_html/images/CoolSys-Logo.png')
-    // // logo.src = "images/CoolSys-Logo.png";
-    // popup
+    let logo = document.createElement('img');
+    logo.src = "./images/CoolSys-Logo.png";
+    popup.appendChild(logo);
 
     let title = document.createElement('h2');
     title.innerHTML = 'Tool';
     popup.appendChild(title);
 
-    let info = document.createElement("p");
-    info.innerHTML = `${tool.serialNum}, ${tool.model}`;
-    popup.appendChild(info);
+    let serial = document.createElement('p');
+
+    let serialTitle = document.createElement('b');
+    serialTitle.innerHTML = 'Serial Number: ';
+
+    let serialBody = document.createElement('span');
+    serialBody.innerHTML = `${tool.serialNum}`;
+
+    serial.appendChild(serialTitle);
+    serial.appendChild(serialBody);
+
+    let model = document.createElement('p');
+
+    let modelTitle = document.createElement('b');
+    modelTitle.innerHTML = 'Model: ';
+
+    let modelBody = document.createElement('span');
+    modelBody.innerHTML = `${tool.model}`;
+
+    model.appendChild(modelTitle);
+    model.appendChild(modelBody);
+
+    let inUse = document.createElement('p');
+    if (tool.inUse){
+        inUse.innerHTML = `Currently being used by ${user.name}`;
+    } else{
+        inUse.innerHTML = 'Currently not being used';
+    }
+
+    
+    popup.appendChild(serial);
+    popup.appendChild(model);
+    popup.appendChild(inUse);
 
     let closeBtn = document.createElement('button');
     closeBtn.innerHTML = 'Close';
