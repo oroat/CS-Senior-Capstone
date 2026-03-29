@@ -71,6 +71,43 @@
                 display: inline-flex;
             }
 
+            .search-select-wrapper { position: relative; min-width: 260px; }
+        .search-select-wrapper input { width: 100%; }
+        .search-dropdown-list {
+            display: none;
+            position: absolute;
+            z-index: 999;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 0 0 4px 4px;
+            max-height: 180px;
+            overflow-y: auto;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .search-dropdown-list.open { display: block; }
+        .search-dropdown-list li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style: none;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .search-dropdown-list li:hover { background-color: #e9f7fd; }
+        .search-dropdown-list li.no-results { color: #999; cursor: default; font-style: italic; }
+        .selected-badge {
+            display: inline-block;
+            /* background: #27f5da22; */
+            background: white;
+            border: 1px solid white;
+            border: 1px solid #27f5da;
+            border-radius: 4px;
+            padding: 3px 10px;
+            margin: 10px;
+            font-size: 0.875rem;
+            color: #333;
+        }
+
         </style>
 
         <script>
@@ -244,14 +281,33 @@
 
         </div>
 
-        <div class="search-select-wrapper">
-            <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off"
-                oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
-                onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
-            <ul class="search-dropdown-list" id="toolList"></ul>
+        <div class="container center rounded" style="background-color:#b8e5ff !important;">
+            <h1 class="display-6">Search for Tool</h1>
+
+            <div class="row">
+
+                <form>
+                    <div class="search-select-wrapper">
+                        <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" required
+                            oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
+                            onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+                        <ul class="search-dropdown-list" id="toolList"></ul>
+                    </div>
+                    <span class="selected-badge" id="toolBadge" style="display:none;"></span>
+                    <input type="hidden" id="selectedToolId">
+
+                    <div class="text-center" style="margin: 5px">
+                        <button class="btn btn-secondary" onclick="test(event)">Open Popup</button>
+                    </div>
+
+                    
+                </form>
+                
+            </div>
+
         </div>
-        <span class="selected-badge" id="toolBadge" style="display:none;"></span>
-        <input type="hidden" id="selectedToolId">
+
+        
 
 
         <div id="footer"></div>

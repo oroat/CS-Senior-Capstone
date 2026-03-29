@@ -41,6 +41,12 @@ function selectRecip(tool) {
     document.getElementById('toolList').classList.remove('open');
 }
 
+function test(event){
+    event.preventDefault();
+    let id = document.getElementById('selectedToolId').value;
+    alert(id);
+}
+
 async function viewTools(filterApplied){
     // if (document.getElementById('toolList') == null){
     //     return;
