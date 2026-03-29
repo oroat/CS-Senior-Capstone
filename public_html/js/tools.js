@@ -1,3 +1,46 @@
+let allTools = [];
+
+function openList(listId) {
+    document.getElementById(listId).classList.add('open');
+}
+
+function closeListDelayed(listId) {
+    setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
+}
+
+function filterList(inputId, listId, dataArr, searchField, onSelect) {
+    const query = document.getElementById(inputId).value.toLowerCase();
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    list.classList.add('open');
+
+    const filtered = dataArr.filter(item =>
+        (item[searchField] || '').toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<li class="no-results">No results found</li>';
+        return;
+    }
+
+    for (const item of filtered) {
+        const li = document.createElement('li');
+        li.textContent = searchField === 'serialNum'
+            ? `${item.serialNum} — ${item.model}`
+            : item.serialNum;
+        li.onclick = () => onSelect(item);
+        list.appendChild(li);
+    }
+}
+
+function selectRecip(tool) {
+    document.getElementById('selectedToolId').value = tool._id;
+    document.getElementById('toolSearch').value = tool.serialNum;
+    document.getElementById('toolBadge').textContent = '✓ ' + tool.serialNum;
+    document.getElementById('toolBadge').style.display = 'inline-block';
+    document.getElementById('toolList').classList.remove('open');
+}
+
 async function viewTools(filterApplied){
     // if (document.getElementById('toolList') == null){
     //     return;
@@ -89,7 +132,6 @@ async function addToolRow(body, tool){
 
     body.appendChild(newRow);
 }
-
 
 
 async function openPopup(tool){
@@ -281,4 +323,13 @@ async function deallocateTool(tool, user){
 document.addEventListener('DOMContentLoaded', async () => {
     await viewTools(false);
     await populateToolDropdowns();
+
+    try {
+        const toolsRes = await fetch('/tools');
+        allTools = await toolsRes.json();
+    } catch (e) {
+        console.error('Error loading init data:', e);
+        showMsg('Failed to load users/projects.', 'danger');
+    }
+
 });

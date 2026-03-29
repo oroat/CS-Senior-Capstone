@@ -244,6 +244,15 @@
 
         </div>
 
+        <div class="search-select-wrapper">
+            <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off"
+                oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
+                onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+            <ul class="search-dropdown-list" id="toolList"></ul>
+        </div>
+        <span class="selected-badge" id="toolBadge" style="display:none;"></span>
+        <input type="hidden" id="selectedToolId">
+
 
         <div id="footer"></div>
         
