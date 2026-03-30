@@ -41,10 +41,25 @@ function selectRecip(tool) {
     document.getElementById('toolList').classList.remove('open');
 }
 
-function test(event){
+async function test(event){
     event.preventDefault();
     let id = document.getElementById('selectedToolId').value;
-    alert(id);
+    let tool;
+    let user;
+    if (id == '') alert('no tool selected');
+    else{
+        try{
+            let response = await fetch(`/tools/${id}`);
+            tool = await response.json();
+            if (tool.inUse){
+                const response = await fetch(`/users/${tool.usedBy}`);
+                user = await response.json();
+            }
+            await openPopup(tool, user);
+        }catch (error){
+            alert(`${error}`);
+        }
+    }
 }
 
 async function viewTools(filterApplied){
@@ -128,7 +143,7 @@ async function addToolRow(body, tool){
     popupBtn.classList.add('btn');
     popupBtn.classList.add('btn-primary');
     popupBtn.innerHTML = 'Open Popup';
-    popupBtn.onclick = () => openPopup(tool);
+    //popupBtn.onclick = () => openPopup(tool);
     buttonTd.appendChild(popupBtn);
 
     newRow.appendChild(serialInput);
@@ -140,16 +155,7 @@ async function addToolRow(body, tool){
 }
 
 
-async function openPopup(tool){
-    let user;
-    try{
-        if (tool.inUse){
-            const response = await fetch(`/users/${tool.usedBy}`);
-            user = await response.json();
-        }
-    } catch (error){
-        alert(`Network error: ${error}`);
-    }
+async function openPopup(tool, user){
 
     let popup = document.getElementById('popup');
     popup.innerHTML = '';

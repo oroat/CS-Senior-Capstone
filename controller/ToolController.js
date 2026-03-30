@@ -60,8 +60,19 @@ exports.getToolBySerial = async function(req, res){
         res.json(tool);
 
     } catch(error){
-        res.status(500)
+        res.status(500);
         res.json({error: "Failed to find tool", details: error.message});
+    }
+}
+
+exports.getToolById = async function(req, res){
+    try{
+        const tool = await ToolDao.read(req.params.id);
+        res.status(200);
+        res.json(tool);
+    } catch(error){
+        res.status(500);
+        res.json({error: "Failed to find tool", details: error.message})
     }
 }
 
