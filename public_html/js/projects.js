@@ -1,3 +1,5 @@
+let allProjects = [];
+
 $(document).ready(function () {
     
     function loadUserDropdowns() {
@@ -21,7 +23,7 @@ $(document).ready(function () {
 
     function loadProjects() {
         $.get('/projects', function (projects) {
-            const list = $('#projectList');
+            const list = $('#projectList2');
             list.empty();
             
             projects.forEach(project => {
@@ -95,3 +97,63 @@ function deleteProject(id) {
         });
     }
 }
+
+function openList(listId) {
+    document.getElementById(listId).classList.add('open');
+}
+
+function closeListDelayed(listId) {
+    setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
+}
+
+function filterList(inputId, listId, dataArr, searchField, onSelect) {
+    const query = document.getElementById(inputId).value.toLowerCase();
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    list.classList.add('open');
+
+    const filtered = dataArr.filter(item =>
+        (item[searchField] || '').toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<li class="no-results">No results found</li>';
+        return;
+    }
+
+    for (const item of filtered) {
+        const li = document.createElement('li');
+        li.textContent = searchField === 'email'
+            ? `${item.name} — ${item.email}`
+            : item.name;
+        li.onclick = () => onSelect(item);
+        list.appendChild(li);
+    }
+}
+
+async function selectProject(project) {
+    document.getElementById('selectedProjectId').value = project._id;
+    document.getElementById('projectSearch').value = project.name;
+    document.getElementById('projectBadge').textContent = '✓ ' + project.name;
+    document.getElementById('projectBadge').style.display = 'inline-block';
+    document.getElementById('projectList').classList.remove('open');
+    await loadProjectMaterials(project._id);
+}
+
+function clearToolSearch() {
+    ['toolSearch', 'selectedToolId',].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('toolBadge').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const projectsRes = await fetch('/projects');
+        allProjects = await projectsRes.json();
+    } catch (e) {
+        console.error('Error loading init data:', e);
+        showMsg('Failed to load projects.', 'danger');
+    }
+});
