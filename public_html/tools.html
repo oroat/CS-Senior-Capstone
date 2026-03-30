@@ -10,9 +10,7 @@
         <link rel="stylesheet" href="css/main.css">
         
         <style>
-            .bborder {
-                border: 3px solid #27f5da; 
-            }
+            
 
             .center {
             display: flex;
@@ -55,7 +53,7 @@
                 font-weight: 500;
                 margin: 30px 0 10px;
             }
-            .popup button{
+            .close{
                 width: 100%;
                 margin-top: 50px;
                 padding: 10px 0;
@@ -130,11 +128,11 @@
 
                 <div class="row" style="margin: 10px" >
                     <div class="col-4 justify-content-end">
-                        <label for="serial1" class="form-label">Serial Number</label>
+                        <label for="serial" class="form-label">Serial Number</label>
                     </div>
         
                     <div class="col-auto">
-                        <input type="text" class="form-control" id="serial1" name="serial1" placeholder="..." required>
+                        <input type="text" class="form-control" id="serial" name="serial" placeholder="..." required>
                     </div>
                 </div>
 
@@ -203,6 +201,28 @@
 
     </div>
 
+    <!-- SEARCH FOR TOOL -->
+    <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
+        <h1 class="display-6">Search for Tool</h1>
+
+        <div class="row">
+            <div class="search-select-wrapper">
+                <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" required
+                    oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
+                    onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+                <ul class="search-dropdown-list" id="toolList"></ul>
+            </div>
+            <span class="selected-badge" id="toolBadge" style="display:none;"></span>
+            <input type="hidden" id="selectedToolId">
+
+            <div class="text-center" style="margin: 5px">
+                <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
+                <button class="btn btn-outline-secondary ms-2" onclick="clearToolSearch()">Clear</button>
+            </div>
+        </div>
+
+    </div>
+
 
         <!-- <div class="container">
             <div class="row">
@@ -212,7 +232,7 @@
             </div>
          </div>  -->
 
-        <div class="container text-center">
+        <!-- <div class="container text-center">
 
             <table class="table table-hover">
                 <thead>
@@ -229,7 +249,7 @@
                 </tbody>
 
             </table>
-        </div>
+        </div> -->
 
         <div class="container">
             <div class="popup" id="popup"></div>
@@ -281,31 +301,7 @@
 
         </div>
 
-        <div class="container center rounded" style="background-color:#b8e5ff !important;">
-            <h1 class="display-6">Search for Tool</h1>
-
-            <div class="row">
-
-                <form>
-                    <div class="search-select-wrapper">
-                        <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" required
-                            oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
-                            onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
-                        <ul class="search-dropdown-list" id="toolList"></ul>
-                    </div>
-                    <span class="selected-badge" id="toolBadge" style="display:none;"></span>
-                    <input type="hidden" id="selectedToolId">
-
-                    <div class="text-center" style="margin: 5px">
-                        <button class="btn btn-secondary" onclick="test(event)">Open Popup</button>
-                    </div>
-
-                    
-                </form>
-                
-            </div>
-
-        </div>
+        
 
         
 

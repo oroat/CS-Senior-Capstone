@@ -41,11 +41,20 @@ function selectRecip(tool) {
     document.getElementById('toolList').classList.remove('open');
 }
 
-async function test(event){
+function clearToolSearch() {
+    ['toolSearch', 'selectedToolId',].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('toolBadge').style.display = 'none';
+}
+
+async function openPopup(event){
     event.preventDefault();
-    let id = document.getElementById('selectedToolId').value;
     let tool;
     let user;
+
+    let id = document.getElementById('selectedToolId').value;
     if (id == '') alert('no tool selected');
     else{
         try{
@@ -55,107 +64,14 @@ async function test(event){
                 const response = await fetch(`/users/${tool.usedBy}`);
                 user = await response.json();
             }
-            await openPopup(tool, user);
+            populatePopup(tool, user);
         }catch (error){
             alert(`${error}`);
         }
     }
 }
 
-async function viewTools(filterApplied){
-    // if (document.getElementById('toolList') == null){
-    //     return;
-    // }
-
-    try{
-        const response = await fetch('/tools');
-
-        if (response.ok) {
-            const tools = await response.json();
-
-            toolBody = document.getElementById('toolTableBody');
-
-            toolList = document.getElementById('toolList');
-            //filter = document.getElementById("filteredRole").value;
-            toolBody.innerHTML = '';
-
-            //if (!filterApplied) document.getElementById('filteredRole').value = '';
-
-            for (const tool of tools){
-
-                //if (!filterApplied || filter == role){
-                if (!filterApplied){
-                    await addToolRow(toolBody, tool);
-            }}   
-            //FILTER STUFF LEFT IN CASE A FILTER IS ADDED IN THE FUTURE
-        }
-        } catch (error){
-            console.error('Network error during review retrieval:', error); 
-            alert(`Network error: ${error}`);
-        }   
-}
-
-async function addToolRow(body, tool){
-    let user;
-    try{
-        if (tool.inUse){
-            const response = await fetch(`/users/${tool.usedBy}`);
-            user = await response.json();
-        }
-    } catch (error){
-        alert(`Network error: ${error}`);
-    }
-
-    const newRow = document.createElement('tr');
-
-    const serialInput = document.createElement('td');
-    serialInput.innerHTML = tool.serialNum;
-
-    const modelInput = document.createElement('td');
-    modelInput.innerHTML = tool.model; 
-    
-    
-    const useInput = document.createElement('td');
-    useInput.innerHTML = `${tool.inUse}`;
-    if (tool.inUse) useInput.innerHTML += `, used by ${user.name}`;
-            
-    const buttonTd = document.createElement('td');
-    buttonTd.style.placeItems = 'center';
-
-    const deleteBtn = document.createElement('button');
-
-    deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-danger');
-    deleteBtn.style.marginRight = "10px";
-    deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteTool(tool);
-    buttonTd.appendChild(deleteBtn);
-
-    const deallocateBtn = document.createElement('button');
-    deallocateBtn.classList.add('btn');
-    deallocateBtn.classList.add('btn-warning');
-    deallocateBtn.style.marginRight = "10px";
-    deallocateBtn.innerHTML = 'Deallocate';
-    deallocateBtn.onclick = () => deallocateTool(tool, user);
-    buttonTd.appendChild(deallocateBtn);
-
-    const popupBtn = document.createElement('button');
-    popupBtn.classList.add('btn');
-    popupBtn.classList.add('btn-primary');
-    popupBtn.innerHTML = 'Open Popup';
-    //popupBtn.onclick = () => openPopup(tool);
-    buttonTd.appendChild(popupBtn);
-
-    newRow.appendChild(serialInput);
-    newRow.appendChild(modelInput);
-    newRow.appendChild(useInput);
-    newRow.appendChild(buttonTd);
-
-    body.appendChild(newRow);
-}
-
-
-async function openPopup(tool, user){
+function populatePopup(tool, user){
 
     let popup = document.getElementById('popup');
     popup.innerHTML = '';
@@ -164,6 +80,7 @@ async function openPopup(tool, user){
     logo.src = "./images/CoolSys-Logo.png";
     popup.appendChild(logo);
 
+    // TOOL INFO
     let title = document.createElement('h2');
     title.innerHTML = 'Tool';
     popup.appendChild(title);
@@ -197,12 +114,34 @@ async function openPopup(tool, user){
         inUse.innerHTML = 'Currently not being used';
     }
 
-    
+    // ACTION BUTTONS
+    const btnDiv = document.createElement('div');
+    btnDiv.classList.add('text-center');
+    btnDiv.style.margin = '5px';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn');
+    deleteBtn.classList.add('btn-danger');
+    deleteBtn.style.marginRight = "10px";
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = () => deleteTool(tool);
+    btnDiv.appendChild(deleteBtn);
+
+    const deallocateBtn = document.createElement('button');
+    deallocateBtn.classList.add('btn');
+    deallocateBtn.classList.add('btn-warning');
+    deallocateBtn.style.marginRight = "10px";
+    deallocateBtn.innerHTML = 'Deallocate';
+    deallocateBtn.onclick = () => deallocateTool(tool, user);
+    btnDiv.appendChild(deallocateBtn);
+
     popup.appendChild(serial);
     popup.appendChild(model);
     popup.appendChild(inUse);
+    popup.appendChild(btnDiv);
 
     let closeBtn = document.createElement('button');
+    closeBtn.classList.add('close')
     closeBtn.innerHTML = 'Close';
     closeBtn.onclick = () => closePopup();
 
@@ -210,6 +149,7 @@ async function openPopup(tool, user){
 
     popup.classList.add('open-popup');
 }
+
 function closePopup(){
     let popup = document.getElementById('popup');
     popup.classList.remove('open-popup')
@@ -222,13 +162,8 @@ async function deleteTool(tool){
         const response = await fetch(`/deletetool/${tool._id}`, {
             method: 'DELETE'
         });
+        window.location.reload();
 
-        if (response.ok) {
-            viewTools();
-        } else{
-            const result = await response.json();
-            alert("Failed to delete tool: " + (result.error || "Unknown error"));
-        }
     } catch (error){
         console.error('Error during delete: ', error);
         alert('Error. Please try again');
@@ -333,7 +268,6 @@ async function deallocateTool(tool, user){
     }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await viewTools(false);
     await populateToolDropdowns();
 
     try {
