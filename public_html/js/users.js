@@ -1,67 +1,152 @@
-async function viewUsers(filterApplied){
-    if (document.getElementById('userTableBody') == null){
+let allUsers = [];
+
+function openList(listId) {
+    document.getElementById(listId).classList.add('open');
+}
+
+function closeListDelayed(listId) {
+    setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
+}
+
+function filterList(inputId, listId, dataArr, searchField, onSelect) {
+    const query = document.getElementById(inputId).value.toLowerCase();
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    list.classList.add('open');
+
+    const filtered = dataArr.filter(item =>
+        (item[searchField] || '').toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<li class="no-results">No results found</li>';
         return;
     }
 
-    try{
-        const response = await fetch('/users');
-
-        if (response.ok) {
-            const users = await response.json();
-
-            userBody = document.getElementById('userTableBody');
-            
-            filter = document.getElementById("filteredRole").value;
-            userBody.innerHTML = '';
-
-            if (!filterApplied) document.getElementById('filteredRole').value = '';
-
-            for (const user of users){
-                if (!filterApplied || filter == await roleIntToString(user.role)){
-                    addUserRow(userBody, user);
-            }}
-        }
-        } catch (error){
-            console.error('Network error during review retrieval:', error); 
-            alert(`Network error: ${error}`);
-        }   
+    for (const item of filtered) {
+        const li = document.createElement('li');
+        li.textContent = searchField === 'email'
+            ? `${item.name} — ${item.email}`
+            : item.name;
+        li.onclick = () => onSelect(item);
+        list.appendChild(li);
+    }
 }
 
-async function addUserRow(body, user){
-     
-    const newRow = document.createElement('tr');
+function selectUser(user) {
+    document.getElementById('selectedUserId').value = user._id;
+    document.getElementById('userSearch').value = user.email;
+    document.getElementById('userBadge').textContent = '✓ ' + user.email;
+    document.getElementById('userBadge').style.display = 'inline-block';
+    document.getElementById('userList').classList.remove('open');
+}
 
-    const nameInput = document.createElement('td');
-    nameInput.innerHTML = user.name;
+function clearUserSearch() {
+    ['userSearch', 'selectedUserId',].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('userBadge').style.display = 'none';
+}
 
-    const roleInput = document.createElement('td');
-    let role = await roleIntToString(user.role);
-    roleInput.innerHTML = role;   
+async function openPopup(event){
+    event.preventDefault();
+    let user;
 
-            
-    const emailInput = document.createElement('td');
-    emailInput.innerHTML = user.email;
-            
-    const buttonTd = document.createElement('td');
-    buttonTd.style.placeItems = 'center';
+    let id = document.getElementById('selectedUserId').value;
+    if (id == '') alert('no user selected');
+    else{
+        try{
+            let response = await fetch(`/users/${id}`);
+            user = await response.json();
+            populatePopup(user);
+        }catch (error){
+            alert(`${error}`);
+        }
+    }
+}
 
-    const button = document.createElement('button');
-    button.classList.add('btn');
-    button.classList.add('btn-danger');
-    button.innerHTML = 'Delete';
-    button.onclick = () => deleteUser(user._id);
-    buttonTd.appendChild(button);
+function populatePopup(user){
 
-    newRow.appendChild(nameInput);
-    newRow.appendChild(roleInput);
-    newRow.appendChild(emailInput);
-    newRow.appendChild(buttonTd);
+    let popup = document.getElementById('popup');
+    popup.innerHTML = '';
 
-    body.appendChild(newRow);
+    let logo = document.createElement('img');
+    logo.src = "./images/CoolSys-Logo.png";
+    popup.appendChild(logo);
 
-} 
+    // TOOL INFO
+    let title = document.createElement('h2');
+    title.innerHTML = 'User';
+    popup.appendChild(title);
 
-async function roleIntToString(roleInt){
+    let name = document.createElement('p');
+
+    let nameTitle = document.createElement('b');
+    nameTitle.innerHTML = 'Name: ';
+
+    let nameBody = document.createElement('span');
+    nameBody.innerHTML = `${user.name}`;
+
+    name.appendChild(nameTitle);
+    name.appendChild(nameBody);
+
+    let role = document.createElement('p');
+
+    let roleTitle = document.createElement('b');
+    roleTitle.innerHTML = 'Role: ';
+
+    let roleBody = document.createElement('span');
+    roleBody.innerHTML = `${roleIntToString(user.role)}`;
+
+    role.appendChild(roleTitle);
+    role.appendChild(roleBody);
+
+    let email = document.createElement('p');
+
+    let emailTitle = document.createElement('b');
+    emailTitle.innerHTML = 'Email: ';
+
+    let emailBody = document.createElement('span');
+    emailBody.innerHTML = `${user.email}`;
+
+    email.appendChild(emailTitle);
+    email.appendChild(emailBody);
+
+    // ACTION BUTTONS
+    const btnDiv = document.createElement('div');
+    btnDiv.classList.add('text-center');
+    btnDiv.style.margin = '5px';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn');
+    deleteBtn.classList.add('btn-danger');
+    deleteBtn.style.marginRight = "10px";
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = () => deleteUser(user._id);
+    btnDiv.appendChild(deleteBtn);
+
+    popup.appendChild(name);
+    popup.appendChild(role);
+    popup.appendChild(email);
+    popup.appendChild(btnDiv);
+
+    let closeBtn = document.createElement('button');
+    closeBtn.classList.add('close')
+    closeBtn.innerHTML = 'Close';
+    closeBtn.onclick = () => closePopup();
+
+    popup.appendChild(closeBtn);
+
+    popup.classList.add('open-popup');
+}
+
+function closePopup(){
+    let popup = document.getElementById('popup');
+    popup.classList.remove('open-popup')
+}
+
+function roleIntToString(roleInt){
     let roleStr;
 
     switch (roleInt) {
@@ -94,13 +179,7 @@ async function deleteUser(userId){
         const response = await fetch(`/deleteuser/${userId}`, {
             method: 'DELETE'
         });
-
-        if (response.ok) {
-            viewUsers();
-        } else{
-            const result = await response.json();
-            alert("Failed to delete user: " + (result.error || "Unknown error"));
-        }
+        window.location.reload();
     } catch (error){
         console.error('Error during delete: ', error);
         alert('Error. Please try again');
@@ -126,36 +205,6 @@ async function updateRole(event){
         alert(`Error updating user`);
     });
 } 
-    
-
-
-// async function updateRoleOld(userId){
-//     const answer = prompt('Enter a new role (0 for admin, 1 for PM, ...)');
-//     let newRole = Number(answer);
-//     if (Number.isNaN(newRole)){
-//         window.alert('Please enter a number (0 = admin, 1 = PM, ...)');
-//         return;
-//     }
-//     else{
-//         try{
-//             const response = await fetch(`/updaterole/${userId}`, {
-//                 method: 'PUT',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify({role: newRole})
-//             });
-    
-//             if (response.ok){
-//                 alert('User role updated successfully. Please refresh page to see changes.');
-//             } else{
-//                 const result = response.json();
-//                 alert('Failed to edit review: ' + (result.error || "Unknown error."));
-//             }
-//         } catch (error){
-//             console.error('Network error during update:', error);
-//             alert("Network error. Please try again.");
-//         }
-//     }
-// }
 
 async function populateUserDropdowns(){
     if (document.getElementById('usersdropdown') == null){
@@ -190,6 +239,13 @@ async function popUserDropdown(dropdown, users){
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await viewUsers(false);
+    // await viewUsers(false);
+    try {
+        const usersRes = await fetch('/users');
+        allUsers = await usersRes.json();
+    } catch (e) {
+        console.error('Error loading init data:', e);
+        showMsg('Failed to load users', 'danger');
+    }
     await populateUserDropdowns();
 });

@@ -7,20 +7,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="js/users.js"></script>
         <link rel="stylesheet" href="css/main.css">
-        
-        <style>
-            .bborder {
-                border: 3px solid #27f5da; 
-            }
-
-            .center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 10px
-            }
-        </style>
+        <link rel="stylesheet" href="css/popup.css">
+        <link rel="stylesheet" href="css/search.css">
     </head>
 
     <div id="header"></div>
@@ -142,56 +130,33 @@
             </div>
         </div>
 
+        <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
+            <h1 class="display-6">Search for User</h1>
+    
+            <div class="row">
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="userSearch" placeholder="Search by email" autocomplete="off"
+                        oninput="filterList('userSearch','userList',allUsers,'email',selectUser)"
+                        onfocus="openList('userList')" onblur="closeListDelayed('userList')">
+                    <ul class="search-dropdown-list" id="userList"></ul>
+                </div>
+                <span class="selected-badge" id="userBadge" style="display:none;"></span>
+                <input type="hidden" id="selectedUserId">
+    
+                <div class="text-center" style="margin: 5px">
+                    <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="clearUserSearch()">Clear</button>
+                </div>
+            </div>
+    
+        </div>
 
-        <div class="container text-center">
-
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Action(s)</th>
-                    </tr>
-
-                    <tbody id="userTableBody">
-                        <!-- EXAMPLE USER TABLE INPUT -->
-                        <!-- <tr>
-                            <td>John Doe</th>
-                            <td>Project Manager</td>
-                            <td>name@ex.com</td>
-                            <td style="place-items: center">
-                                <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
-                            </td> 
-                        </tr> -->
-
-                        <!-- User info will populate here -->
-                    </tbody>
-                </thead>
-            </table>
-        
+        <div class="container">
+            <div class="popup" id="popup"></div>
         </div>
         
-        <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
-            
-
-                    <h1 class="display-6">Filter Users by Role</h1>
-                    <div class="filter-input-group text-center" >
-                        <input type="text" class="form-control" style="margin: 10px" id="filteredRole" placeholder="Enter Role..." required>
-                        <button class="btn btn-info" style="margin: 10px" onclick="viewUsers(true)">Apply Filter</button>
-                        <button class="btn btn-info" onclick="viewUsers(false)">Clear Filter</button>
-                    </div>
-
-                
-        </div>
         
         <div id="footer"></div>
-
-    <!-- <script>
-        fetch(url)
-        .then(res => res.json())
-        .then(body => window.location.href = body.redirect);
-    </script> -->
 
     <script>
 
