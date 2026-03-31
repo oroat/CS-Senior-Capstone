@@ -7,7 +7,7 @@ const memorystore = require("memorystore")(session);
 const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
 const ToolController = require('./controller/ToolController');
-const MaterialController = require('./controller/MaterialController');
+const PurchaseOrderController = require('./controller/PurchaseorderController');
 const ShipmentController = require('./controller/ShipmentController');
 
 
@@ -41,7 +41,7 @@ const testPath = path.join(__dirname, "public_html", "landing.html");
 
 const addProjectPath = path.join(__dirname,"public_html", "addProject.html")
 
-const materialPath = path.join(__dirname,"public_html","materials.html")
+const purchaseOrderPath = path.join(__dirname,"public_html","purchaseOrders.html")
 
 const shipmentPath = path.join(__dirname,"public_html","shipments.html")
 
@@ -49,7 +49,7 @@ const shipmentPath = path.join(__dirname,"public_html","shipments.html")
 
 app.get("/", (req, res) => res.sendFile(testPath));
 app.get("/addProject", (req, res) => res.sendFile(addProjectPath));
-app.get("/material", (req, res) => res.sendFile(materialPath));
+app.get("/purchaseOrder", (req, res) => res.sendFile(purchaseOrderPath));
 app.get("/shipment", (req, res) => res.sendFile(shipmentPath));
 
 //User routes
@@ -92,15 +92,11 @@ app.post('/updatetool', ToolController.update);
 app.get('/tools/:id', ToolController.getToolById);
 
 //Materials routes
-app.post('/materials', MaterialController.createMaterial);
-
-app.get('/materials', MaterialController.getAllMaterials);
-
-app.get('/materials/:id', MaterialController.getMaterialById);
-
-app.put('/materials/:id', MaterialController.updateMaterial);
-
-app.delete('/materials/:id', MaterialController.deleteMaterial);
+app.get('/purchaseorders', PurchaseOrderController.getAllPurchaseOrders);
+app.get('/purchaseorders/:id', PurchaseOrderController.getPurchaseOrderById);
+app.post('/purchaseorders', PurchaseOrderController.createPurchaseOrder);
+app.put('/purchaseorders/:id', PurchaseOrderController.updatePurchaseOrder);
+app.delete('/purchaseorders/:id', PurchaseOrderController.deletePurchaseOrder);
 
 //Shipments routes
 app.post('/shipments', ShipmentController.createShipment);
