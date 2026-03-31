@@ -21,36 +21,36 @@ $(document).ready(function () {
         });
     }
 
-    function loadProjects() {
-        $.get('/projects', function (projects) {
-            const list = $('#projectList2');
-            list.empty();
+    // function loadProjects() {
+    //     $.get('/projects', function (projects) {
+    //         const list = $('#projectList2');
+    //         list.empty();
             
-            projects.forEach(project => {
-                const workerNames = project.workers.map(w => w.name).join(', ') || 'None';
-                const materialDisplay = project.materials && project.materials.length > 0 
-                    ? project.materials.map(m => `${m.name} (${m.quantity} ${m.unit})`).join(', ')
-                    : 'No materials assigned';
+    //         projects.forEach(project => {
+    //             const workerNames = project.workers.map(w => w.name).join(', ') || 'None';
+    //             const materialDisplay = project.materials && project.materials.length > 0 
+    //                 ? project.materials.map(m => `${m.name} (${m.quantity} ${m.unit})`).join(', ')
+    //                 : 'No materials assigned';
 
-                list.append(`
-                    <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                        <h3>${project.name}</h3>
-                        <p><strong>Location:</strong> ${project.location}</p>
-                        <p><strong>Manager:</strong> ${project.manager ? project.manager.name : 'N/A'}</p>
-                        <p><strong>Workers:</strong> ${workerNames}</p>
-                        <p><strong>Materials:</strong> ${materialDisplay}</p>
-                        <div style="margin-top: 10px;">
-                            <button onclick="editProject('${project._id}')" style="background: #ffc107; border: none; padding: 5px 10px; cursor: pointer;">Edit</button>
-                            <button onclick="deleteProject('${project._id}')" style="background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">Delete</button>
-                        </div>
-                    </div>
-                `);
-            });
-        });
-    }
+    //             list.append(`
+    //                 <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+    //                     <h3>${project.name}</h3>
+    //                     <p><strong>Location:</strong> ${project.location}</p>
+    //                     <p><strong>Manager:</strong> ${project.manager ? project.manager.name : 'N/A'}</p>
+    //                     <p><strong>Workers:</strong> ${workerNames}</p>
+    //                     <p><strong>Materials:</strong> ${materialDisplay}</p>
+    //                     <div style="margin-top: 10px;">
+    //                         <button onclick="editProject('${project._id}')" style="background: #ffc107; border: none; padding: 5px 10px; cursor: pointer;">Edit</button>
+    //                         <button onclick="deleteProject('${project._id}')" style="background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">Delete</button>
+    //                     </div>
+    //                 </div>
+    //             `);
+    //         });
+    //     });
+    // }
 
     loadUserDropdowns();
-    loadProjects();
+    // loadProjects();
 
     $('#projectForm').on('submit', function (e) {
         e.preventDefault();
@@ -137,15 +137,144 @@ async function selectProject(project) {
     document.getElementById('projectBadge').textContent = '✓ ' + project.name;
     document.getElementById('projectBadge').style.display = 'inline-block';
     document.getElementById('projectList').classList.remove('open');
-    await loadProjectMaterials(project._id);
+    //await loadProjectMaterials(project._id);
 }
 
-function clearToolSearch() {
-    ['toolSearch', 'selectedToolId',].forEach(id => {
+function clearProjectSearch() {
+    ['projectSearch', 'selectedProjectId',].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
-    document.getElementById('toolBadge').style.display = 'none';
+    document.getElementById('projectBadge').style.display = 'none';
+}
+
+async function openPopup(event){
+    event.preventDefault();
+    let project;
+
+    let id = document.getElementById('selectedProjectId').value;
+    if (id == '') alert('no project selected');
+    else{
+        try{
+            let response = await fetch(`/projects/${id}`);
+            project = await response.json();
+            populatePopup(project);
+        }catch (error){
+            alert(`${error}`);
+        }
+    }
+}
+
+function populatePopup(project){
+
+    let popup = document.getElementById('popup');
+    popup.innerHTML = '';
+
+    let logo = document.createElement('img');
+    logo.src = "./images/CoolSys-Logo.png";
+    popup.appendChild(logo);
+
+    // TOOL INFO
+    let title = document.createElement('h2');
+    title.innerHTML = `${project.name}`;
+    popup.appendChild(title);
+
+    let manager = document.createElement('p');
+
+    let managerTitle = document.createElement('b');
+    managerTitle.innerHTML = 'Manager: ';
+
+    let managerBody = document.createElement('span');
+    managerBody.innerHTML = `${project.manager.name}`;
+
+    manager.appendChild(managerTitle);
+    manager.appendChild(managerBody);
+
+    let location = document.createElement('p');
+    let locationTitle = document.createElement('b');
+    locationTitle.innerHTML = 'Location: '
+    let locationBody = document.createElement('span');
+    locationBody.innerHTML = `${project.location}`;
+    location.appendChild(locationTitle);
+    location.appendChild(locationBody);
+
+    let workers = document.createElement('p');
+
+    let workersTitle = document.createElement('b');
+    workersTitle.innerHTML = 'Workers: ';
+
+    let workersBody = document.createElement('span');
+    let count = 1;
+    for (const worker of project.workers){
+        workersBody.innerHTML += `${worker.name}`
+        if (count != project.workers.length){
+            workersBody.innerHTML += ', ';
+            count++;
+        }
+        
+    }
+
+    workers.appendChild(workersTitle);
+    workers.appendChild(workersBody);
+
+    let materials = document.createElement('p');
+
+    let materialsTitle = document.createElement('b');
+    materialsTitle.innerHTML = 'Materials: ';
+
+    let materialsBody = document.createElement('span');
+    count = 1;
+    for (const material of project.materials){
+        materialsBody.innerHTML += `${material.name} (${material.quantity} ${material.unit})`
+        if (count != project.materials.length){
+            materialsBody.innerHTML += ', ';
+            count++;
+        }
+        
+    }
+    materials.appendChild(materialsTitle);
+    materials.appendChild(materialsBody);
+
+    // ACTION BUTTONS
+    const btnDiv = document.createElement('div');
+    btnDiv.classList.add('text-center');
+    btnDiv.style.margin = '5px';
+
+    const editBtn = document.createElement('button');
+    editBtn.classList.add('btn');
+    editBtn.classList.add('btn-warning');
+    editBtn.style.marginRight = "10px";
+    editBtn.innerHTML = 'Edit';
+    editBtn.onclick = () => editProject(project._id);
+    btnDiv.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn');
+    deleteBtn.classList.add('btn-danger');
+    deleteBtn.style.marginRight = "10px";
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = () => deleteProject(project._id);
+    btnDiv.appendChild(deleteBtn);
+
+    popup.appendChild(manager);
+    popup.appendChild(location);
+    popup.appendChild(workers);
+    popup.appendChild(materials);
+    popup.appendChild(btnDiv);
+
+    let closeBtn = document.createElement('button');
+    closeBtn.classList.add('close')
+    closeBtn.innerHTML = 'Close';
+    closeBtn.onclick = () => closePopup();
+
+    popup.appendChild(closeBtn);
+
+    popup.classList.add('open-popup');
+}
+
+function closePopup(){
+    let popup = document.getElementById('popup');
+    popup.classList.remove('open-popup')
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
