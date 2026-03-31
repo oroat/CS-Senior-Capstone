@@ -6,7 +6,7 @@
         <title>CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="js/tools.js"></script>
-        <script src="js/users.js"></script>
+        <!-- <script src="js/users.js"></script> -->
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/popup.css">
         <link rel="stylesheet" href="css/search.css">
@@ -76,26 +76,45 @@
                     </div>
                 </div> -->
 
-                <div class="input-group mb-3" style="justify-content: center;">
+                <!-- <div class="input-group mb-3" style="justify-content: center;">
                     <div class="input-group-prepend">
                     <label class="input-group-text" for="toolsdropdown2">Tools</label>
                     </div>
                     <select class="custom-select" id="toolsdropdown2" name = "toolsdropdown2"required>
                     <option value = "" selected>Choose...</option>
                     </select>
-                </div>
+                </div> -->
 
-                <div class="input-group mb-3" style="justify-content: center;">
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="addUserToolSearch" placeholder="Search by serial number" autocomplete="off" style="margin: 5px" required
+                        oninput="filterList('addUserToolSearch','addUserToolList','addUserToolBadge', 'addUserSelectedToolId',allTools,'serialNum',selectTool)"
+                        onfocus="openList('addUserToolList')" onblur="closeListDelayed('addUserToolList')">
+                    <ul class="search-dropdown-list" id="addUserToolList"></ul>
+                </div>
+                <span class="selected-badge" id="addUserToolBadge" style="display:none;"></span>
+                <input type="hidden" id="addUserSelectedToolId">
+
+                <!-- <div class="input-group mb-3" style="justify-content: center;">
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="usersdropdown">Users</label>
                     </div>
                     <select class="custom-select"  id="usersdropdown" required>
                       <option value = "" selected>Choose...</option>
                     </select>
+                </div> -->
+
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="addUserUserSearch" placeholder="Search by email" autocomplete="off" style="margin: 5px" required
+                        oninput="filterList('addUserUserSearch','addUserUserList','addUserUserBadge', 'addUserSelectedUserId',allUsers,'email', selectUser)"
+                        onfocus="openList('addUserUserList')" onblur="closeListDelayed('addUserUserList')">
+                    <ul class="search-dropdown-list" id="addUserUserList"></ul>
                 </div>
+                <span class="selected-badge" id="addUserUserBadge" style="display:none;"></span>
+                <input type="hidden" id="addUserSelectedUserId">
 
                 <div class="text-center"style="margin: 10px">
                     <button type="submit" class="btn btn-secondary">Update Tool</button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearAddUserSearch()">Clear</button>
                 </div>
             </form>
 
@@ -110,17 +129,17 @@
 
         <div class="row">
             <div class="search-select-wrapper">
-                <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" required
-                    oninput="filterList('toolSearch','toolList',allTools,'serialNum',selectRecip)"
+                <input type="text" class="form-control" id="popupToolSearch" placeholder="Search by serial number" autocomplete="off" required
+                    oninput="filterList('popupToolSearch','popupToolList', 'popupToolBadge', 'popupSelectedToolId', allTools,'serialNum',selectTool)"
                     onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
-                <ul class="search-dropdown-list" id="toolList"></ul>
+                <ul class="search-dropdown-list" id="popupToolList"></ul>
             </div>
-            <span class="selected-badge" id="toolBadge" style="display:none;"></span>
-            <input type="hidden" id="selectedToolId">
+            <span class="selected-badge" id="popupToolBadge" style="display:none;"></span>
+            <input type="hidden" id="popupSelectedToolId">
 
             <div class="text-center" style="margin: 5px">
                 <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
-                <button class="btn btn-outline-secondary ms-2" onclick="clearToolSearch()">Clear</button>
+                <button class="btn btn-outline-secondary ms-2" onclick="clearPopupSearch()">Clear</button>
             </div>
         </div>
 

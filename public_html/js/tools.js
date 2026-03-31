@@ -1,4 +1,5 @@
 let allTools = [];
+let allUsers = [];
 
 function openList(listId) {
     document.getElementById(listId).classList.add('open');
@@ -8,7 +9,7 @@ function closeListDelayed(listId) {
     setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
 }
 
-function filterList(inputId, listId, dataArr, searchField, onSelect) {
+function filterList(inputId, listId, badge, selectedId, dataArr, searchField, onSelect) {
     const query = document.getElementById(inputId).value.toLowerCase();
     const list = document.getElementById(listId);
     list.innerHTML = '';
@@ -27,26 +28,43 @@ function filterList(inputId, listId, dataArr, searchField, onSelect) {
         const li = document.createElement('li');
         li.textContent = searchField === 'serialNum'
             ? `${item.serialNum} — ${item.model}`
-            : item.serialNum;
-        li.onclick = () => onSelect(item);
+            : `${item.name} - ${item.email}`;
+        li.onclick = () => onSelect(item, selectedId, inputId, badge, listId);
         list.appendChild(li);
     }
 }
 
-function selectRecip(tool) {
-    document.getElementById('selectedToolId').value = tool._id;
-    document.getElementById('toolSearch').value = tool.serialNum;
-    document.getElementById('toolBadge').textContent = '✓ ' + tool.serialNum;
-    document.getElementById('toolBadge').style.display = 'inline-block';
-    document.getElementById('toolList').classList.remove('open');
+function selectTool(tool, selectedId, inputId, badge, listId) {
+    document.getElementById(selectedId).value = tool._id;
+    document.getElementById(inputId).value = tool.serialNum;
+    document.getElementById(badge).textContent = '✓ ' + tool.serialNum;
+    document.getElementById(badge).style.display = 'inline-block';
+    document.getElementById(listId).classList.remove('open');
 }
 
-function clearToolSearch() {
-    ['toolSearch', 'selectedToolId',].forEach(id => {
+function selectUser(user, selectedId, inputId, badge, listId) {
+    document.getElementById(selectedId).value = user._id;
+    document.getElementById(inputId).value = user.email;
+    document.getElementById(badge).textContent = '✓ ' + user.email;
+    document.getElementById(badge).style.display = 'inline-block';
+    document.getElementById(listId).classList.remove('open');
+}
+
+function clearPopupSearch() {
+    ['popupToolSearch', 'popupSelectedToolId',].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
-    document.getElementById('toolBadge').style.display = 'none';
+    document.getElementById('popupToolBadge').style.display = 'none';
+}
+
+function clearAddUserSearch() {
+    ['addUserToolSearch', 'addUserSelectedToolId', 'addUserUserSearch', 'addUserSelectedUserId'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('addUserToolBadge').style.display = 'none';
+    document.getElementById('addUserUserBadge').style.display = 'none';
 }
 
 async function openPopup(event){
@@ -54,7 +72,7 @@ async function openPopup(event){
     let tool;
     let user;
 
-    let id = document.getElementById('selectedToolId').value;
+    let id = document.getElementById('popupSelectedToolId').value;
     if (id == '') alert('no tool selected');
     else{
         try{
@@ -223,8 +241,8 @@ async function updateTool(event){
 
 async function addUserToTool(event){
     event.preventDefault();
-    let toolId = document.getElementById("toolsdropdown2").value;
-    let userId = document.getElementById("usersdropdown").value;
+    let toolId = document.getElementById("addUserSelectedToolId").value;
+    let userId = document.getElementById("addUserSelectedUserId").value;
 
     let updates = {inUse: true, usedBy: userId};
 
@@ -268,14 +286,16 @@ async function deallocateTool(tool, user){
     }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await populateToolDropdowns();
+    //await populateToolDropdowns();
 
     try {
         const toolsRes = await fetch('/tools');
+        const usersRes = await fetch('/users');
         allTools = await toolsRes.json();
+        allUsers = await usersRes.json();
     } catch (e) {
         console.error('Error loading init data:', e);
-        showMsg('Failed to load users/projects.', 'danger');
+        showMsg('Failed to load tools/users.', 'danger');
     }
 
 });
