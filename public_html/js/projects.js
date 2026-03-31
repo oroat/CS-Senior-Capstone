@@ -22,7 +22,7 @@ $(document).ready(function () {
     }
 
     loadUserDropdowns();
-    loadProjects();
+    //loadProjects();
 
     $('#projectForm').on('submit', function (e) {
         e.preventDefault();
@@ -58,7 +58,7 @@ function loadProjects() {
     ).done(function (projectsRes, ordersRes) {
         const projects = projectsRes[0];
         const allOrders = ordersRes[0];
-        const list = $('#projectList');
+        const list = $('#projectList2');
         list.empty();
 
         allProjects = projects;

@@ -5,6 +5,8 @@
         <title>Add Project - CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/search.css">
+        <link rel="stylesheet" href="css/popup.css">
     </head>
     <body>
 
@@ -60,8 +62,38 @@
 
         <hr>
 
-        <h3>All Projects</h3>
-        <div id="projectList"></div>
+        <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
+            <h1 class="display-6">Search for Project</h1>
+
+            <div class="row" style="margin:10px;">
+
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off"
+                        oninput="filterList('projectSearch','projectList',allProjects,'name',selectProject)"
+                        onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
+                    <ul class="search-dropdown-list" id="projectList"></ul>
+                </div>
+                <span class="selected-badge" id="projectBadge" style="display:none;"></span>
+                <input type="hidden" id="selectedProjectId">
+
+                <div class="text-center" style="margin: 5px">
+                    
+                    <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="clearProjectSearch()">Clear</button>
+                    
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="popup" id="popup"></div>
+        </div>
+
+        
+
+        <!-- <h3>All Projects</h3>
+        <div id="projectList2"></div> -->
 
         <div id="footer"></div>
 
