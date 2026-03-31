@@ -4,12 +4,7 @@ const mongoose = require('mongoose');
 exports.deleteProject = async function(req, res) {
     try {
         const projectId = req.params.id;
-        const Material = mongoose.model('materials');
         
-        await Material.updateMany(
-            { project: projectId }, 
-            { $set: { project: null } }
-        );
 
         await dao.del(projectId);
 
