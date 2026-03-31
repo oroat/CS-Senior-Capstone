@@ -67,6 +67,16 @@ function clearAddUserSearch() {
     document.getElementById('addUserUserBadge').style.display = 'none';
 }
 
+function clearUpdateSearch(){
+    ['updateToolSearch', 'updateSelectedToolId'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('updateToolBadge').style.display = 'none';
+    document.getElementById('updateserial').value = '';
+    document.getElementById('updatemodel').value = '';
+}
+
 async function openPopup(event){
     event.preventDefault();
     let tool;
@@ -188,36 +198,9 @@ async function deleteTool(tool){
     }
 }
 
-async function populateToolDropdowns(){
-    //add more dropdowns here as needed
-    let dropdowns = [document.getElementById('toolsdropdown'),
-                    document.getElementById('toolsdropdown2')]
-    
-    for (const dropdown of dropdowns){
-        await popToolDropdown(dropdown);
-    }
-}
-
-async function popToolDropdown(dropdown){
-    try{
-        const response = await fetch('/tools');
-        const tools = await response.json();
-
-        tools.forEach( tool => {
-            let opt = document.createElement('option');
-            opt.value = `${tool._id}`;
-            opt.innerHTML = `${tool.model} (${tool.serialNum})`;
-
-            dropdown.appendChild(opt);
-        })
-    } catch (error){
-        alert(`Network error: ${error}`);
-    }
-}
-
 async function updateTool(event){
     event.preventDefault();
-    let toolId = document.getElementById("toolsdropdown").value;
+    let toolId = document.getElementById("updateSelectedToolId").value;
 
     let userial = document.getElementById("updateserial").value;
     let umodel = document.getElementById("updatemodel").value;
@@ -286,7 +269,6 @@ async function deallocateTool(tool, user){
     }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    //await populateToolDropdowns();
 
     try {
         const toolsRes = await fetch('/tools');

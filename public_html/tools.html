@@ -62,29 +62,10 @@
 
         <!-- ADD USER CONTAINER -->
         <div class="col-4 ms-auto container rounded" style="margin: 20px; margin-right: 30px; background-color:#b8e5ff !important;">
-
             <h2 class="display-6">Add User to Tool</h2>
-            <form id="addtooltouser" action="updatetool" method="post" onsubmit="addUserToTool(event)">
 
-                <!-- <div class="row" style="margin: 10px" >
-                    <div class="col-4 justify-content-end">
-                        <label for="serial2" class="form-label">Serial Number</label>
-                    </div>
-        
-                    <div class="col-auto">
-                        <input type="text" class="form-control" id="serial2" name="serial2" placeholder="..." required>
-                    </div>
-                </div> -->
-
-                <!-- <div class="input-group mb-3" style="justify-content: center;">
-                    <div class="input-group-prepend">
-                    <label class="input-group-text" for="toolsdropdown2">Tools</label>
-                    </div>
-                    <select class="custom-select" id="toolsdropdown2" name = "toolsdropdown2"required>
-                    <option value = "" selected>Choose...</option>
-                    </select>
-                </div> -->
-
+            <form id="addtooltouser" action="updatetool" method="post" onsubmit="addUserToTool(event)">            
+                <!-- SEARCH FOR TOOL -->
                 <div class="search-select-wrapper">
                     <input type="text" class="form-control" id="addUserToolSearch" placeholder="Search by serial number" autocomplete="off" style="margin: 5px" required
                         oninput="filterList('addUserToolSearch','addUserToolList','addUserToolBadge', 'addUserSelectedToolId',allTools,'serialNum',selectTool)"
@@ -93,16 +74,7 @@
                 </div>
                 <span class="selected-badge" id="addUserToolBadge" style="display:none;"></span>
                 <input type="hidden" id="addUserSelectedToolId">
-
-                <!-- <div class="input-group mb-3" style="justify-content: center;">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="usersdropdown">Users</label>
-                    </div>
-                    <select class="custom-select"  id="usersdropdown" required>
-                      <option value = "" selected>Choose...</option>
-                    </select>
-                </div> -->
-
+                <!-- SEARCH FOR USER -->
                 <div class="search-select-wrapper">
                     <input type="text" class="form-control" id="addUserUserSearch" placeholder="Search by email" autocomplete="off" style="margin: 5px" required
                         oninput="filterList('addUserUserSearch','addUserUserList','addUserUserBadge', 'addUserSelectedUserId',allUsers,'email', selectUser)"
@@ -123,7 +95,7 @@
 
     </div>
 
-    <!-- SEARCH FOR TOOL -->
+    <!-- TOOL POPUP -->
     <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
         <h1 class="display-6">Search for Tool</h1>
 
@@ -144,57 +116,61 @@
         </div>
 
     </div>
+    
+    <div class="container">
+        <div class="popup" id="popup"></div>
+    </div>
+    <!-- TOOL POPUP END -->
 
-        <div class="container">
-            <div class="popup" id="popup"></div>
-        </div>
+    <!-- UPDATE TOOL -->
+    <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
+        <h1 class="display-6">Update Tool</h1>
+            
+        <form id="updateform" method="post" onsubmit="updateTool(event)">
 
-        <div class="container-sm center rounded" style="background-color:#b8e5ff !important;">
-            <h1 class="display-6">Update Tool</h1>
-            <form id="updateform" action="updatetool" method="post" onsubmit="updateTool(event)">
+            <div class="row">
 
-                <div class="row">
-
-                    <div class="input-group mb-3" style="justify-content: center;">
-                        <div class="input-group-prepend">
-                        <label class="input-group-text" for="toolsdropdown">Options</label>
-                        </div>
-                        <select class="custom-select" id="toolsdropdown" name = "toolsdropdown"required>
-                        <option value = "" selected>Choose...</option>
-                        </select>
-                    </div>
-
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="updateToolSearch" placeholder="Search by serial number" autocomplete="off" style="margin: 5px" required
+                        oninput="filterList('updateToolSearch','updateToolList','updateToolBadge', 'updateSelectedToolId',allTools,'serialNum',selectTool)"
+                        onfocus="openList('updateToolList')" onblur="closeListDelayed('updateToolList')">
+                    <ul class="search-dropdown-list" id="updateToolList"></ul>
                 </div>
+                <span class="selected-badge" id="updateToolBadge" style="display:none;"></span>
+                <input type="hidden" id="updateSelectedToolId">
+
+            </div>
                 
-                <div class="row">
+            <div class="row">
 
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <div style="margin: 10px">
-                                <label for="updateserial" class="form-label">New Serial Number</label>
-                                <input type="text" class="form-control" id="updateserial" name="updateserial" placeholder="..." required>
-                            </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div style="margin: 10px">
+                            <label for="updateserial" class="form-label">New Serial Number</label>
+                            <input type="text" class="form-control" id="updateserial" name="updateserial" placeholder="..." required>
                         </div>
                     </div>
-
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <div style="margin: 10px">
-                                <label for="updatemodel" class="form-label">New Model</label>
-                                <input type="text" class="form-control" id="updatemodel" name="updatemodel" placeholder="..." required>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div style="margin: 10px">
+                            <label for="updatemodel" class="form-label">New Model</label>
+                            <input type="text" class="form-control" id="updatemodel" name="updatemodel" placeholder="..." required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
                 
-                <div class="text-center"style="margin: 10px">
-                    <button type="submit" class="btn btn-secondary">Update Tool</button>
-                </div>
-            </form>
+            <div class="text-center"style="margin: 10px">
+                <button type="submit" class="btn btn-secondary">Update Tool</button>
+                <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearUpdateSearch()">Clear</button>
+            </div>
+        </form>
 
-        </div>
-
+    </div>
+    <!-- UPDATE TOOL END -->
         <div id="footer"></div>
         
         <script type="text/javascript">
