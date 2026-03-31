@@ -1,7 +1,7 @@
 let allProjects = [];
 
 $(document).ready(function () {
-    
+
     function loadUserDropdowns() {
         $.get('/users', function (users) {
             const managerSelect = $('#manager');
@@ -21,36 +21,8 @@ $(document).ready(function () {
         });
     }
 
-    // function loadProjects() {
-    //     $.get('/projects', function (projects) {
-    //         const list = $('#projectList2');
-    //         list.empty();
-            
-    //         projects.forEach(project => {
-    //             const workerNames = project.workers.map(w => w.name).join(', ') || 'None';
-    //             const materialDisplay = project.materials && project.materials.length > 0 
-    //                 ? project.materials.map(m => `${m.name} (${m.quantity} ${m.unit})`).join(', ')
-    //                 : 'No materials assigned';
-
-    //             list.append(`
-    //                 <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-    //                     <h3>${project.name}</h3>
-    //                     <p><strong>Location:</strong> ${project.location}</p>
-    //                     <p><strong>Manager:</strong> ${project.manager ? project.manager.name : 'N/A'}</p>
-    //                     <p><strong>Workers:</strong> ${workerNames}</p>
-    //                     <p><strong>Materials:</strong> ${materialDisplay}</p>
-    //                     <div style="margin-top: 10px;">
-    //                         <button onclick="editProject('${project._id}')" style="background: #ffc107; border: none; padding: 5px 10px; cursor: pointer;">Edit</button>
-    //                         <button onclick="deleteProject('${project._id}')" style="background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">Delete</button>
-    //                     </div>
-    //                 </div>
-    //             `);
-    //         });
-    //     });
-    // }
-
     loadUserDropdowns();
-    // loadProjects();
+    loadProjects();
 
     $('#projectForm').on('submit', function (e) {
         e.preventDefault();
@@ -79,6 +51,76 @@ $(document).ready(function () {
     });
 });
 
+function loadProjects() {
+    $.when(
+        $.get('/projects'),
+        $.get('/purchaseorders')
+    ).done(function (projectsRes, ordersRes) {
+        const projects = projectsRes[0];
+        const allOrders = ordersRes[0];
+        const list = $('#projectList');
+        list.empty();
+
+        allProjects = projects;
+
+        projects.forEach(project => {
+            const workerNames = project.workers.map(w => w.name).join(', ') || 'None';
+
+            const projectPOs = allOrders.filter(po =>
+                po.project && (po.project._id === project._id || po.project === project._id)
+            );
+
+            let poDisplay;
+            if (projectPOs.length === 0) {
+                poDisplay = '<span style="color:#888;">No purchase orders</span>';
+            } else {
+                poDisplay = projectPOs.map(po => {
+                    const badgeColors = { 'Draft': '#6c757d', 'Pending': '#ffc107', 'Approved': '#28a745', 'Received': '#17a2b8', 'Cancelled': '#dc3545' };
+                    const bg = badgeColors[po.status] || '#6c757d';
+                    const fg = po.status === 'Pending' ? '#333' : '#fff';
+                    const matCount = po.materials ? po.materials.length : 0;
+                    return `<span style="display:inline-block;background:${bg};color:${fg};border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:600;margin:2px 4px 2px 0;">${po.poNumber} — ${po.vendor} (${matCount} item${matCount !== 1 ? 's' : ''})</span>`;
+                }).join('');
+            }
+
+            list.append(`
+                <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; background:#fff;">
+                    <h3>${project.name}</h3>
+                    <p><strong>Location:</strong> ${project.location}</p>
+                    <p><strong>Manager:</strong> ${project.manager ? project.manager.name : 'N/A'}</p>
+                    <p><strong>Workers:</strong> ${workerNames}</p>
+                    <p><strong>Purchase Orders:</strong><br>${poDisplay}</p>
+                    <div style="margin-top: 10px;">
+                        <button onclick="editProject('${project._id}')" style="background:#ffc107;border:none;padding:5px 10px;cursor:pointer;border-radius:4px;">Edit</button>
+                        <button onclick="deleteProject('${project._id}')" style="background:#dc3545;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:4px;">Delete</button>
+                    </div>
+                </div>
+            `);
+        });
+    }).fail(function () {
+        $.get('/projects', function (projects) {
+            allProjects = projects;
+            const list = $('#projectList');
+            list.empty();
+            projects.forEach(project => {
+                const workerNames = project.workers.map(w => w.name).join(', ') || 'None';
+                list.append(`
+                    <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; background:#fff;">
+                        <h3>${project.name}</h3>
+                        <p><strong>Location:</strong> ${project.location}</p>
+                        <p><strong>Manager:</strong> ${project.manager ? project.manager.name : 'N/A'}</p>
+                        <p><strong>Workers:</strong> ${workerNames}</p>
+                        <div style="margin-top: 10px;">
+                            <button onclick="editProject('${project._id}')" style="background:#ffc107;border:none;padding:5px 10px;cursor:pointer;border-radius:4px;">Edit</button>
+                            <button onclick="deleteProject('${project._id}')" style="background:#dc3545;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:4px;">Delete</button>
+                        </div>
+                    </div>
+                `);
+            });
+        });
+    });
+}
+
 function editProject(id) {
     window.location.href = `editProject.html?id=${id}`;
 }
@@ -88,12 +130,8 @@ function deleteProject(id) {
         $.ajax({
             url: `/projects/${id}`,
             type: 'DELETE',
-            success: function () {
-                location.reload();
-            },
-            error: function () {
-                alert("Failed to delete project");
-            }
+            success: function () { location.reload(); },
+            error: function () { alert("Failed to delete project"); }
         });
     }
 }
@@ -123,9 +161,7 @@ function filterList(inputId, listId, dataArr, searchField, onSelect) {
 
     for (const item of filtered) {
         const li = document.createElement('li');
-        li.textContent = searchField === 'email'
-            ? `${item.name} — ${item.email}`
-            : item.name;
+        li.textContent = searchField === 'email' ? `${item.name} — ${item.email}` : item.name;
         li.onclick = () => onSelect(item);
         list.appendChild(li);
     }
@@ -137,120 +173,85 @@ async function selectProject(project) {
     document.getElementById('projectBadge').textContent = '✓ ' + project.name;
     document.getElementById('projectBadge').style.display = 'inline-block';
     document.getElementById('projectList').classList.remove('open');
-    //await loadProjectMaterials(project._id);
 }
 
 function clearProjectSearch() {
-    ['projectSearch', 'selectedProjectId',].forEach(id => {
+    ['projectSearch', 'selectedProjectId'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
     document.getElementById('projectBadge').style.display = 'none';
 }
 
-async function openPopup(event){
+async function openPopup(event) {
     event.preventDefault();
-    let project;
-
-    let id = document.getElementById('selectedProjectId').value;
-    if (id == '') alert('no project selected');
-    else{
-        try{
-            let response = await fetch(`/projects/${id}`);
-            project = await response.json();
+    const id = document.getElementById('selectedProjectId').value;
+    if (id == '') {
+        alert('no project selected');
+    } else {
+        try {
+            const response = await fetch(`/projects/${id}`);
+            const project = await response.json();
             populatePopup(project);
-        }catch (error){
+        } catch (error) {
             alert(`${error}`);
         }
     }
 }
 
-function populatePopup(project){
-
-    let popup = document.getElementById('popup');
+function populatePopup(project) {
+    const popup = document.getElementById('popup');
     popup.innerHTML = '';
 
-    let logo = document.createElement('img');
+    const logo = document.createElement('img');
     logo.src = "./images/CoolSys-Logo.png";
     popup.appendChild(logo);
 
-    // TOOL INFO
-    let title = document.createElement('h2');
-    title.innerHTML = `${project.name}`;
+    const title = document.createElement('h2');
+    title.innerHTML = project.name;
     popup.appendChild(title);
 
-    let manager = document.createElement('p');
-
-    let managerTitle = document.createElement('b');
+    const manager = document.createElement('p');
+    const managerTitle = document.createElement('b');
     managerTitle.innerHTML = 'Manager: ';
-
-    let managerBody = document.createElement('span');
-    managerBody.innerHTML = `${project.manager.name}`;
-
+    const managerBody = document.createElement('span');
+    managerBody.innerHTML = project.manager ? project.manager.name : 'N/A';
     manager.appendChild(managerTitle);
     manager.appendChild(managerBody);
 
-    let location = document.createElement('p');
-    let locationTitle = document.createElement('b');
-    locationTitle.innerHTML = 'Location: '
-    let locationBody = document.createElement('span');
-    locationBody.innerHTML = `${project.location}`;
+    const location = document.createElement('p');
+    const locationTitle = document.createElement('b');
+    locationTitle.innerHTML = 'Location: ';
+    const locationBody = document.createElement('span');
+    locationBody.innerHTML = project.location;
     location.appendChild(locationTitle);
     location.appendChild(locationBody);
 
-    let workers = document.createElement('p');
-
-    let workersTitle = document.createElement('b');
+    const workers = document.createElement('p');
+    const workersTitle = document.createElement('b');
     workersTitle.innerHTML = 'Workers: ';
-
-    let workersBody = document.createElement('span');
+    const workersBody = document.createElement('span');
     let count = 1;
-    for (const worker of project.workers){
-        workersBody.innerHTML += `${worker.name}`
-        if (count != project.workers.length){
-            workersBody.innerHTML += ', ';
-            count++;
-        }
-        
+    for (const worker of project.workers) {
+        workersBody.innerHTML += worker.name;
+        if (count != project.workers.length) { workersBody.innerHTML += ', '; count++; }
     }
-
     workers.appendChild(workersTitle);
     workers.appendChild(workersBody);
 
-    let materials = document.createElement('p');
-
-    let materialsTitle = document.createElement('b');
-    materialsTitle.innerHTML = 'Materials: ';
-
-    let materialsBody = document.createElement('span');
-    count = 1;
-    for (const material of project.materials){
-        materialsBody.innerHTML += `${material.name} (${material.quantity} ${material.unit})`
-        if (count != project.materials.length){
-            materialsBody.innerHTML += ', ';
-            count++;
-        }
-        
-    }
-    materials.appendChild(materialsTitle);
-    materials.appendChild(materialsBody);
-
-    // ACTION BUTTONS
     const btnDiv = document.createElement('div');
     btnDiv.classList.add('text-center');
     btnDiv.style.margin = '5px';
 
     const editBtn = document.createElement('button');
-    editBtn.classList.add('btn');
-    editBtn.classList.add('btn-warning');
+    editBtn.classList.add('btn', 'btn-warning');
     editBtn.style.marginRight = "10px";
     editBtn.innerHTML = 'Edit';
     editBtn.onclick = () => editProject(project._id);
     btnDiv.appendChild(editBtn);
 
     const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-danger');
+    deleteBtn.classList.add('btn', 'btn-danger');
     deleteBtn.style.marginRight = "10px";
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.onclick = () => deleteProject(project._id);
@@ -259,22 +260,19 @@ function populatePopup(project){
     popup.appendChild(manager);
     popup.appendChild(location);
     popup.appendChild(workers);
-    popup.appendChild(materials);
     popup.appendChild(btnDiv);
 
-    let closeBtn = document.createElement('button');
-    closeBtn.classList.add('close')
+    const closeBtn = document.createElement('button');
+    closeBtn.classList.add('close');
     closeBtn.innerHTML = 'Close';
     closeBtn.onclick = () => closePopup();
-
     popup.appendChild(closeBtn);
 
     popup.classList.add('open-popup');
 }
 
-function closePopup(){
-    let popup = document.getElementById('popup');
-    popup.classList.remove('open-popup')
+function closePopup() {
+    document.getElementById('popup').classList.remove('open-popup');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -283,6 +281,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         allProjects = await projectsRes.json();
     } catch (e) {
         console.error('Error loading init data:', e);
-        showMsg('Failed to load projects.', 'danger');
     }
 });
