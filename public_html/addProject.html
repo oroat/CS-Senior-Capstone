@@ -5,8 +5,6 @@
         <title>Add Project - CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/search.css">
-        <link rel="stylesheet" href="css/popup.css">
     </head>
     <body>
 
@@ -18,33 +16,30 @@
 
                 <form id="projectForm">
 
-                    <div class="row" style="margin: 10px" >
+                    <div class="row" style="margin: 10px">
                         <div class="col-4 justify-content-end">
                             <label for="name" class="form-label">Project Name</label>
                         </div>
-            
                         <div class="col-auto">
                             <input type="text" id="name" name="name" placeholder="Project Name" required>
                         </div>
                     </div>
 
-                    <div class="row" style="margin: 10px" >
+                    <div class="row" style="margin: 10px">
                         <div class="col-4 justify-content-end">
                             <label for="location" class="form-label">Location</label>
                         </div>
-            
                         <div class="col-auto">
                             <input type="text" id="location" name="location" placeholder="Location" required>
                         </div>
                     </div>
 
-                    <div class="row" style="margin: 10px" >
+                    <div class="row" style="margin: 10px">
                         <div class="col-4 justify-content-end">
                             <label for="manager" class="form-label">Project Manager</label>
                         </div>
-            
                         <div class="col-auto">
-                            <select class="custom-select" id="manager" name = "manager"required>
+                            <select class="custom-select" id="manager" name="manager" required>
                                 <option value="">-- Select a Manager --</option>
                             </select>
                         </div>
@@ -52,8 +47,7 @@
 
                     <div class="form mb-3">
                         <label for="workers">Assign Workers (Hold Ctrl/Cmd)</label><br>
-                        <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;">
-                        </select>
+                        <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;"></select>
                     </div>
 
                     <div class="text-center" style="margin: 10px">
@@ -61,78 +55,17 @@
                     </div>
 
                 </form>
-
             </div>
         </div>
-
-        <!-- <h2>Create New Project</h2>
-
-        <form id="projectForm">
-            <div class="form mb-3">
-                <input type="text" id="name" name="name" placeholder="Project Name" required>
-                <label for="name">Project Name</label>
-            </div>
-
-            <div class="form mb-3">
-                <input type="text" id="location" name="location" placeholder="Location" required>
-                <label for="location">Location</label>
-            </div>
-
-            <div class="form mb-3">
-                <label for="manager">Project Manager</label><br>
-                <select id="manager" name="manager" required>
-                    <option value="">-- Select a Manager --</option>
-                </select>
-            </div>
-
-            <div class="form mb-3">
-                <label for="workers">Assign Workers (Hold Ctrl/Cmd)</label><br>
-                <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;">
-                </select>
-            </div>
-
-            <div class="text-center">
-                <button type="submit">Create Project</button>
-            </div>
-        </form> -->
 
         <hr>
 
-        <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
-            <h1 class="display-6">Search for Project</h1>
-
-                <div class="row" style="margin:10px;">
-                    
-                    <div class="search-select-wrapper">
-                        <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off"
-                            oninput="filterList('projectSearch','projectList',allProjects,'name',selectProject)"
-                            onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
-                        <ul class="search-dropdown-list" id="projectList"></ul>
-                    </div>
-                    <span class="selected-badge" id="projectBadge" style="display:none;"></span>
-                    <input type="hidden" id="selectedProjectId">
-        
-                    <div class="text-center" style="margin: 5px">
-                        
-                        <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
-                        <button class="btn btn-outline-secondary ms-2" onclick="clearProjectSearch()">Clear</button>
-                        
-                    </div>
-                    
-                </div>
-            
-        </div>
-
-        <div class="container">
-            <div class="popup" id="popup"></div>
-        </div>
-
-        <!-- <h3>All Projects</h3>
-        <div id="projectList2"></div>-->
+        <h3>All Projects</h3>
+        <div id="projectList"></div>
 
         <div id="footer"></div>
 
-        <script src="js/projects.js"></script> 
+        <script src="js/projects.js"></script>
 
         <script>
             $(document).ready(function () {
