@@ -181,3 +181,34 @@ test('Error in getting tool by serial number', async function(){
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({error: "Failed to find tool", details: error.message});
 });
+
+test('Get tool by id', async function(){
+    let tool = {_id: 't1', serialNum: '1A', model: 'Pump', inUse: 'false'};
+
+    let req = {params: {id: 't1'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+
+    dao.read = jest.fn().mockResolvedValue(tool);
+
+    await controller.getToolById(req, res);
+
+    expect(dao.read).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(tool);
+});
+
+test('Error in getting tool by id', async function(){
+    let tool = {_id: 't1', serialNum: '1A', model: 'Pump', inUse: 'false'};
+
+    let req = {params: {id: 'wrongId'}};
+    let res = {status: jest.fn().mockReturnThis(), json: jest.fn()};
+    let error = {message: 'DB error'};
+
+    dao.read = jest.fn().mockRejectedValue(new Error('DB error'));
+
+    await controller.getToolById(req, res);
+
+    expect(dao.read).toHaveBeenCalledWith(req.params.id);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({error: "Failed to find tool", details: error.message});
+});
