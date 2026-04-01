@@ -1,10 +1,11 @@
-// ─── State 
+// ─── State
 let allUsers = [];
 let allProjects = [];
-let projectMaterials = [];
-let stagedMaterials = [];
+let allPOs = [];
+let projectPOs = [];
+let selectedPOMaterials = [];
 
-// ─── Message Helper 
+// ─── Message Helper
 function showMsg(msg, type = 'success') {
     document.getElementById('msg-display').innerHTML = `
         <div class="alert alert-${type} alert-dismissible">
@@ -13,7 +14,7 @@ function showMsg(msg, type = 'success') {
         </div>`;
 }
 
-// ─── Searchable Dropdown Helpers 
+// ─── Searchable Dropdown Helpers
 function openList(listId) {
     document.getElementById(listId).classList.add('open');
 }
@@ -39,55 +40,82 @@ function filterList(inputId, listId, dataArr, searchField, onSelect) {
 
     for (const item of filtered) {
         const li = document.createElement('li');
-        li.textContent = searchField === 'email'
-            ? `${item.name} — ${item.email}`
-            : item.name;
+        if (searchField === 'email') {
+            li.textContent = `${item.name} — ${item.email}`;
+        } else if (searchField === 'poNumber') {
+            li.textContent = `${item.poNumber} — ${item.vendor}`;
+        } else {
+            li.textContent = item.name;
+        }
         li.onclick = () => onSelect(item);
         list.appendChild(li);
     }
 }
 
-// ─── Select Handlers 
+// ─── Select Project → filter POs for that project
 async function selectProject(project) {
     document.getElementById('selectedProjectId').value = project._id;
     document.getElementById('projectSearch').value = project.name;
     document.getElementById('projectBadge').textContent = '✓ ' + project.name;
     document.getElementById('projectBadge').style.display = 'inline-block';
     document.getElementById('projectList').classList.remove('open');
-    await loadProjectMaterials(project._id);
-}
 
-async function loadProjectMaterials(projectId) {
-    try {
-        const res = await fetch('/materials');
-        const all = await res.json();
-        projectMaterials = all.filter(m => {
-            const mProj = m.project?._id || m.project;
-            return String(mProj) === String(projectId);
-        });
-        renderMaterialChecklist();
-    } catch (e) {
-        console.error('Error loading project materials:', e);
+    // Filter POs for this project
+    projectPOs = allPOs.filter(po => {
+        const poProj = po.project?._id || po.project;
+        return String(poProj) === String(project._id);
+    });
+
+    // Reset PO search
+    clearPOSearch();
+    renderMaterialChecklist([]);
+
+    if (projectPOs.length === 0) {
+        document.getElementById('materialChecklist').innerHTML =
+            '<p class="text-muted" style="padding:10px;">No purchase orders found for this project.</p>';
     }
 }
 
-function renderMaterialChecklist() {
+// ─── Select PO → show its materials as checkboxes
+function selectPO(po) {
+    document.getElementById('selectedPOId').value = po._id;
+    document.getElementById('poSearch').value = po.poNumber;
+    document.getElementById('poBadge').textContent = `✓ ${po.poNumber} — ${po.vendor}`;
+    document.getElementById('poBadge').style.display = 'inline-block';
+    document.getElementById('poList').classList.remove('open');
+
+    selectedPOMaterials = po.materials || [];
+    renderMaterialChecklist(selectedPOMaterials);
+}
+
+function clearPOSearch() {
+    const el = document.getElementById('poSearch');
+    const idEl = document.getElementById('selectedPOId');
+    const badge = document.getElementById('poBadge');
+    if (el) el.value = '';
+    if (idEl) idEl.value = '';
+    if (badge) badge.style.display = 'none';
+    selectedPOMaterials = [];
+}
+
+// ─── Render material checkboxes from selected PO
+function renderMaterialChecklist(materials) {
     const container = document.getElementById('materialChecklist');
     container.innerHTML = '';
 
-    if (projectMaterials.length === 0) {
-        container.innerHTML = '<p class="text-muted" style="padding:10px;">No materials found for this project.</p>';
+    if (!materials || materials.length === 0) {
+        container.innerHTML = '<p class="text-muted" style="padding:10px;">Select a PO to see its materials.</p>';
         return;
     }
 
-    for (const mat of projectMaterials) {
+    for (const mat of materials) {
         const row = document.createElement('div');
         row.classList.add('material-check-row');
         row.innerHTML = `
             <div class="form-check" style="flex:1;">
                 <input class="form-check-input" type="checkbox" id="matCheck_${mat._id}" value="${mat._id}">
                 <label class="form-check-label" for="matCheck_${mat._id}">
-                    ${mat.name} <small class="text-muted">(${mat.unit})</small>
+                    ${mat.name} <small class="text-muted">(${mat.quantity} ${mat.unit})</small>
                 </label>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
@@ -97,7 +125,6 @@ function renderMaterialChecklist() {
             </div>
         `;
 
-        // enable/disable qty input when checkbox toggled
         const checkbox = row.querySelector(`#matCheck_${mat._id}`);
         const qtyInput = row.querySelector(`#matQty_${mat._id}`);
         checkbox.addEventListener('change', () => {
@@ -109,6 +136,19 @@ function renderMaterialChecklist() {
     }
 }
 
+// ─── Collect checked materials
+function getCheckedMaterials() {
+    return selectedPOMaterials
+        .filter(mat => document.getElementById(`matCheck_${mat._id}`)?.checked)
+        .map(mat => ({
+            materialId: mat._id,
+            name: mat.name,
+            unit: mat.unit,
+            quantity: Number(document.getElementById(`matQty_${mat._id}`)?.value || 0)
+        }));
+}
+
+// ─── Recipient select
 function selectRecip(user) {
     document.getElementById('selectedRecipId').value = user._id;
     document.getElementById('recipSearch').value = user.email;
@@ -125,23 +165,17 @@ function selectUpdateRecip(user) {
     document.getElementById('updateRecipList').classList.remove('open');
 }
 
-// ─── Collect Checked Materials 
-function getCheckedMaterials() {
-    return projectMaterials
-        .filter(mat => document.getElementById(`matCheck_${mat._id}`)?.checked)
-        .map(mat => mat._id);
-}
-
-// ─── Create 
+// ─── Create Shipment
 async function createShipment() {
-    const sender = document.getElementById('senderInput').value.trim();
-    const project = document.getElementById('selectedProjectId').value;
-    const recip = document.getElementById('selectedRecipId').value;
+    const sender   = document.getElementById('senderInput').value.trim();
+    const project  = document.getElementById('selectedProjectId').value;
+    const po       = document.getElementById('selectedPOId').value;
+    const recip    = document.getElementById('selectedRecipId').value;
     const dt_recvd = document.getElementById('dtRecvdInput').value;
     const materials_recvd = getCheckedMaterials();
 
-    if (!sender || !project || !recip || !dt_recvd) {
-        showMsg('Please fill out all required fields (Sender, Project, Recipient, Date).', 'warning');
+    if (!sender || !project || !po || !recip || !dt_recvd) {
+        showMsg('Please fill out all required fields (Sender, Project, PO, Recipient, Date).', 'warning');
         return;
     }
 
@@ -149,7 +183,7 @@ async function createShipment() {
         const response = await fetch('/shipments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sender, project, recip, dt_recvd, materials_recvd })
+            body: JSON.stringify({ sender, project, po, recip, dt_recvd, materials_recvd })
         });
 
         if (response.ok) {
@@ -167,19 +201,23 @@ async function createShipment() {
     }
 }
 
+// ─── Clear Form
 function clearForm() {
-    ['senderInput', 'dtRecvdInput', 'projectSearch', 'recipSearch', 'selectedProjectId', 'selectedRecipId'].forEach(id => {
+    ['senderInput', 'dtRecvdInput', 'projectSearch', 'poSearch', 'recipSearch',
+     'selectedProjectId', 'selectedPOId', 'selectedRecipId'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
-    document.getElementById('projectBadge').style.display = 'none';
-    document.getElementById('recipBadge').style.display = 'none';
-    projectMaterials = [];
-    document.getElementById('materialChecklist').innerHTML =
-        '<p class="text-muted" style="padding:10px;">Select a project to load its materials.</p>';
+    ['projectBadge', 'poBadge', 'recipBadge'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    projectPOs = [];
+    selectedPOMaterials = [];
+    renderMaterialChecklist([]);
 }
 
-// ─── View 
+// ─── View Shipments
 async function viewShipments(filterApplied) {
     try {
         const response = await fetch('/shipments');
@@ -210,7 +248,11 @@ async function viewShipments(filterApplied) {
 
 function addShipmentRow(container, shipment) {
     const materialNames = shipment.materials_recvd?.length
-        ? shipment.materials_recvd.map(m => m.name || '—').join(', ')
+        ? shipment.materials_recvd.map(m => `${m.name} (${m.quantity} ${m.unit})`).join(', ')
+        : '—';
+
+    const poDisplay = shipment.po
+        ? `${shipment.po.poNumber} — ${shipment.po.vendor}`
         : '—';
 
     const row = document.createElement('div');
@@ -218,9 +260,10 @@ function addShipmentRow(container, shipment) {
     row.innerHTML = `
         <div class="col-2">${shipment.sender}</div>
         <div class="col-2">${shipment.project?.name || '—'}</div>
+        <div class="col-1">${poDisplay}</div>
         <div class="col-2">${shipment.recip?.name || '—'}</div>
         <div class="col-2">${shipment.dt_recvd}</div>
-        <div class="col-3">${materialNames}</div>
+        <div class="col-2">${materialNames}</div>
         <div class="col-1">
             <button class="btn btn-danger btn-sm" onclick="deleteShipment('${shipment._id}')">Delete</button>
         </div>
@@ -228,10 +271,9 @@ function addShipmentRow(container, shipment) {
     container.appendChild(row);
 }
 
-// ─── Delete 
+// ─── Delete
 async function deleteShipment(id) {
     if (!confirm('Are you sure you want to delete this shipment?')) return;
-
     try {
         const response = await fetch(`/shipments/${id}`, { method: 'DELETE' });
         if (response.ok) {
@@ -243,22 +285,19 @@ async function deleteShipment(id) {
             showMsg('Failed to delete: ' + (result.error || 'Unknown error'), 'danger');
         }
     } catch (error) {
-        console.error('Error deleting shipment:', error);
         showMsg('Network error. Please try again.', 'danger');
     }
 }
 
-// ─── Update 
+// ─── Update
 async function populateUpdateForm() {
     const id = document.getElementById('updateShipmentDropdown').value;
     if (!id) return;
-
     try {
         const res = await fetch(`/shipments/${id}`);
         const shipment = await res.json();
         document.getElementById('updateSender').value = shipment.sender || '';
         document.getElementById('updateDt').value = shipment.dt_recvd || '';
-
         if (shipment.recip) {
             const recip = shipment.recip;
             document.getElementById('updateSelectedRecipId').value = recip._id || recip;
@@ -276,9 +315,9 @@ async function updateShipment() {
     if (!id) { showMsg('Please select a shipment to update.', 'warning'); return; }
 
     const updates = {
-        sender: document.getElementById('updateSender').value.trim(),
+        sender:   document.getElementById('updateSender').value.trim(),
         dt_recvd: document.getElementById('updateDt').value,
-        recip: document.getElementById('updateSelectedRecipId').value
+        recip:    document.getElementById('updateSelectedRecipId').value
     };
 
     try {
@@ -287,7 +326,6 @@ async function updateShipment() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
         });
-
         if (response.ok) {
             showMsg('Shipment updated successfully.');
             await viewShipments(false);
@@ -296,12 +334,11 @@ async function updateShipment() {
             showMsg('Failed to update: ' + (result.error || 'Unknown error'), 'danger');
         }
     } catch (error) {
-        console.error('Error updating shipment:', error);
         showMsg('Network error. Please try again.', 'danger');
     }
 }
 
-// ─── Populate Shipment Dropdown 
+// ─── Shipment dropdown for update form
 async function populateShipmentDropdown() {
     try {
         const res = await fetch('/shipments');
@@ -316,15 +353,20 @@ async function populateShipmentDropdown() {
     }
 }
 
-// ─── Init 
+// ─── Init
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [usersRes, projectsRes] = await Promise.all([fetch('/users'), fetch('/projects')]);
-        allUsers = await usersRes.json();
+        const [usersRes, projectsRes, posRes] = await Promise.all([
+            fetch('/users'),
+            fetch('/projects'),
+            fetch('/purchaseorders')
+        ]);
+        allUsers    = await usersRes.json();
         allProjects = await projectsRes.json();
+        allPOs      = await posRes.json();
     } catch (e) {
         console.error('Error loading init data:', e);
-        showMsg('Failed to load users/projects.', 'danger');
+        showMsg('Failed to load init data.', 'danger');
     }
 
     await populateShipmentDropdown();
