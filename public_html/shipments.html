@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>CoolSys - Shipments</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/shipments.js"></script>
     <link rel="stylesheet" href="css/main.css">
-
     <style>
         .bborder { border: 3px solid #27f5da; }
         .center {
@@ -18,7 +16,6 @@
             margin: 10px;
         }
 
-        /* Searchable dropdown */
         .search-select-wrapper { position: relative; min-width: 260px; }
         .search-select-wrapper input { width: 100%; }
         .search-dropdown-list {
@@ -54,7 +51,6 @@
             color: #333;
         }
 
-        /* Staged materials */
         .material-check-row {
             display: flex;
             align-items: center;
@@ -75,7 +71,6 @@
         .shipment-item { padding: 10px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
-
 <body>
 
 <div id="header"></div>
@@ -117,7 +112,22 @@
         </div>
     </div>
 
-    <!-- Recipient search by email -->
+    <!-- PO search — populates after project selected -->
+    <div class="row" style="margin:10px;">
+        <div class="col-4 text-end"><label class="col-form-label">Purchase Order</label></div>
+        <div class="col-auto">
+            <div class="search-select-wrapper">
+                <input type="text" class="form-control" id="poSearch" placeholder="Search by PO number or vendor..." autocomplete="off"
+                    oninput="filterList('poSearch','poList',projectPOs,'poNumber',selectPO)"
+                    onfocus="openList('poList')" onblur="closeListDelayed('poList')">
+                <ul class="search-dropdown-list" id="poList"></ul>
+            </div>
+            <span class="selected-badge" id="poBadge" style="display:none;"></span>
+            <input type="hidden" id="selectedPOId">
+        </div>
+    </div>
+
+    <!-- Recipient search -->
     <div class="row" style="margin:10px;">
         <div class="col-4 text-end"><label class="col-form-label">Recipient</label></div>
         <div class="col-auto">
@@ -134,12 +144,12 @@
 
     <hr>
 
-    <!-- Materials checklist -->
+    <!-- Materials checklist from selected PO -->
     <h5 style="margin:10px 0 2px 0;">Materials Received</h5>
-    <small class="text-muted" style="margin-left:10px;">Select a project to load its materials, check each one received and enter the quantity</small>
+    <small class="text-muted" style="margin-left:10px;">Select a project and PO, then check off each material received and enter the quantity</small>
 
     <div style="margin:10px; background:white; border-radius:4px; border:1px solid #ced4da; min-height:60px; padding:8px;" id="materialChecklist">
-        <p class="text-muted" style="padding:10px;">Select a project to load its materials.</p>
+        <p class="text-muted" style="padding:10px;">Select a project and PO to load materials.</p>
     </div>
 
     <div class="text-center" style="margin:15px 10px 5px;">
@@ -154,15 +164,16 @@
     <div class="row header-row">
         <div class="col-2">Sender</div>
         <div class="col-2">Project</div>
+        <div class="col-1">PO</div>
         <div class="col-2">Recipient</div>
         <div class="col-2">Date Received</div>
-        <div class="col-3">Materials</div>
+        <div class="col-2">Materials</div>
         <div class="col-1">Action</div>
     </div>
     <div id="shipmentList"></div>
 </div>
 
-<!-- FILTER  -->
+<!-- FILTER -->
 <div class="container-sm center section-card" style="max-width:500px;">
     <h5>Filter Shipments by Sender</h5>
     <div class="filter-input-group text-center">
@@ -172,7 +183,7 @@
     </div>
 </div>
 
-<!--  UPDATE SHIPMENT  -->
+<!-- UPDATE SHIPMENT -->
 <div class="container section-card bborder">
     <h1 class="display-6">Update Shipment</h1>
 
@@ -226,6 +237,5 @@
         $('#footer').load('footer.html');
     });
 </script>
-
 </body>
 </html>
