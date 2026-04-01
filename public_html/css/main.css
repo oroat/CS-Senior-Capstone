@@ -9,3 +9,6 @@ body {
     align-items: center;
     margin: 10px
 }
+
+.badge-Verified          { background: #20c997; color: #fff; }
+.badge-Missing\ Materials { background: #dc3545; color: #fff; }
