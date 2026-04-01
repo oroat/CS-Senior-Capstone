@@ -9,7 +9,11 @@ const materialSchema = new mongoose.Schema({
 const purchaseOrderSchema = new mongoose.Schema({
     poNumber: { type: String, unique: true, required: true },
     vendor:    { type: String, required: true },
-    status:    { type: String, enum: ['Draft', 'Pending', 'Approved', 'Received', 'Cancelled'], default: 'Draft' },
+    status: {
+        type: String,
+        enum: ['Draft', 'Pending', 'Approved', 'Received', 'Verified', 'Missing Materials'],
+        default: 'Pending'
+    },
     project:   { type: mongoose.Schema.Types.ObjectId, ref: 'projects', required: true },
     materials: [materialSchema],
     notes:     { type: String, default: '' },
