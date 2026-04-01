@@ -1,39 +1,40 @@
 const mongoose = require('mongoose');
 
-const projectSchema = new mongoose.Schema({
+const materialSchema = new mongoose.Schema({
     name:     { type: String, required: true },
-    manager:  { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
-    location: { type: String, required: true },
-    workers:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+    quantity: { type: Number, default: 0 },
+    unit:     { type: String, required: true }
+}, { _id: true });
+
+const purchaseOrderSchema = new mongoose.Schema({
+    poNumber: { type: String, unique: true, required: true },
+    vendor:    { type: String, required: true },
+    status:    { type: String, enum: ['Draft', 'Pending', 'Approved', 'Received', 'Cancelled'], default: 'Draft' },
+    project:   { type: mongoose.Schema.Types.ObjectId, ref: 'projects', required: true },
+    materials: [materialSchema],
+    notes:     { type: String, default: '' },
+    createdAt: { type: Date, default: Date.now }
 });
 
-const projectModel = mongoose.model('projects', projectSchema);
 
-exports.readAll = async function(){
-    return await projectModel.find()
-        .populate('manager')
-        .populate('workers')
-        
-}
+const purchaseOrderModel = mongoose.model('purchaseorders', purchaseOrderSchema);
 
-exports.read = async function(id){
-    return await projectModel.findById(id)
-        .populate('manager')
-        .populate('workers')
-        
-}
+exports.readAll = async function () {
+    return await purchaseOrderModel.find()
+        .populate('project');
+};
 
-exports.create = async (data) => await new projectModel(data).save();
+exports.read = async function (id) {
+    return await purchaseOrderModel.findById(id)
+        .populate('project');
+};
 
-exports.update = async (id, updates) => await projectModel.findByIdAndUpdate(id, updates, { new: true });
+exports.create = async (data) => await new purchaseOrderModel(data).save();
 
-exports.del = async (id) => await projectModel.findByIdAndDelete(id);
+exports.update = async (id, updates) => await purchaseOrderModel.findByIdAndUpdate(id, updates, { new: true });
 
-exports.deleteAll = async function(){
-    await projectModel.deleteMany();
-}
+exports.del = async (id) => await purchaseOrderModel.findByIdAndDelete(id);
 
-// needed for test teardown
-exports.deleteAll = async function(){
-    await projectModel.deleteMany();
-}
+exports.deleteAll = async function () {
+    await purchaseOrderModel.deleteMany();
+};
