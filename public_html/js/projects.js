@@ -75,7 +75,14 @@ function loadProjects() {
                 poDisplay = '<span style="color:#888;">No purchase orders</span>';
             } else {
                 poDisplay = projectPOs.map(po => {
-                    const badgeColors = { 'Draft': '#6c757d', 'Pending': '#ffc107', 'Approved': '#28a745', 'Received': '#17a2b8', 'Cancelled': '#dc3545' };
+                    const badgeColors = {   'Draft':'#6c757d',
+                                            'Pending':'#ffc107',
+                                            'Approved':'#28a745',
+                                            'Received':'#17a2b8',
+                                            'Cancelled':'#dc3545',
+                                            'Verified':'#20c997',
+                                            'Missing Materials':'#dc3545' 
+                                        };
                     const bg = badgeColors[po.status] || '#6c757d';
                     const fg = po.status === 'Pending' ? '#333' : '#fff';
                     const matCount = po.materials ? po.materials.length : 0;
