@@ -1,10 +1,10 @@
-function selectUser(user) {
-    document.getElementById('selectedUserId').value = user._id;
-    document.getElementById('userSearch').value = user.email;
-    document.getElementById('userBadge').textContent = '✓ ' + user.email;
-    document.getElementById('userBadge').style.display = 'inline-block';
-    document.getElementById('userList').classList.remove('open');
-}
+// function selectUser(user) {
+//     document.getElementById('selectedUserId').value = user._id;
+//     document.getElementById('userSearch').value = user.email;
+//     document.getElementById('userBadge').textContent = '✓ ' + user.email;
+//     document.getElementById('userBadge').style.display = 'inline-block';
+//     document.getElementById('userList').classList.remove('open');
+// }
 
 function clearUserSearch() {
     ['userSearch', 'selectedUserId',].forEach(id => {

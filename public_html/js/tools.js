@@ -1,18 +1,18 @@
-function selectTool(tool, selectedId, inputId, badge, listId) {
-    document.getElementById(selectedId).value = tool._id;
-    document.getElementById(inputId).value = tool.serialNum;
-    document.getElementById(badge).textContent = '✓ ' + tool.serialNum;
-    document.getElementById(badge).style.display = 'inline-block';
-    document.getElementById(listId).classList.remove('open');
-}
+// function selectTool(tool, selectedId, inputId, badge, listId) {
+//     document.getElementById(selectedId).value = tool._id;
+//     document.getElementById(inputId).value = tool.serialNum;
+//     document.getElementById(badge).textContent = '✓ ' + tool.serialNum;
+//     document.getElementById(badge).style.display = 'inline-block';
+//     document.getElementById(listId).classList.remove('open');
+// }
 
-function selectUser(user, selectedId, inputId, badge, listId) {
-    document.getElementById(selectedId).value = user._id;
-    document.getElementById(inputId).value = user.email;
-    document.getElementById(badge).textContent = '✓ ' + user.email;
-    document.getElementById(badge).style.display = 'inline-block';
-    document.getElementById(listId).classList.remove('open');
-}
+// function selectUser(user, selectedId, inputId, badge, listId) {
+//     document.getElementById(selectedId).value = user._id;
+//     document.getElementById(inputId).value = user.email;
+//     document.getElementById(badge).textContent = '✓ ' + user.email;
+//     document.getElementById(badge).style.display = 'inline-block';
+//     document.getElementById(listId).classList.remove('open');
+// }
 
 function clearPopupSearch() {
     ['popupToolSearch', 'popupSelectedToolId',].forEach(id => {
