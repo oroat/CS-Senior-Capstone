@@ -1,5 +1,3 @@
-let allUsers = [];
-
 function selectUser(user) {
     document.getElementById('selectedUserId').value = user._id;
     document.getElementById('userSearch').value = user.email;
@@ -206,13 +204,5 @@ async function popUserDropdown(dropdown, users){
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // await viewUsers(false);
-    try {
-        const usersRes = await fetch('/users');
-        allUsers = await usersRes.json();
-    } catch (e) {
-        console.error('Error loading init data:', e);
-        showMsg('Failed to load users', 'danger');
-    }
     await populateUserDropdowns();
 });

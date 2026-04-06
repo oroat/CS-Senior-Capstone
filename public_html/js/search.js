@@ -1,3 +1,7 @@
+let allUsers = [];
+let allTools = [];
+let allProjects = [];
+
 function openList(listId) {
     document.getElementById(listId).classList.add('open');
 }
@@ -38,3 +42,19 @@ function populateFilterOption(li, searchField, item){
             li.textContent = `${item.name}`;
         }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    try {
+        const toolsRes = await fetch('/tools');
+        const usersRes = await fetch('/users');
+        const projectsRes = await fetch('/projects');
+        allTools = await toolsRes.json();
+        allUsers = await usersRes.json();
+        allProjects = await projectsRes.json();
+    } catch (e) {
+        console.error('Error loading init data:', e);
+        showMsg('Failed to load data', 'danger');
+    }
+
+});

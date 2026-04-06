@@ -1,6 +1,3 @@
-let allTools = [];
-let allUsers = [];
-
 function selectTool(tool, selectedId, inputId, badge, listId) {
     document.getElementById(selectedId).value = tool._id;
     document.getElementById(inputId).value = tool.serialNum;
@@ -234,17 +231,3 @@ async function deallocateTool(tool, user){
             alert(`Error deallocating tool: ${error.message}`);
         });
     }
-
-document.addEventListener('DOMContentLoaded', async () => {
-
-    try {
-        const toolsRes = await fetch('/tools');
-        const usersRes = await fetch('/users');
-        allTools = await toolsRes.json();
-        allUsers = await usersRes.json();
-    } catch (e) {
-        console.error('Error loading init data:', e);
-        showMsg('Failed to load tools/users.', 'danger');
-    }
-
-});
