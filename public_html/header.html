@@ -24,18 +24,32 @@
                 <a class="nav-link" href="/landing.html">Home</a>
               </li>
 
-              <li class="nav-item dropdown">
+              <li class="nav-item dropdown" id="admin-control" style="display: none;">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Admin
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="users.html">Users</a></li>
-                  <li><a class="dropdown-item" href="tools.html">Tools</a></li>
-                  <li><a class="dropdown-item" href="/addProject">Projects</a></li>
-                  <li><a class="dropdown-item" href="/purchaseOrder">Purchase Order</a></li>
+                  <!-- <li><a class="dropdown-item" href="tools.html">Tools</a></li> -->
+                  <!-- <li><a class="dropdown-item" href="/addProject">Projects</a></li> -->
+                  <!-- <li><a class="dropdown-item" href="/purchaseOrder">Purchase Order</a></li> -->
                   <li><a class="dropdown-item" href="/shipment">Log Shipment</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Settings</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item" id="tool-control" style="display: none">
+                <a class="nav-link" href="tools.html">Tools</a>
+              </li>
+
+              <li class="nav-item dropdown" id="pm-control" style="display: none;">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Project Manager
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/addProject">Projects</a></li>
+                  <li><a class="dropdown-item" href="/purchaseOrder">Purchase Order</a></li>
                 </ul>
               </li>
             </ul>
@@ -68,6 +82,18 @@
               document.getElementById("nav-login").style.display = "none";
               document.getElementById("nav-profile").style.display = "inherit";
               document.getElementById("nav-logout").style.display = "inherit";
+            }
+
+            if (user.role == 0){
+              document.getElementById("admin-control").style.display="inherit";
+            }
+
+            if (user.role == 0 || user.role == 2){
+              document.getElementById("tool-control").style.display="inherit";
+            }
+
+            if (user.role == 0 || user.role == 1){
+              document.getElementById("pm-control").style.display="inherit";
             }
           } catch (error) {
             console.error("Auth check failed", error);
