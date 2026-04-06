@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <title>CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/search.js"></script>
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/search.css">
 
         <!-- PRIMARY BLUE: 0758A5 -->
         <!-- PRIMARY RED: BE1E2D -->
@@ -29,6 +31,14 @@
 
             <div class="col-6 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
                 <h1 class="display-6">Search for Tool</h1>
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" style="margin-bottom: 5px" required
+                        oninput="filterList('toolSearch','toolList','toolBadge', 'selectedToolId',allTools,'serialNum', selectTool)"
+                        onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+                    <ul class="search-dropdown-list" id="toolList"></ul>
+                </div>
+                <span class="selected-badge" id="toolBadge" style="display:none;"></span>
+                <input type="hidden" id="selectedToolId">
             </div>
 
             <div class="col-4 ms-auto container rounded" style="margin: 20px; margin-right: 30px; background-color:#b8e5ff !important;">
