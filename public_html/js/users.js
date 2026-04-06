@@ -1,38 +1,5 @@
 let allUsers = [];
 
-function openList(listId) {
-    document.getElementById(listId).classList.add('open');
-}
-
-function closeListDelayed(listId) {
-    setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
-}
-
-function filterList(inputId, listId, dataArr, searchField, onSelect) {
-    const query = document.getElementById(inputId).value.toLowerCase();
-    const list = document.getElementById(listId);
-    list.innerHTML = '';
-    list.classList.add('open');
-
-    const filtered = dataArr.filter(item =>
-        (item[searchField] || '').toLowerCase().includes(query)
-    );
-
-    if (filtered.length === 0) {
-        list.innerHTML = '<li class="no-results">No results found</li>';
-        return;
-    }
-
-    for (const item of filtered) {
-        const li = document.createElement('li');
-        li.textContent = searchField === 'email'
-            ? `${item.name} — ${item.email}`
-            : item.name;
-        li.onclick = () => onSelect(item);
-        list.appendChild(li);
-    }
-}
-
 function selectUser(user) {
     document.getElementById('selectedUserId').value = user._id;
     document.getElementById('userSearch').value = user.email;

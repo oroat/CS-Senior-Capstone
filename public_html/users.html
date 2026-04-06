@@ -6,6 +6,7 @@
         <title>CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="js/users.js"></script>
+        <script src="js/search.js"></script>
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/popup.css">
         <link rel="stylesheet" href="css/search.css">
@@ -136,7 +137,7 @@
             <div class="row">
                 <div class="search-select-wrapper">
                     <input type="text" class="form-control" id="userSearch" placeholder="Search by email" autocomplete="off"
-                        oninput="filterList('userSearch','userList',allUsers,'email',selectUser)"
+                        oninput="filterList('userSearch','userList','userBadge','selectedUserId', allUsers,'email',selectUser)"
                         onfocus="openList('userList')" onblur="closeListDelayed('userList')">
                     <ul class="search-dropdown-list" id="userList"></ul>
                 </div>
