@@ -1,39 +1,6 @@
 let allTools = [];
 let allUsers = [];
 
-function openList(listId) {
-    document.getElementById(listId).classList.add('open');
-}
-
-function closeListDelayed(listId) {
-    setTimeout(() => document.getElementById(listId).classList.remove('open'), 200);
-}
-
-function filterList(inputId, listId, badge, selectedId, dataArr, searchField, onSelect) {
-    const query = document.getElementById(inputId).value.toLowerCase();
-    const list = document.getElementById(listId);
-    list.innerHTML = '';
-    list.classList.add('open');
-
-    const filtered = dataArr.filter(item =>
-        (item[searchField] || '').toLowerCase().includes(query)
-    );
-
-    if (filtered.length === 0) {
-        list.innerHTML = '<li class="no-results">No results found</li>';
-        return;
-    }
-
-    for (const item of filtered) {
-        const li = document.createElement('li');
-        li.textContent = searchField === 'serialNum'
-            ? `${item.serialNum} — ${item.model}`
-            : `${item.name} - ${item.email}`;
-        li.onclick = () => onSelect(item, selectedId, inputId, badge, listId);
-        list.appendChild(li);
-    }
-}
-
 function selectTool(tool, selectedId, inputId, badge, listId) {
     document.getElementById(selectedId).value = tool._id;
     document.getElementById(inputId).value = tool.serialNum;
