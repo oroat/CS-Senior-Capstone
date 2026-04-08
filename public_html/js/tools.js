@@ -124,7 +124,7 @@ function populatePopup(tool, user){
     deallocateBtn.classList.add('btn-warning');
     deallocateBtn.style.marginRight = "10px";
     deallocateBtn.innerHTML = 'Deallocate';
-    deallocateBtn.onclick = () => deallocateTool(tool, user);
+    deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
     btnDiv.appendChild(deallocateBtn);
 
     popup.appendChild(serial);
@@ -162,7 +162,7 @@ async function deleteTool(tool){
     }
 }
 
-async function updateTool(event){
+async function updateTool(event, redirect){
     event.preventDefault();
     let toolId = document.getElementById("updateSelectedToolId").value;
 
@@ -174,7 +174,7 @@ async function updateTool(event){
     const response = await fetch(`/updatetool`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id: toolId, updates})
+        body: JSON.stringify({id: toolId, updates, redirectTo: redirect})
     })
     .then(response => response.json())
     .then(data => {
@@ -186,7 +186,7 @@ async function updateTool(event){
     });
 }
 
-async function addUserToTool(event){
+async function addUserToTool(event, redirect){
     event.preventDefault();
     let toolId = document.getElementById("addUserSelectedToolId").value;
     let userId = document.getElementById("addUserSelectedUserId").value;
@@ -196,7 +196,7 @@ async function addUserToTool(event){
     const response = await fetch(`/updatetool`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id: toolId, updates})
+        body: JSON.stringify({id: toolId, updates, redirectTo: redirect})
     })
     .then(response => response.json())
     .then(data => {
@@ -208,7 +208,7 @@ async function addUserToTool(event){
     });
 }
 
-async function deallocateTool(tool, user){
+async function deallocateTool(tool, user, redirect){
         if (!tool.inUse){
             alert(`${tool.model} (${tool.serialNum}) not allocated`);
             return;
@@ -220,7 +220,7 @@ async function deallocateTool(tool, user){
         const response = await fetch(`/updatetool`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({id: tool._id, updates})
+            body: JSON.stringify({id: tool._id, updates, redirectTo: redirect})
         })
         .then(response => response.json())
         .then(data => {

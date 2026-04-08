@@ -94,7 +94,7 @@ async function addToolRow(body, tool, user, count){
     button.classList.add('btn');
     button.classList.add('btn-warning');
     button.innerHTML = 'Unassign';
-    button.onclick = () => deallocateTool(tool, user);
+    button.onclick = () => deallocateTool(tool, user, '/profile.html');
     buttonTd.appendChild(button);
 
     newRow.appendChild(num);
@@ -129,32 +129,32 @@ async function addProjectRow(body, project, count){
     body.appendChild(newRow)
 }
 
-async function deallocateTool(tool, user){
-    try{
-        if (!tool.inUse){
-            alert(`${tool.model} (${tool.serialNum}) not allocated`);
-            return;
-        }
-        if (!confirm(`Are you sure you want to deallocate ${tool.model} (${tool.serialNum}) from ${user.name}?`)) return;
+// async function deallocateTool(tool, user){
+//     try{
+//         if (!tool.inUse){
+//             alert(`${tool.model} (${tool.serialNum}) not allocated`);
+//             return;
+//         }
+//         if (!confirm(`Are you sure you want to deallocate ${tool.model} (${tool.serialNum}) from ${user.name}?`)) return;
 
-        let updates = {inUse: false};
+//         let updates = {inUse: false};
 
-        const response = await fetch(`/updatetool/${tool._id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
+//         const response = await fetch(`/updatetool/${tool._id}`, {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(updates)
+//         });
 
-        if (response.ok){
-            alert('Tool updated successfully. Please refresh page to see changes.');
-        } else{
-            const result = response.json();
-            alert('Failed to update tool: ' + (result.error || "Unknown error."));
-        }
-    } catch (error){
-        alert(`Error during update: ${error}`);
-    }
-}
+//         if (response.ok){
+//             alert('Tool updated successfully. Please refresh page to see changes.');
+//         } else{
+//             const result = response.json();
+//             alert('Failed to update tool: ' + (result.error || "Unknown error."));
+//         }
+//     } catch (error){
+//         alert(`Error during update: ${error}`);
+//     }
+// }
 
   
 document.addEventListener('DOMContentLoaded', async () => {
