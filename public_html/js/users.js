@@ -1,11 +1,3 @@
-// function selectUser(user) {
-//     document.getElementById('selectedUserId').value = user._id;
-//     document.getElementById('userSearch').value = user.email;
-//     document.getElementById('userBadge').textContent = '✓ ' + user.email;
-//     document.getElementById('userBadge').style.display = 'inline-block';
-//     document.getElementById('userList').classList.remove('open');
-// }
-
 function clearUserSearch() {
     ['userSearch', 'selectedUserId',].forEach(id => {
         const el = document.getElementById(id);
@@ -161,15 +153,15 @@ async function deleteUser(userId){
     }
 }
 
-async function updateRole(event){
+async function updateRole(event, redirect){
     event.preventDefault();
-    let udropdown = document.getElementById('usersdropdown');
+    let userId = document.getElementById('updateSelectedUserId');
     let rdropdown = document.getElementById('rolesdropdown');
 
     const response = await fetch(`/updaterole`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({usersdropdown: udropdown.value, rolesdropdown: rdropdown.value})
+        body: JSON.stringify({id: userId.value, role: rdropdown.value, redirectTo: redirect})
     })
     .then(response => response.json())
     .then(data => {
@@ -180,39 +172,3 @@ async function updateRole(event){
         alert(`Error updating user`);
     });
 } 
-
-async function populateUserDropdowns(){
-    if (document.getElementById('usersdropdown') == null){
-        return;
-    }
-
-    //add to list if necessary
-    let dropdowns = [document.getElementById('usersdropdown')];
-
-    let users;
-    try{
-        const response = await fetch('/users');
-        users = await response.json();
-    } catch (error){
-        alert(`Network error: ${error}`);
-    }
-
-    for (const dropdown of dropdowns){
-        await popUserDropdown(dropdown, users);
-    }
-}
-
-async function popUserDropdown(dropdown, users){
-    for (const user of users){
-        let opt = document.createElement('option');
-        opt.value = `${user._id}`;
-        opt.innerHTML = `${user.name}`;
-
-        dropdown.appendChild(opt);
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', async () => {
-    await populateUserDropdowns();
-});
