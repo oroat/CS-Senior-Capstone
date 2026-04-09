@@ -1,21 +1,3 @@
-function clearUserSearch() {
-    ['userSearch', 'selectedUserId',].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    document.getElementById('userBadge').style.display = 'none';
-}
-
-function clearUpdateUserSearch() {
-    ['updateUserSearch', 'updateSelectedUserId',].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    document.getElementById('updateUserBadge').style.display = 'none';
-    document.getElementById('rolesdropdown').value = "";
-    // document.getElementById('rolesdropdown').selected = "Choose..."
-}
-
 async function openPopup(event){
     event.preventDefault();
     let user;
