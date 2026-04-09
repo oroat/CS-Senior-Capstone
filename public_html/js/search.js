@@ -67,12 +67,14 @@ function selectProject(project, selectedId, inputId, badge, listId) {
     document.getElementById(listId).classList.remove('open');
 }
 
-function clearPopupSearch(searchIds, badge) {
+function clearSearch(searchIds, badges) {
     searchIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
-    document.getElementById(badge).style.display = 'none';
+    badges.forEach(badge => {
+        document.getElementById(badge).style.display = 'none';
+    })
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

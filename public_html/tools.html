@@ -87,7 +87,7 @@
 
                 <div class="text-center"style="margin: 10px">
                     <button type="submit" class="btn btn-secondary">Update Tool</button>
-                    <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearAddUserSearch()">Clear</button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearSearch(['addUserToolSearch', 'addUserSelectedToolId', 'addUserUserSearch', 'addUserSelectedUserId'],['addUserToolBadge', 'addUserUserBadge'])">Clear</button>
                 </div>
             </form>
 
@@ -112,7 +112,7 @@
 
             <div class="text-center" style="margin: 5px">
                 <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
-                <button class="btn btn-outline-secondary ms-2" onclick="clearPopupSearch()">Clear</button>
+                <button class="btn btn-outline-secondary ms-2" onclick="clearSearch(['popupToolSearch', 'popupSelectedToolId'],['popupToolBadge'])">Clear</button>
             </div>
         </div>
 
@@ -166,7 +166,7 @@
                 
             <div class="text-center"style="margin: 10px">
                 <button type="submit" class="btn btn-secondary">Update Tool</button>
-                <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearUpdateSearch()">Clear</button>
+                <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearSearch(['updateToolSearch', 'updateSelectedToolId', 'updateserial', 'updatemodel'],['updateToolBadge'])">Clear</button>
             </div>
         </form>
 
