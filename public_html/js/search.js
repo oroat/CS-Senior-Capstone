@@ -59,6 +59,14 @@ function selectUser(user, selectedId, inputId, badge, listId) {
     document.getElementById(listId).classList.remove('open');
 }
 
+function selectProject(project, selectedId, inputId, badge, listId) {
+    document.getElementById(selectedId).value = project._id;
+    document.getElementById(inputId).value = project.name;
+    document.getElementById(badge).textContent = '✓ ' + project.name;
+    document.getElementById(badge).style.display = 'inline-block';
+    document.getElementById(listId).classList.remove('open');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 
     try {

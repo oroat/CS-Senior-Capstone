@@ -17,8 +17,6 @@
 
         <div id="header"></div>
 
-        <!-- <p>IDK</p> -->
-
         <div class="row" id="login-prompt" style="display: inherit">
             <div class="col-3 container text-center rounded" style=" margin: 20px">
                 <h1 style="color: white">
@@ -29,7 +27,7 @@
 
         <div class="row" id="data-search" style="display: none">
 
-            <div class="col-6 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
+            <div class="col-3 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
                 <h1 class="display-6">Search for Tool</h1>
                 <div class="search-select-wrapper">
                     <input type="text" class="form-control" id="toolSearch" placeholder="Search by serial number" autocomplete="off" style="margin-bottom: 5px" required
@@ -41,8 +39,28 @@
                 <input type="hidden" id="selectedToolId">
             </div>
 
-            <div class="col-4 ms-auto container rounded" style="margin: 20px; margin-right: 30px; background-color:#b8e5ff !important;">
+            <div class="col-4  container rounded" style="margin: 20px; background-color:#b8e5ff !important;">
                 <h1 class="display-6">Search for Project</h1>
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off" style="margin-bottom: 5px" required
+                        oninput="filterList('projectSearch','projectList','projectBadge', 'selectedProjectId',allProjects,'name', selectProject)"
+                        onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+                    <ul class="search-dropdown-list" id="projectList"></ul>
+                </div>
+                <span class="selected-badge" id="projectBadge" style="display:none;"></span>
+                <input type="hidden" id="selectedProjectId">
+            </div>
+
+            <div class="col-3  container rounded" style="margin: 20px; background-color:#b8e5ff !important;">
+                <h1 class="display-6">Search for User</h1>
+                <div class="search-select-wrapper">
+                    <input type="text" class="form-control" id="userSearch" placeholder="Search by email" autocomplete="off" style="margin-bottom: 5px" required
+                        oninput="filterList('userSearch','userList','userBadge', 'selectedUserId',allUsers,'email', selectUser)"
+                        onfocus="openList('userList')" onblur="closeListDelayed('userList')">
+                    <ul class="search-dropdown-list" id="userList"></ul>
+                </div>
+                <span class="selected-badge" id="userBadge" style="display:none;"></span>
+                <input type="hidden" id="selectedUserId">
             </div>
 
         </div>
