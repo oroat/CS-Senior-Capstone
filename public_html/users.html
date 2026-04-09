@@ -80,7 +80,25 @@
         
                 <form id="updateform" action="updaterole" method="post" onsubmit="updateRole(event)">
         
-                    <div class="row" style="margin: 10px">
+                <div class="row" style="margin: 10px">
+
+                    <div class="col-3 text-end align-self-start">
+                        <label class="col-form-label" for="updateUserSearch">User</label>
+                    </div>
+
+                    <div class="col-auto align-self-start">
+                        <div class="search-select-wrapper">
+                            <input type="text" class="form-control" id="updateUserSearch" placeholder="Search by email" autocomplete="off"
+                                oninput="filterList('updateUserSearch','updateUserList','updateUserBadge','updateSelectedUserId', allUsers,'email',selectUser)"
+                                onfocus="openList('updateUserList')" onblur="closeListDelayed('updateUserList')">
+                            <ul class="search-dropdown-list" id="updateUserList"></ul>
+                        </div>
+                        <span class="selected-badge" id="updateUserBadge" style="display:none;"></span>
+                        <input type="hidden" id="updateSelectedUserId">
+                    </div>
+                </div>
+
+                    <!-- <div class="row" style="margin: 10px">
                         <div class="col-4 text-end align-self-start">
                             <label class="col-form-label" for="usersdropdown">User</label>
                         </div>
@@ -90,7 +108,7 @@
                                 <option value = "" selected>Choose...</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="row" style="margin: 10px">
                         <div class="col-4 text-end">
@@ -113,6 +131,7 @@
                     <div class="row">
                         <div class=" text-center" style="margin: 10px">
                             <button type="submit"  class="btn btn-secondary">Update Role</button>
+                            <button class="btn btn-outline-secondary ms-2" onclick="event.preventDefault(); clearUpdateUserSearch()">Clear</button>
                         </div>
                     </div>
                     
