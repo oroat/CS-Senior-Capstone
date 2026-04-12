@@ -79,55 +79,62 @@ function clearSearch(searchIds, badges) {
 
 async function createPopup(valueId, dataType){
     const id = document.getElementById(valueId).value;
-    let response;
-    let data;
-    try{
-        switch (dataType){
+    if (id != ''){
+        let response;
+        let data;
+        let usedBy;
+        try{
+            switch (dataType){
+                case 'tool':
+                    response = await fetch(`/tools/${id}`);
+                    break;
+                case 'project':
+                    response = await fetch(`/projects/${id}`);
+                    break;
+                case 'user':
+                    response = await fetch(`/users/${id}`);
+                    break;
+            }
+            data = await response.json();
+            if (data.inUse){ //only for tools
+                response = await fetch(`/users/${data.usedBy}`);
+                usedBy = await response.json();
+            }
+        } catch (error){
+            alert(`${error}`);
+        }
+
+        let popup = document.getElementById('popup');
+        popup.innerHTML = '';
+
+        let logo = document.createElement('img');
+        logo.src = "./images/CoolSys-Logo.png";
+        popup.appendChild(logo);
+
+        switch(dataType){
             case 'tool':
-                response = await fetch(`/tools/${id}`);
+                populateToolPopup(popup, data, usedBy);
                 break;
             case 'project':
-                response = await fetch(`/projects/${id}`);
+                populateProjectPopup(popup, data);
                 break;
             case 'user':
-                response = await fetch(`/users/${id}`);
+                populateUserPopup(popup, data);
                 break;
         }
-        data = await response.json();
-    } catch (error){
-        alert(`${error}`);
-    }
 
-    let popup = document.getElementById('popup');
-    popup.innerHTML = '';
+        let closeBtn = document.createElement('button');
+        closeBtn.classList.add('close')
+        closeBtn.innerHTML = 'Close';
+        closeBtn.onclick = () => closePopup();
 
-    let logo = document.createElement('img');
-    logo.src = "./images/CoolSys-Logo.png";
-    popup.appendChild(logo);
+        popup.appendChild(closeBtn);
 
-    switch(dataType){
-        case 'tool':
-            populateToolPopup(popup, data);
-            break;
-        case 'project':
-            populateProjectPopup(popup, data);
-            break;
-        case 'user':
-            populateUserPopup(popup, data);
-            break;
-    }
-
-    let closeBtn = document.createElement('button');
-    closeBtn.classList.add('close')
-    closeBtn.innerHTML = 'Close';
-    closeBtn.onclick = () => closePopup();
-
-    popup.appendChild(closeBtn);
-
-    popup.classList.add('open-popup');
+        popup.classList.add('open-popup');
+    } else alert('No item selected');
 }
 
-function populateToolPopup(popup, tool){
+function populateToolPopup(popup, tool, user){
     // TOOL INFO
     let title = document.createElement('h2');
     title.innerHTML = 'Tool';
@@ -157,36 +164,36 @@ function populateToolPopup(popup, tool){
 
     let inUse = document.createElement('p');
     if (tool.inUse){
-        inUse.innerHTML = `Currently being used by ${tool.usedBy.name}`;
+        inUse.innerHTML = `Currently being used by ${user.name}`;
     } else{
         inUse.innerHTML = 'Currently not being used';
     }
 
     // ACTION BUTTONS
-    const btnDiv = document.createElement('div');
-    btnDiv.classList.add('text-center');
-    btnDiv.style.margin = '5px';
+    // const btnDiv = document.createElement('div');
+    // btnDiv.classList.add('text-center');
+    // btnDiv.style.margin = '5px';
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-danger');
-    deleteBtn.style.marginRight = "10px";
-    deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteTool(tool);
-    btnDiv.appendChild(deleteBtn);
+    // const deleteBtn = document.createElement('button');
+    // deleteBtn.classList.add('btn');
+    // deleteBtn.classList.add('btn-danger');
+    // deleteBtn.style.marginRight = "10px";
+    // deleteBtn.innerHTML = 'Delete';
+    // deleteBtn.onclick = () => deleteTool(tool);
+    // btnDiv.appendChild(deleteBtn);
 
-    const deallocateBtn = document.createElement('button');
-    deallocateBtn.classList.add('btn');
-    deallocateBtn.classList.add('btn-warning');
-    deallocateBtn.style.marginRight = "10px";
-    deallocateBtn.innerHTML = 'Deallocate';
-    deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
-    btnDiv.appendChild(deallocateBtn);
+    // const deallocateBtn = document.createElement('button');
+    // deallocateBtn.classList.add('btn');
+    // deallocateBtn.classList.add('btn-warning');
+    // deallocateBtn.style.marginRight = "10px";
+    // deallocateBtn.innerHTML = 'Deallocate';
+    // deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
+    // btnDiv.appendChild(deallocateBtn);
 
     popup.appendChild(serial);
     popup.appendChild(model);
     popup.appendChild(inUse);
-    popup.appendChild(btnDiv);
+    // popup.appendChild(btnDiv);
 }
 
 function populateUserPopup(popup, user){
@@ -211,9 +218,8 @@ function populateUserPopup(popup, user){
     roleTitle.innerHTML = 'Role: ';
 
     let roleBody = document.createElement('span');
-    //roleBody.innerHTML = `${roleIntToString(user.role)}`;
-    roleBody.innterHTML = user.role
-
+    roleBody.innerHTML = `${roleIntToString(user.role)}`;
+    
     role.appendChild(roleTitle);
     role.appendChild(roleBody);
 
@@ -229,22 +235,22 @@ function populateUserPopup(popup, user){
     email.appendChild(emailBody);
 
     // ACTION BUTTONS
-    const btnDiv = document.createElement('div');
-    btnDiv.classList.add('text-center');
-    btnDiv.style.margin = '5px';
+    // const btnDiv = document.createElement('div');
+    // btnDiv.classList.add('text-center');
+    // btnDiv.style.margin = '5px';
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('btn');
-    deleteBtn.classList.add('btn-danger');
-    deleteBtn.style.marginRight = "10px";
-    deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteUser(user._id);
-    btnDiv.appendChild(deleteBtn);
+    // const deleteBtn = document.createElement('button');
+    // deleteBtn.classList.add('btn');
+    // deleteBtn.classList.add('btn-danger');
+    // deleteBtn.style.marginRight = "10px";
+    // deleteBtn.innerHTML = 'Delete';
+    // deleteBtn.onclick = () => deleteUser(user._id);
+    // btnDiv.appendChild(deleteBtn);
 
     popup.appendChild(name);
     popup.appendChild(role);
     popup.appendChild(email);
-    popup.appendChild(btnDiv);
+    // popup.appendChild(btnDiv);
 }
 
 function populateProjectPopup(popup, project){
@@ -280,28 +286,28 @@ function populateProjectPopup(popup, project){
     workers.appendChild(workersTitle);
     workers.appendChild(workersBody);
 
-    const btnDiv = document.createElement('div');
-    btnDiv.classList.add('text-center');
-    btnDiv.style.margin = '5px';
+    // const btnDiv = document.createElement('div');
+    // btnDiv.classList.add('text-center');
+    // btnDiv.style.margin = '5px';
 
-    const editBtn = document.createElement('button');
-    editBtn.classList.add('btn', 'btn-warning');
-    editBtn.style.marginRight = "10px";
-    editBtn.innerHTML = 'Edit';
-    editBtn.onclick = () => editProject(project._id);
-    btnDiv.appendChild(editBtn);
+    // const editBtn = document.createElement('button');
+    // editBtn.classList.add('btn', 'btn-warning');
+    // editBtn.style.marginRight = "10px";
+    // editBtn.innerHTML = 'Edit';
+    // editBtn.onclick = () => editProject(project._id);
+    // btnDiv.appendChild(editBtn);
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('btn', 'btn-danger');
-    deleteBtn.style.marginRight = "10px";
-    deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = () => deleteProject(project._id);
-    btnDiv.appendChild(deleteBtn);
+    // const deleteBtn = document.createElement('button');
+    // deleteBtn.classList.add('btn', 'btn-danger');
+    // deleteBtn.style.marginRight = "10px";
+    // deleteBtn.innerHTML = 'Delete';
+    // deleteBtn.onclick = () => deleteProject(project._id);
+    // btnDiv.appendChild(deleteBtn);
 
     popup.appendChild(manager);
     popup.appendChild(location);
     popup.appendChild(workers);
-    popup.appendChild(btnDiv);
+    // popup.appendChild(btnDiv);
 }
 
 function closePopup(){
