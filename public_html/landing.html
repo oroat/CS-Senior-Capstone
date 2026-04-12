@@ -98,14 +98,7 @@
     </body>
 
     <script>
-        $(document).ready(function () {
-            $("#header").load('header.html');
-            $('#footer').load('footer.html');
-        });
-    </script>
-
-    <script>
-        async function checkLogged(){
+       async function checkLogged(){
             let user;
             try{
                 let response = await fetch('/logged');
@@ -119,10 +112,13 @@
                 document.getElementById("data-search").style.display="flex";
             }
         }
-
-        checkLogged();
+       
+       $(document).ready(function () {
+            $("#header").load('header.html');
+            $('#footer').load('footer.html');
+            checkLogged();
+        });
         
-
     </script>
 
 </html>
