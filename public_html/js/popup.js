@@ -1,4 +1,4 @@
-let user;
+let loggedUser;
 
 async function createPopup(valueId, dataType){
     const id = document.getElementById(valueId).value;
@@ -209,31 +209,48 @@ function populateProjectPopup(popup, project){
     workers.appendChild(workersTitle);
     workers.appendChild(workersBody);
 
-    // const btnDiv = document.createElement('div');
-    // btnDiv.classList.add('text-center');
-    // btnDiv.style.margin = '5px';
-
-    // const editBtn = document.createElement('button');
-    // editBtn.classList.add('btn', 'btn-warning');
-    // editBtn.style.marginRight = "10px";
-    // editBtn.innerHTML = 'Edit';
-    // editBtn.onclick = () => editProject(project._id);
-    // btnDiv.appendChild(editBtn);
-
-    // const deleteBtn = document.createElement('button');
-    // deleteBtn.classList.add('btn', 'btn-danger');
-    // deleteBtn.style.marginRight = "10px";
-    // deleteBtn.innerHTML = 'Delete';
-    // deleteBtn.onclick = () => deleteProject(project._id);
-    // btnDiv.appendChild(deleteBtn);
-
     popup.appendChild(manager);
     popup.appendChild(location);
     popup.appendChild(workers);
-    // popup.appendChild(btnDiv);
+
+    if (loggedUser.role == 0 || loggedUser.role == 1){
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('text-center');
+        btnDiv.style.margin = '5px';
+
+        const editBtn = document.createElement('button');
+        editBtn.classList.add('btn', 'btn-warning');
+        editBtn.style.marginRight = "10px";
+        editBtn.innerHTML = 'Edit';
+        editBtn.onclick = () => editProject(project._id);
+        btnDiv.appendChild(editBtn);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('btn', 'btn-danger');
+        deleteBtn.style.marginRight = "10px";
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = () => deleteProject(project._id);
+        btnDiv.appendChild(deleteBtn);
+
+        
+        popup.appendChild(btnDiv);
+    }
 }
 
 function closePopup(){
     let popup = document.getElementById('popup');
     popup.classList.remove('open-popup')
 }
+
+async function checkLogged(){
+    try{
+        let response = await fetch('/logged');
+        loggedUser = await response.json();
+    } catch (error){
+        console.error("Auth check failed", error);
+    }
+}
+
+// document.addEventListener('DOMContentLoaded', async () => {
+//     await checkLogged();
+// });
