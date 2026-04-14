@@ -162,9 +162,9 @@ test('Update role', async function(){
 
     let updatedUser = await controller.updateRole(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.body.usersdropdown, {role: req.body.rolesdropdown});
+    expect(dao.update).toHaveBeenCalledWith(req.body.id, {role: req.body.role});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedUser, redirect: '/users.html'});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedUser, redirect: req.body.redirectTo});
 });
 
 test('Fail to update role', async function(){
@@ -178,7 +178,7 @@ test('Fail to update role', async function(){
     
     await controller.updateRole(req, res);
 
-    expect(dao.update).toHaveBeenCalledWith(req.body.usersdropdown, {role: req.body.rolesdropdown});
+    expect(dao.update).toHaveBeenCalledWith(req.body.id, {role: req.body.id});
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({error: "Failed to update user role", details: error.message});
 })

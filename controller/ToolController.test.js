@@ -106,7 +106,7 @@ test('Update tool', async function(){
                                                             inUse: req.body.updates.inUse,
                                                             usedBy: req.body.updates.usedBy});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: '/tools.html'});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: req.body.redirectTo});
 });
 
 test('Update only serial number & model', async function(){
@@ -124,7 +124,7 @@ test('Update only serial number & model', async function(){
     expect(dao.update).toHaveBeenCalledWith(req.body.id, {serialNum: req.body.updates.serial,
                                                             model: req.body.updates.model});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: '/tools.html'});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: req.body.redirectTo});
 });
 
 test('Error in updating tool', async function(){
