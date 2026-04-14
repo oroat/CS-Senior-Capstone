@@ -1,10 +1,3 @@
-async function getLogged(){
-    const response = await fetch('/logged');
-    const user = await response.json();
-
-    return user;
-}
-
 async function roleIntToString(roleInt){
     let roleStr;
 
@@ -32,14 +25,11 @@ async function roleIntToString(roleInt){
 }
 
 async function populateTitle(){
-    const user = await getLogged();
-    const role = await roleIntToString(user.role);
-    document.getElementById('name&role').innerHTML = `${user.name}, ${role}`;
+    const role = await roleIntToString(loggedUser.role);
+    document.getElementById('name&role').innerHTML = `${loggedUser.name}, ${role}`;
 }
 
 async function populateTables(){
-
-    const user = await getLogged();
 
     let response = await fetch('/tools');
     let tools = await response.json();
@@ -54,7 +44,7 @@ async function populateTables(){
 
     for (const tool of tools){
         if (tool.usedBy == user._id){
-            addToolRow(toolBody, tool, user, count);
+            addToolRow(toolBody, tool, loggedUser, count);
             count++;
         } 
     }
@@ -158,6 +148,7 @@ async function addProjectRow(body, project, count){
 
   
 document.addEventListener('DOMContentLoaded', async () => {
+    await checkLogged();
     await populateTitle();
     await populateTables();
 });

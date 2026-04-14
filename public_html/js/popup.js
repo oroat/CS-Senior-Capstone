@@ -1,5 +1,3 @@
-let loggedUser;
-
 async function createPopup(valueId, dataType){
     const id = document.getElementById(valueId).value;
     if (id != ''){
@@ -241,16 +239,3 @@ function closePopup(){
     let popup = document.getElementById('popup');
     popup.classList.remove('open-popup')
 }
-
-async function checkLogged(){
-    try{
-        let response = await fetch('/logged');
-        loggedUser = await response.json();
-    } catch (error){
-        console.error("Auth check failed", error);
-    }
-}
-
-// document.addEventListener('DOMContentLoaded', async () => {
-//     await checkLogged();
-// });

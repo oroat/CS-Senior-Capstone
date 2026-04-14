@@ -148,9 +148,18 @@ async function addUserToTool(event, redirect){
     let toolId = document.getElementById("addUserSelectedToolId").value;
     let userId = document.getElementById("addUserSelectedUserId").value;
 
+
+    let response = await fetch(`/tools/${toolId}`);
+    let tool = await response.json();
+    // if you are not an admin, you can not unassign a tool from someone else to use it yourself. 
+    if (tool.inUse && loggedUser.role != 0){
+        alert('Tool is already in use. Please check the tool popup to see who is using it.');
+        return;
+    }
+
     let updates = {inUse: true, usedBy: userId};
 
-    const response = await fetch(`/updatetool`, {
+    response = await fetch(`/updatetool`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({id: toolId, updates, redirectTo: redirect})
@@ -187,4 +196,15 @@ async function deallocateTool(tool, user, redirect){
         .catch(error => {
             alert(`Error deallocating tool: ${error.message}`);
         });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkLogged();
+
+    //if you are not an admin, you can only assign tools to yourself
+    if (loggedUser.role != 0){
+        selectUser(loggedUser, 'addUserSelectedUserId', 'addUserUserSearch', 'addUserUserBadge', 'addUserUserList');
+        document.getElementById('addUserUserSearch').readOnly = true;
     }
+
+});
