@@ -10,7 +10,8 @@
 
     <div id="header"></div>
 
-    <h2>Edit Project</h2>
+    <div class=" col-4 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
+        <h2>Edit Project</h2>
 
     <form id="editProjectForm">
 
@@ -37,10 +38,12 @@
                 </select>
         </div>
 
-        <button type="submit">Update Project</button>
-        <button type="button" onclick="window.location.href='/addProject'">Cancel</button>
+        <button class='btn btn-primary'type="submit">Update Project</button>
+        <button class='btn btn-warning'type="button" onclick="window.location.href='/addProject'">Cancel</button>
 
     </form>
+    </div>
+    
 
     <script src="js/editProject.js"></script>
 
