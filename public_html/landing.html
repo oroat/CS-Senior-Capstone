@@ -9,6 +9,7 @@
         <script src="js/popup.js"></script>
         <script src="js/logged.js"></script>
         <script src="js/tools.js"></script>
+        <!-- <script src="js/projects.js"></script> -->
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/search.css">
         <link rel="stylesheet" href="css/popup.css">
@@ -54,7 +55,7 @@
                 <div class="search-select-wrapper">
                     <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off" style="margin-bottom: 5px" required
                         oninput="filterList('projectSearch','projectList','projectBadge', 'selectedProjectId',allProjects,'name', selectProject)"
-                        onfocus="openList('toolList')" onblur="closeListDelayed('toolList')">
+                        onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
                     <ul class="search-dropdown-list" id="projectList"></ul>
                 </div>
                 <span class="selected-badge" id="projectBadge" style="display:none;"></span>
