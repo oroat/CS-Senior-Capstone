@@ -94,14 +94,12 @@
         </div>
         
 
-        <div id="footer"></div>
 
     </body>
 
     <script>
        $(document).ready(async function () {
             $("#header").load('header.html');
-            $('#footer').load('footer.html');
             
             await checkLogged();
             if (loggedUser != null){
