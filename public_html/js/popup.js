@@ -95,19 +95,13 @@ function populateToolPopup(popup, tool, user, loggedUser){
     popup.appendChild(model);
     popup.appendChild(inUse);
 
+    
+
     // ADMIN ACTION BUTTONS 
-    if (loggedUser.role == 0){
+    if (loggedUser.role == 0 || loggedUser.role == 2){
         const btnDiv = document.createElement('div');
         btnDiv.classList.add('text-center');
         btnDiv.style.margin = '5px';
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.classList.add('btn');
-        deleteBtn.classList.add('btn-danger');
-        deleteBtn.style.marginRight = "10px";
-        deleteBtn.innerHTML = 'Delete';
-        deleteBtn.onclick = () => deleteTool(tool);
-        btnDiv.appendChild(deleteBtn);
 
         const deallocateBtn = document.createElement('button');
         deallocateBtn.classList.add('btn');
@@ -116,10 +110,18 @@ function populateToolPopup(popup, tool, user, loggedUser){
         deallocateBtn.innerHTML = 'Unassign';
         deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
         btnDiv.appendChild(deallocateBtn);
-        
+
+        if (loggedUser.role == 0){
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('btn');
+            deleteBtn.classList.add('btn-danger');
+            deleteBtn.style.marginRight = "10px";
+            deleteBtn.innerHTML = 'Delete';
+            deleteBtn.onclick = () => deleteTool(tool);
+            btnDiv.appendChild(deleteBtn);
+        }
         popup.appendChild(btnDiv);
-    }
-    
+    } 
 }
 
 function populateUserPopup(popup, user){
