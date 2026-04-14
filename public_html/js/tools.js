@@ -150,12 +150,12 @@ async function addUserToTool(event, redirect){
 
 
     let response = await fetch(`/tools/${toolId}`);
-    let tool = await response.json();
-    // if you are not an admin, you can not unassign a tool from someone else to use it yourself. 
-    if (tool.inUse && loggedUser.role != 0){
-        alert('Tool is already in use. Please check the tool popup to see who is using it.');
-        return;
-    }
+    // let tool = await response.json();
+    // // if you are not an admin, you can not unassign a tool from someone else to use it yourself. 
+    // if (tool.inUse && loggedUser.role != 0){
+    //     alert('Tool is already in use. Please check the tool popup to see who is using it.');
+    //     return;
+    // }
 
     let updates = {inUse: true, usedBy: userId};
 
@@ -201,10 +201,9 @@ async function deallocateTool(tool, user, redirect){
 document.addEventListener('DOMContentLoaded', async () => {
     await checkLogged();
 
-    //if you are not an admin, you can only assign tools to yourself
+    //if you are not an admin, you can't update tools (besides moving them between users)
     if (loggedUser.role != 0){
-        selectUser(loggedUser, 'addUserSelectedUserId', 'addUserUserSearch', 'addUserUserBadge', 'addUserUserList');
-        document.getElementById('addUserUserSearch').readOnly = true;
+        document.getElementById('toolUpdate').style.display = 'none';
     }
 
 });
