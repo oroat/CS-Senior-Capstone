@@ -1,4 +1,5 @@
 async function createPopup(valueId, dataType){
+    await checkLogged();
     const id = document.getElementById(valueId).value;
     if (id != ''){
         let response;
@@ -34,13 +35,13 @@ async function createPopup(valueId, dataType){
 
         switch(dataType){
             case 'tool':
-                populateToolPopup(popup, data, usedBy);
+                populateToolPopup(popup, data, usedBy, loggedUser);
                 break;
             case 'project':
-                populateProjectPopup(popup, data);
+                populateProjectPopup(popup, data, loggedUser);
                 break;
             case 'user':
-                populateUserPopup(popup, data);
+                populateUserPopup(popup, data, loggedUser);
                 break;
         }
 
@@ -55,7 +56,7 @@ async function createPopup(valueId, dataType){
     } else alert('No item selected');
 }
 
-function populateToolPopup(popup, tool, user){
+function populateToolPopup(popup, tool, user, loggedUser){
     // TOOL INFO
     let title = document.createElement('h2');
     title.innerHTML = 'Tool';
@@ -90,31 +91,35 @@ function populateToolPopup(popup, tool, user){
         inUse.innerHTML = 'Currently not being used';
     }
 
-    // ACTION BUTTONS
-    // const btnDiv = document.createElement('div');
-    // btnDiv.classList.add('text-center');
-    // btnDiv.style.margin = '5px';
-
-    // const deleteBtn = document.createElement('button');
-    // deleteBtn.classList.add('btn');
-    // deleteBtn.classList.add('btn-danger');
-    // deleteBtn.style.marginRight = "10px";
-    // deleteBtn.innerHTML = 'Delete';
-    // deleteBtn.onclick = () => deleteTool(tool);
-    // btnDiv.appendChild(deleteBtn);
-
-    // const deallocateBtn = document.createElement('button');
-    // deallocateBtn.classList.add('btn');
-    // deallocateBtn.classList.add('btn-warning');
-    // deallocateBtn.style.marginRight = "10px";
-    // deallocateBtn.innerHTML = 'Deallocate';
-    // deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
-    // btnDiv.appendChild(deallocateBtn);
-
     popup.appendChild(serial);
     popup.appendChild(model);
     popup.appendChild(inUse);
-    // popup.appendChild(btnDiv);
+
+    // ADMIN ACTION BUTTONS 
+    if (loggedUser.role == 0){
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('text-center');
+        btnDiv.style.margin = '5px';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('btn');
+        deleteBtn.classList.add('btn-danger');
+        deleteBtn.style.marginRight = "10px";
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = () => deleteTool(tool);
+        btnDiv.appendChild(deleteBtn);
+
+        const deallocateBtn = document.createElement('button');
+        deallocateBtn.classList.add('btn');
+        deallocateBtn.classList.add('btn-warning');
+        deallocateBtn.style.marginRight = "10px";
+        deallocateBtn.innerHTML = 'Unassign';
+        deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
+        btnDiv.appendChild(deallocateBtn);
+        
+        popup.appendChild(btnDiv);
+    }
+    
 }
 
 function populateUserPopup(popup, user){
@@ -155,23 +160,27 @@ function populateUserPopup(popup, user){
     email.appendChild(emailTitle);
     email.appendChild(emailBody);
 
-    // ACTION BUTTONS
-    // const btnDiv = document.createElement('div');
-    // btnDiv.classList.add('text-center');
-    // btnDiv.style.margin = '5px';
-
-    // const deleteBtn = document.createElement('button');
-    // deleteBtn.classList.add('btn');
-    // deleteBtn.classList.add('btn-danger');
-    // deleteBtn.style.marginRight = "10px";
-    // deleteBtn.innerHTML = 'Delete';
-    // deleteBtn.onclick = () => deleteUser(user._id);
-    // btnDiv.appendChild(deleteBtn);
-
     popup.appendChild(name);
     popup.appendChild(role);
     popup.appendChild(email);
-    // popup.appendChild(btnDiv);
+
+    // ADMIN ACTION BUTTONS
+    if (loggedUser.role == 0){
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('text-center');
+        btnDiv.style.margin = '5px';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('btn');
+        deleteBtn.classList.add('btn-danger');
+        deleteBtn.style.marginRight = "10px";
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = () => deleteUser(user._id);
+        btnDiv.appendChild(deleteBtn);
+
+        popup.appendChild(btnDiv);
+    }
+    
 }
 
 function populateProjectPopup(popup, project){
