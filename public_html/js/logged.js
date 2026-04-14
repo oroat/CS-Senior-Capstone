@@ -8,3 +8,7 @@ async function checkLogged(){
         console.error("Auth check failed", error);
     }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkLogged();
+});
