@@ -124,7 +124,7 @@ function populateToolPopup(popup, tool, user, loggedUser){
     } 
 }
 
-function populateUserPopup(popup, user){
+function populateUserPopup(popup, user, loggedUser){
     let title = document.createElement('h2');
     title.innerHTML = 'User';
     popup.appendChild(title);
@@ -185,7 +185,7 @@ function populateUserPopup(popup, user){
     
 }
 
-function populateProjectPopup(popup, project){
+function populateProjectPopup(popup, project, loggedUser){
     const title = document.createElement('h2');
     title.innerHTML = project.name;
     popup.appendChild(title);

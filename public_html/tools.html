@@ -5,9 +5,10 @@
         <meta charset="UTF-8">
         <title>CoolSys</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/logged.js"></script>
         <script src="js/tools.js"></script>
         <script src="js/search.js"></script>
-        <script src="js/logged.js"></script>
+        <script src="js/popup.js"></script>
         <!-- <script src="js/users.js"></script> -->
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/popup.css">
@@ -111,7 +112,7 @@
             <input type="hidden" id="popupSelectedToolId">
 
             <div class="text-center" style="margin: 5px">
-                <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
+                <button class="btn btn-info" onclick="createPopup('popupSelectedToolId', 'tool')">Open Popup</button>
                 <button class="btn btn-outline-secondary ms-2" onclick="clearSearch(['popupToolSearch', 'popupSelectedToolId'],['popupToolBadge'])">Clear</button>
             </div>
         </div>
