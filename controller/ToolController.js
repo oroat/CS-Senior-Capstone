@@ -46,7 +46,7 @@ exports.update = async function(req, res){
     try{
         const updatedTool = await ToolDao.update(id, updates);
         res.status(200);
-        res.json({success: true, updatedTool, redirect: req.body.redirectTo});
+        res.json({success: true, updatedTool});
     } catch (error){
         res.status(500);
         res.json({error: "Failed to update user role", details: error.message});

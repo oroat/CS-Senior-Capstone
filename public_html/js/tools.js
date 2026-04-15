@@ -13,7 +13,7 @@ async function deleteTool(tool){
     }
 }
 
-async function updateTool(event, redirect){
+async function updateTool(event){
     event.preventDefault();
     let toolId = document.getElementById("updateSelectedToolId").value;
 
@@ -21,23 +21,31 @@ async function updateTool(event, redirect){
     let umodel = document.getElementById("updatemodel").value;
     let updates = {serial: userial, model: umodel};
 
-
-    const response = await fetch(`/updatetool`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id: toolId, updates, redirectTo: redirect})
-    })
-    .then(response => response.json())
-    .then(data => {
+    try{
+        const response = await fetch(`/updatetool`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({id: toolId, updates})
+        });
         alert('Update Successful');
-        window.location.href = data.redirect; 
-    })
-    .catch(error => {
-        alert(`Error updating tool`);
-    });
+        window.location.reload();
+    } catch (error){
+        console.error('Error during delete: ', error);
+        alert('Error. Please try again');
+    }
+    
+
+    // .then(response => response.json())
+    // .then(data => {
+    //     alert('Update Successful');
+    //     window.location.href = data.redirect; 
+    // })
+    // .catch(error => {
+    //     alert(`Error updating tool`);
+    // });
 }
 
-async function addUserToTool(event, redirect){
+async function addUserToTool(event){
     event.preventDefault();
     let toolId = document.getElementById("addUserSelectedToolId").value;
     let userId = document.getElementById("addUserSelectedUserId").value;
@@ -53,22 +61,21 @@ async function addUserToTool(event, redirect){
 
     let updates = {inUse: true, usedBy: userId};
 
-    response = await fetch(`/updatetool`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id: toolId, updates, redirectTo: redirect})
-    })
-    .then(response => response.json())
-    .then(data => {
+    try{
+        response = await fetch(`/updatetool`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({id: toolId, updates})
+        });
         alert('Update Successful');
-        window.location.href = data.redirect; 
-    })
-    .catch(error => {
-        alert(`Error updating tool`);
-    });
+        window.location.reload();
+    } catch (error){
+        console.error('Error during delete: ', error);
+        alert('Error. Please try again');
+    }
 }
 
-async function deallocateTool(tool, user, redirect){
+async function deallocateTool(tool, user){
         if (!tool.inUse){
             alert(`${tool.model} (${tool.serialNum}) not allocated`);
             return;
@@ -77,19 +84,18 @@ async function deallocateTool(tool, user, redirect){
 
         let updates = {inUse: false};
 
-        const response = await fetch(`/updatetool`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({id: tool._id, updates, redirectTo: redirect})
-        })
-        .then(response => response.json())
-        .then(data => {
+        try{
+            const response = await fetch(`/updatetool`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({id: tool._id, updates})
+            });
             alert('Update Successful');
-            window.location.href = data.redirect; 
-        })
-        .catch(error => {
-            alert(`Error deallocating tool: ${error.message}`);
-        });
+            window.location.reload();
+        } catch (error){
+            console.error('Error during delete: ', error);
+            alert('Error. Please try again');
+        }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

@@ -124,7 +124,7 @@ test('Update only serial number & model', async function(){
     expect(dao.update).toHaveBeenCalledWith(req.body.id, {serialNum: req.body.updates.serial,
                                                             model: req.body.updates.model});
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool, redirect: req.body.redirectTo});
+    expect(res.json).toHaveBeenCalledWith({success: true, updatedTool});
 });
 
 test('Error in updating tool', async function(){

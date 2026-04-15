@@ -108,7 +108,7 @@ function populateToolPopup(popup, tool, user, loggedUser){
         deallocateBtn.classList.add('btn-warning');
         deallocateBtn.style.marginRight = "10px";
         deallocateBtn.innerHTML = 'Unassign';
-        deallocateBtn.onclick = () => deallocateTool(tool, user, '/tools.html');
+        deallocateBtn.onclick = () => deallocateTool(tool, user);
         btnDiv.appendChild(deallocateBtn);
 
         if (loggedUser.role == 0){
