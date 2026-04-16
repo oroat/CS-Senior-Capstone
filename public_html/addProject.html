@@ -1,108 +1,216 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Add Project - CoolSys</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/search.css">
-        <link rel="stylesheet" href="css/popup.css">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>Add Project - CoolSys</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/search.css">
+    <link rel="stylesheet" href="css/popup.css">
+    <style>
+        body { background-color: #f4f6f9; }
 
-        <div id="header"></div>
+        .form-card {
+            background-color: #b8e5ff;
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin: 20px 0 20px 30px;
+        }
 
-        <div class="row">
-            <div class="col-6 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
-                <h2 class="display-6">Create New Project</h2>
+        /* ── Searchable picker (mirrors PO's project dropdown feel) ── */
+        .search-picker {
+            position: relative;
+            min-width: 260px;
+            max-width: 320px;
+        }
+        .search-picker input[type="text"] {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #aac4d8;
+            border-radius: 5px;
+            font-size: 0.93rem;
+            background: #fff;
+        }
+        .search-picker input[type="text"]:focus { outline: none; border-color: #0758A5; }
 
-                <form id="projectForm">
+        .picker-dropdown {
+            display: none;
+            position: absolute;
+            z-index: 999;
+            background: #fff;
+            border: 1px solid #aac4d8;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            width: 100%;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .picker-dropdown.open { display: block; }
+        .picker-dropdown li {
+            list-style: none;
+            padding: 7px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #1a2a3a;
+        }
+        .picker-dropdown li:hover { background: #e8f4ff; }
+        .picker-dropdown li.no-results { color: #999; cursor: default; }
 
-                    <div class="row" style="margin: 10px">
-                        <div class="col-4 justify-content-end">
-                            <label for="name" class="form-label">Project Name</label>
-                        </div>
-                        <div class="col-auto">
-                            <input type="text" id="name" name="name" placeholder="Project Name" required>
-                        </div>
-                    </div>
+        /* Selected chips for workers */
+        .worker-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+            min-height: 10px;
+        }
+        .worker-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #0758A5;
+            color: #fff;
+            border-radius: 20px;
+            padding: 3px 10px 3px 10px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+        .worker-chip .remove-chip {
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 2px;
+            line-height: 1;
+            opacity: 0.8;
+        }
+        .worker-chip .remove-chip:hover { opacity: 1; }
 
-                    <div class="row" style="margin: 10px">
-                        <div class="col-4 justify-content-end">
-                            <label for="location" class="form-label">Location</label>
-                        </div>
-                        <div class="col-auto">
-                            <input type="text" id="location" name="location" placeholder="Location" required>
-                        </div>
-                    </div>
+        /* Selected manager badge */
+        .selected-badge {
+            display: inline-block;
+            margin-top: 5px;
+            background: #0758A5;
+            color: #fff;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 0.82rem;
+        }
 
-                    <div class="row" style="margin: 10px">
-                        <div class="col-4 justify-content-end">
-                            <label for="manager" class="form-label">Project Manager</label>
-                        </div>
-                        <div class="col-auto">
-                            <select class="custom-select" id="manager" name="manager" required>
-                                <option value="">-- Select a Manager --</option>
-                            </select>
-                        </div>
-                    </div>
+        /* Project list cards — same as PO */
+        .po-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .po-card h3 { margin: 0 0 6px 0; }
+        .po-actions { margin-top: 10px; display: flex; gap: 8px; }
+        .po-actions button { border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 0.88rem; }
+        .btn-edit   { background: #ffc107; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-view   { background: #17a2b8; color: white; }
 
-                    <div class="form mb-3">
-                        <label for="workers">Assign Workers (Hold Ctrl/Cmd)</label><br>
-                        <select id="workers" name="workers" multiple style="min-width: 200px; height: 100px;"></select>
-                    </div>
+        .filter-group { display: flex; gap: 8px; margin-top: 8px; }
 
-                    <div class="text-center" style="margin: 10px">
-                        <button class="btn btn-primary" type="submit">Create Project</button>
-                    </div>
+        hr { margin: 28px 0; }
+    </style>
+</head>
+<body>
 
-                </form>
-            </div>
-        </div>
+<div id="header"></div>
 
-        <hr>
+<div class="row">
+    <div class="col-7 container form-card" style="max-width: 700px;">
+        <h2 class="display-6">Create New Project</h2>
 
-        <div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px">
-            <h1 class="display-6">Search for Project</h1>
+        <form id="projectForm">
 
-            <div class="row" style="margin:10px;">
-
-                <div class="search-select-wrapper">
-                    <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off"
-                        oninput="filterList('projectSearch','projectList',allProjects,'name',selectProject)"
-                        onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
-                    <ul class="search-dropdown-list" id="projectList"></ul>
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="name" class="form-label">Project Name</label></div>
+                <div class="col-auto">
+                    <input type="text" id="name" class="form-control" placeholder="Project Name" required style="min-width:260px;">
                 </div>
-                <span class="selected-badge" id="projectBadge" style="display:none;"></span>
-                <input type="hidden" id="selectedProjectId">
-
-                <div class="text-center" style="margin: 5px">
-                    
-                    <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
-                    <button class="btn btn-outline-secondary ms-2" onclick="clearProjectSearch()">Clear</button>
-                    
-                </div>
-
             </div>
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="location" class="form-label">Location</label></div>
+                <div class="col-auto">
+                    <input type="text" id="location" class="form-control" placeholder="Location" required style="min-width:260px;">
+                </div>
+            </div>
+
+            <!-- Manager searchable picker -->
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label class="form-label">Project Manager</label></div>
+                <div class="col-auto">
+                    <div class="search-picker">
+                        <input type="text" id="managerSearch" placeholder="Search manager..." autocomplete="off"
+                            oninput="filterPicker('managerSearch','managerDropdown', allManagers, selectManager)"
+                            onfocus="openPicker('managerDropdown')"
+                            onblur="closePicker('managerDropdown')">
+                        <ul class="picker-dropdown" id="managerDropdown"></ul>
+                    </div>
+                    <span id="managerBadge" class="selected-badge" style="display:none;"></span>
+                    <input type="hidden" id="selectedManagerId">
+                </div>
+            </div>
+
+            <!-- Workers searchable multi-picker -->
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label class="form-label">Assign Workers</label></div>
+                <div class="col-auto">
+                    <div class="search-picker">
+                        <input type="text" id="workerSearch" placeholder="Search workers..." autocomplete="off"
+                            oninput="filterPicker('workerSearch','workerDropdown', allWorkers, selectWorker)"
+                            onfocus="openPicker('workerDropdown')"
+                            onblur="closePicker('workerDropdown')">
+                        <ul class="picker-dropdown" id="workerDropdown"></ul>
+                    </div>
+                    <div class="worker-chips" id="workerChips"></div>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 18px;">
+                <button class="btn btn-primary" type="submit">Create Project</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="container center rounded" style="background-color:#b8e5ff !important; margin-bottom: 20px; border-radius:10px; padding:16px 20px;">
+    <h2 class="display-6">Search for Project</h2>
+
+    <div class="row" style="margin:10px;">
+        <div class="search-select-wrapper">
+            <input type="text" class="form-control" id="projectSearch" placeholder="Search by name" autocomplete="off"
+                oninput="filterList('projectSearch','projectList',allProjects,'name',selectProject)"
+                onfocus="openList('projectList')" onblur="closeListDelayed('projectList')">
+            <ul class="search-dropdown-list" id="projectList"></ul>
         </div>
+        <span class="selected-badge" id="projectBadge" style="display:none;"></span>
+        <input type="hidden" id="selectedProjectId">
 
-        <div class="container">
-            <div class="popup" id="popup"></div>
+        <div class="text-center" style="margin: 5px">
+            <button class="btn btn-info" onclick="openPopup(event)">Open Popup</button>
+            <button class="btn btn-outline-secondary ms-2" onclick="clearProjectSearch()">Clear</button>
         </div>
+    </div>
+</div>
 
-        
+<div class="container">
+    <div class="popup" id="popup"></div>
+</div>
 
-        <!-- <h3>All Projects</h3>
-        <div id="projectList2"></div> -->
+<script src="js/projects.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#header").load('header.html');
+    });
+</script>
 
-
-        <script src="js/projects.js"></script>
-
-        <script>
-            $(document).ready(function () {
-                $("#header").load('header.html');
-            });
-        </script>
-
-    </body>
+</body>
 </html>
