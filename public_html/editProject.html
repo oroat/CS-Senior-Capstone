@@ -5,53 +5,165 @@
     <title>Edit Project - CoolSys</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
+    <style>
+        body { background-color: #f4f6f9; }
+
+        .form-card {
+            background-color: #b8e5ff;
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin: 20px 0 20px 30px;
+        }
+
+        /* ── Searchable picker ── */
+        .search-picker {
+            position: relative;
+            min-width: 260px;
+            max-width: 320px;
+        }
+        .search-picker input[type="text"] {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #aac4d8;
+            border-radius: 5px;
+            font-size: 0.93rem;
+            background: #fff;
+        }
+        .search-picker input[type="text"]:focus { outline: none; border-color: #0758A5; }
+
+        .picker-dropdown {
+            display: none;
+            position: absolute;
+            z-index: 999;
+            background: #fff;
+            border: 1px solid #aac4d8;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            width: 100%;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .picker-dropdown.open { display: block; }
+        .picker-dropdown li {
+            list-style: none;
+            padding: 7px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #1a2a3a;
+        }
+        .picker-dropdown li:hover { background: #e8f4ff; }
+        .picker-dropdown li.no-results { color: #999; cursor: default; }
+
+        /* Worker chips */
+        .worker-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .worker-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #0758A5;
+            color: #fff;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+        .worker-chip .remove-chip {
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 2px;
+            opacity: 0.8;
+        }
+        .worker-chip .remove-chip:hover { opacity: 1; }
+
+        /* Manager badge */
+        .selected-badge {
+            display: inline-block;
+            margin-top: 5px;
+            background: #0758A5;
+            color: #fff;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 0.82rem;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="header"></div>
+<div id="header"></div>
 
-    <div class=" col-4 container rounded" style="margin: 20px; margin-left: 30px; background-color:#b8e5ff !important;">
-        <h2>Edit Project</h2>
+<div class="row">
+    <div class="col-7 container form-card" style="max-width: 700px;">
+        <h2 class="display-6">Edit Project</h2>
 
-    <form id="editProjectForm">
+        <form id="editProjectForm">
 
-        <div>
-            <input type="text" id="name" required>
-            <label for="name">Project Name</label>
-        </div>
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="name" class="form-label">Project Name</label></div>
+                <div class="col-auto">
+                    <input type="text" id="name" class="form-control" placeholder="Project Name" required style="min-width:260px;">
+                </div>
+            </div>
 
-        <div>
-            <input type="text" id="location" required>
-            <label for="location">Location</label>
-        </div>
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="location" class="form-label">Location</label></div>
+                <div class="col-auto">
+                    <input type="text" id="location" class="form-control" placeholder="Location" required style="min-width:260px;">
+                </div>
+            </div>
 
-        <div>
-            <label for="manager">Manager</label><br>
-            <select id="manager" required>
-                <option value="">-- Select a Manager --</option>
-            </select>
-        </div>
+            <!-- Manager searchable picker -->
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label class="form-label">Project Manager</label></div>
+                <div class="col-auto">
+                    <div class="search-picker">
+                        <input type="text" id="managerSearch" placeholder="Search manager..." autocomplete="off"
+                            oninput="filterPicker('managerSearch','managerDropdown', allManagers, selectManager)"
+                            onfocus="openPicker('managerDropdown')"
+                            onblur="closePicker('managerDropdown')">
+                        <ul class="picker-dropdown" id="managerDropdown"></ul>
+                    </div>
+                    <span id="managerBadge" class="selected-badge" style="display:none;"></span>
+                    <input type="hidden" id="selectedManagerId">
+                </div>
+            </div>
 
-        <div>
-            <label for="workers">Workers (Hold Ctrl/Cmd to select multiple)</label><br>
-            <select id="workers" multiple style="min-width: 200px; height: 100px;">
-                </select>
-        </div>
+            <!-- Workers searchable multi-picker -->
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label class="form-label">Assign Workers</label></div>
+                <div class="col-auto">
+                    <div class="search-picker">
+                        <input type="text" id="workerSearch" placeholder="Search workers..." autocomplete="off"
+                            oninput="filterPicker('workerSearch','workerDropdown', allWorkers, selectWorker)"
+                            onfocus="openPicker('workerDropdown')"
+                            onblur="closePicker('workerDropdown')">
+                        <ul class="picker-dropdown" id="workerDropdown"></ul>
+                    </div>
+                    <div class="worker-chips" id="workerChips"></div>
+                </div>
+            </div>
 
-        <button class='btn btn-primary'type="submit">Update Project</button>
-        <button class='btn btn-warning'type="button" onclick="window.location.href='/addProject'">Cancel</button>
+            <div class="text-center" style="margin-top: 18px;">
+                <button class="btn btn-primary" type="submit">Update Project</button>
+                <button class="btn btn-warning" type="button"
+                    onclick="window.location.href='/addProject'" style="margin-left:8px;">Cancel</button>
+            </div>
 
-    </form>
+        </form>
     </div>
-    
+</div>
 
-    <script src="js/editProject.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $("#header").load('header.html');
-        });
-    </script>
+<script src="js/editProject.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#header").load('header.html');
+    });
+</script>
 
 </body>
 </html>
