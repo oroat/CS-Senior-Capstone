@@ -631,16 +631,21 @@ Testing for this iteration went very well, and we were able to make some improve
 \begin{itemize}
     \item D5 Shipment Notification 
     \item Q1 Project Details on Forms 
-    \item Q2 Equipment Serial Capture
-    \item ...
+    \item Q2 Equipment Serial Capture 
+    \item D1 Projects (beautification and UI) + (view project addition)
+    \item P3 Project Pop (Fixed homepage pop up)
 \end{itemize}
 
 \textbf{Oscar:} These were the stories we had originally planned, but going into this iteration, we will not have enough time to complete the OCR and serial capture stories. Because of that, I am going to focus on polishing the stories I have already completed, as well as finishing the separation of functionalities by roles.
+
+\textbf{Dylan:} I had this planned out because I felt that moving on to new features that are not a necessity would not be the smartest move. Instead I went back and made sure that our website could be stronger at its current point. I would have like to add a email notification but I might just add it later. Instead I added a way to view projects that way its layed out better for users, and also made the Project/ProjectEdit JS alot cleaner and more functional.
 
 \subsubsection{Work Done}
 %[Which stories did you complete in this iteration/sprint. Which ones did you partially complete? Who worked on which story? You may elaborate in paragraph(s) to add more detail about the work done.]
 
 \textbf{Oscar:} I did not complete any new stories. Adding OCR would have required us to refactor the DAO's related to purchase orders, shipments, and projects. Instead, I focused on abstracting functions and making sure that each role had the correct level of functionality. For example, the search bar and popup functions are used on many pages throughout the website. Now, they all call functions from one file ($search.js$ and $popup.js$, respectively), which has helped with readability and debugging. I would say that I have done around 8 points worth of work this sprint. While that is a little low, I am confident that all of the stories that I have previously completed are very polished. 
+
+\textbf{Dylan:} Like Oscar I was not able to complete any new stories although I had done some research on how implement a email system from when shipments are logged. I was not able to actual put thin into the app but I might in future time because i think it is a nice touch. My main goal was to make a view project html allowing for anyone to look at a porject and its contents. I spent most of my time experimenting with new styles. I also fixed a problem with popups on the landing page. I also changed a good amount of Projects UI and Style to make it fit in better with the rest of the webiste and also added a search function. 
 
 \subsubsection{Testing Coverage}
 %[Testing is very important. Show your coverage here. Is this coverage good enough? Explain why you think so. Is it not good enough? Explain a plan to increase the coverage. You may also elaborate on why some artifacts do not undergo much testing. If the testing changed from the last iteration, explain the reasons.]
@@ -661,13 +666,37 @@ All of the tests pass when run in the individual test files, but there's an issu
 
 \textbf{Oscar:} I was unhappy that we weren't able to incorporate the OCR and serial capture, but I am not super surprised. Going into the project, Dylan and I agreed to prioritize making sure that the purchase orders, shipment slips, and tool stuff could be done manually before we added automatic input using OCR. I am very confident that we did that well. Especially after this current iteration, as most of it was spent polishing the website. We also agreed that the serial capture would be a stretch goal and communicated that to the client before the project began. While there was probably more polishing that I could have done, I was very busy outside of this class for the last few weeks. I am a bit worried that I did complete any new user stories, but the only ones remaining were things related to OCR. Overall, I am okay with my work done this iteration.
 
+\textbf{Dylan:} Oscar and I did set goals when we first started and understood that we wouldnt be able to give the client all that he wanted. Although I think we did a very good job at giving him all the was important for our website to work for his needs. Our client wanted OCR and serial capture but I think we made the right decision on polishing instead of adding new bug prone features. Im upset that we couldnt give him everything that he wanted but Im happy with what we accomplished. I think that it looks nice and behaves well with user interaction. I dont think I got alot done this iteration but honestly adding more features on the last iteration would not be the best move.
+
 \section{Final Remarks}
 
 \subsection{Overall Progress}
-[Have you completed everything? If so, present evidence on how you brought value to your client, and the overall client satisfaction. Otherwise, estimate how much progress you done and how long it would take to finish this project. Be concrete about your progress, you know how many story points your software is, how many points you completed (this shows your progress). You also how many points your team delivers at each iteration, therefore you can estimate how many more iterations it would take to finish the leftover points (show the math).]
+%[Have you completed everything? If so, present evidence on how you brought value to your client, and the overall client satisfaction. Otherwise, estimate how much progress you done and how long it would take to finish this project. Be concrete about your progress, you know how many story points your software is, how many points you completed (this shows your progress). You also how many points your team delivers at each iteration, therefore you can estimate how many more iterations it would take to finish the leftover points (show the math).]
+
+The only things we were not able to complete were related to the OCR/Photo Uploading and the Equipment Serial Capture. Those categories take up 4 stories (P2, S3, Q1, Q2) totaling 13 total points. From what Dylan has told me, some of the work he has done for purchase orders and shipment slips would have to be refactored to work with OCR. In total, it would probably be anywhere from 17-20 points worth of work to integrate the remaining stories, which would take one more sprint if we were soley focused on that. Excluding those stories from our completed work, we finished 60 points worth of stories. While that is on the lower end in terms of points, I am confident that the completed stories are well done and will bring value to the client. 
 
 \subsection{Project Reflection}
-[Your personal reflection on the project. What lessons did you learned. What would you have done differently? How can you do better work in future projects? You may write this as a team or per person (or both --- if all your iterations were team reflections, then it would be better to write individual reflections here)]
+%[Your personal reflection on the project. What lessons did you learned. What would you have done differently? How can you do better work in future projects? You may write this as a team or per person (or both --- if all your iterations were team reflections, then it would be better to write individual reflections here)]
+
+\textbf{Oscar: } Overall, my process for this project was smoother than that of my CS482 project. The primary reason was because I did not have to learn to use any new languages or tools; I was already familiar with the database (Mongo), server connection (Node, Express), and testing (Jest) tools> I was also much more familiar with working in Java script and HTML compared to before. The other reason for this process being smoother was my time management. In CS482, I would consistently wait until the last 3-4 days of each iteration to get most of my work done, which led to increased stress. Going into this project, I knew that things wouldn't perfectly according to plan and that stories would need to be adjusted based on client needs. However, as long as I remained active, working on the project almost every day, I could adjust accordingly. 
+
+One thing that I could have done better was get better info about the requirements from my client. The main function of this website is to organize the active projects and company tools. Part of that organization includes being able to easily view any given project/tool. However, I grossly underestimated the amount of stuff the company would be managing. Our original idea of organizing data in tables had to be scrapped after it was implemented over the course of the first two sprints. That change slowed progress in iterations 3 and 4 and probably led to our inability to complete the OCR stories. If I had known the quantity of data from the start, a lot of time would have been saved. 
+
+The biggest skill that I improved on was UI. My first design for the webpages looked very blocky and unappealing. I realized that I was not happy with it; I wanted the website to look as good as it ran. That is something that I had never prioritized before. I had to actively think about design more than I ever had, and I think that I ended up doing a good job. The current design now is not great, but it is a major improvement over the first design. 
+
+Finally, I believe that I did a good job at maintaining the quality of our software. I always made sure to add appropriate testing at the same time that new functionality was added, with a few exceptions, so I wouldn't fall behind. Furthermore, I did much more refactoring than I did in CS482. Specifically, I found ways to abstract functions that were being used in multiple locations on the website. This made it easier for both me to debug and (hopefully) for the client to maintain in the future. 
+
+\textbf{Dylan:}
+I think this project went pretty well and I would say that we covered all the important parts of the project. Through out the project I always wish that we had planned better stories, beacuse will working I would run into to things that were needed but never mentioned. Which would lead to refactoring of earlier iterations. Also make sure you start off early with scalable methods like search instead of drop down menus or like popups instead of tables or cards. I found how important it is to constantly check with your client before you go too far in the wrong direction because that lead to some set back in out later iterations.
+
+When it comes to doing things better I would say it would mainly be my forward thinking. Many times through out the project I ran into issues with my previous software. One main problem was making a materials crud when I should have just made a purchase order crud with matrials inside of it. We planned out stories to cover everything we need but didnt really think deep into the functionally of all the cross references. I also think that I should have starting working from the first day of each iteration instead of wating until the last week or couple days. This would make get very stressed and produce code that I wasnt too happy with.
+
+For later work I will make sure to take everything in step but also carefully calculate how my step will work with my future ones. I also want to make sure I set up building block at the start of my future projects. Oscar seemed to do this very well but I think i lacked in that aspect. When I would make something that could be reused I would sometimes forget and just hard code it in. I think that for my next project I will just overall have to make sure I work on setting up a better foundation that way I can smoothly go through iteration with a strong plan and never second guess.
+
+Overall, for this project I think I had learned a lot of new things and have enhanced how well i understand project planning and working with a team. I would say that when it comes to confidence with our app I would say im alot more confident with this project compared to CS482 because I had also tried to make sure everything functioned properly because it will real world use. This also has direct correlation with our testing since it shows alot better coverage then out CS482 testing. The actual UI of the project is not that sophisticated but I think it works exactly how our client would want. I would have liked it to look better but Im more focused on how well it work then compared to beauty. I do belevie that after making this project that any project in the future that I do will get done alot quicker and better.
+
+
+
 
 \section*{Appendix}
 [Appendix section if needed]
