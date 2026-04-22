@@ -97,13 +97,3 @@ async function deallocateTool(tool, user){
             alert('Error. Please try again');
         }
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    await checkLogged();
-
-    //if you are not an admin, you can't update tools (besides moving them between users)
-    if (loggedUser.role != 0){
-        document.getElementById('toolUpdate').style.display = 'none';
-    }
-
-});
