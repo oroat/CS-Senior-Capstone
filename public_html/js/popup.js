@@ -1,4 +1,4 @@
-let loggedUser;
+// let loggedUser;
 
 async function createPopup(valueId, dataType){
     const id = document.getElementById(valueId).value;
@@ -87,6 +87,27 @@ function populateToolPopup(popup, tool, user){
     popup.appendChild(serial);
     popup.appendChild(model);
     popup.appendChild(inUse);
+
+    if (loggedUser.role == 0 || loggedUser.role == 2){
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('popup-btn-row');
+
+        const unassignBtn = document.createElement('button');
+        unassignBtn.classList.add('btn', 'btn-warning');
+        unassignBtn.style.marginRight = '6px';
+        unassignBtn.innerHTML = 'Unassign';
+        unassignBtn.onclick = () => deallocateTool(tool, user);
+        btnDiv.appendChild(unassignBtn);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('btn', 'btn-danger');
+        deleteBtn.style.marginRight = '6px';
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = () => deleteTool(tool);
+        btnDiv.appendChild(deleteBtn);
+
+        popup.appendChild(btnDiv);
+    }
 }
 
 function populateUserPopup(popup, user){
@@ -121,6 +142,21 @@ function populateUserPopup(popup, user){
     popup.appendChild(name);
     popup.appendChild(role);
     popup.appendChild(email);
+
+    if (loggedUser.role == 0){
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('popup-btn-row');
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('btn', 'btn-danger');
+        deleteBtn.style.marginRight = '6px';
+        deleteBtn.innerHTML = 'Delete';
+        deleteBtn.onclick = () => deleteUser(user._id);
+        btnDiv.appendChild(deleteBtn);
+
+        popup.appendChild(btnDiv);
+    }
+    
 }
 
 function populateProjectPopup(popup, project){
@@ -218,11 +254,11 @@ function closePopup(){
     popup.classList.remove('open-popup');
 }
 
-async function checkLogged(){
-    try{
-        let response = await fetch('/logged');
-        loggedUser = await response.json();
-    } catch (error){
-        console.error("Auth check failed", error);
-    }
-}
+// async function checkLogged(){
+//     try{
+//         let response = await fetch('/logged');
+//         loggedUser = await response.json();
+//     } catch (error){
+//         console.error("Auth check failed", error);
+//     }
+// }
