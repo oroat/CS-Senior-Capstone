@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Purchase Order - CoolSys</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body { background-color: #f4f6f9; }
+
+        .form-card {
+            background-color: #b8e5ff;
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin: 20px 0 20px 30px;
+        }
+
+        .materials-section {
+            margin-top: 16px;
+            background: rgba(255,255,255,0.55);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .materials-section h5 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a5276;
+        }
+        .material-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .material-row input {
+            flex: 1;
+            min-width: 100px;
+            padding: 5px 8px;
+            border: 1px solid #aac4d8;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .material-row input[type="number"] { max-width: 90px; flex: none; }
+        .btn-remove-mat {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 9px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-remove-mat:hover { background: #b02a37; }
+        .btn-add-mat {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+        .btn-add-mat:hover { background: #0a58ca; }
+    </style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<div class="row">
+    <div class="col-7 container form-card" style="max-width: 700px;">
+        <h2 class="display-6">Edit Purchase Order</h2>
+
+        <form id="editPOForm">
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="poNumber" class="form-label">PO Number</label></div>
+                <div class="col-auto">
+                    <input type="text" id="poNumber" class="form-control" placeholder="116101" required style="min-width:260px;">
+                </div>
+            </div>
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="poVendor" class="form-label">Vendor / Supplier</label></div>
+                <div class="col-auto">
+                    <input type="text" id="poVendor" class="form-control" placeholder="Acme Supply Co." required style="min-width:260px;">
+                </div>
+            </div>
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="poProject" class="form-label">Project</label></div>
+                <div class="col-auto">
+                    <select class="custom-select form-control" id="poProject" required style="min-width:260px;">
+                        <option value="">-- Select a Project --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="poStatus" class="form-label">Status</label></div>
+                <div class="col-auto">
+                    <select class="custom-select form-control" id="poStatus" style="min-width:260px;">
+                        <option value="Draft">Draft</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Received">Received</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Missing Materials">Missing Materials</option>
+                        <option value="Inaccurate">Inaccurate</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin: 10px">
+                <div class="col-4"><label for="poNotes" class="form-label">Notes</label></div>
+                <div class="col-auto">
+                    <input type="text" id="poNotes" class="form-control" placeholder="Optional notes..." style="min-width: 260px;">
+                </div>
+            </div>
+
+            <!-- Materials editor -->
+            <div class="materials-section">
+                <h5>📦 Materials</h5>
+                <div id="materialRows"></div>
+                <button type="button" class="btn-add-mat" onclick="addMaterialRow()">+ Add Material</button>
+            </div>
+
+            <div class="text-center" style="margin-top: 18px;">
+                <button class="btn btn-primary" type="submit">Update Purchase Order</button>
+                <button class="btn btn-warning" type="button"
+                    onclick="window.location.href='purchaseOrders.html'" style="margin-left:8px;">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="js/editPurchaseOrder.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#header").load('header.html');
+    });
+</script>
+
+</body>
+</html>
