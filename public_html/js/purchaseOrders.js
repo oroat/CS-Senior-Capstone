@@ -34,11 +34,11 @@ $(document).ready(function () {
         }
 
         const formData = {
-            poNumber: $('#poNumber').val(),
-            vendor:   $('#poVendor').val(),
-            project:  $('#poProject').val(),
-            status:   $('#poStatus').val(),
-            notes:    $('#poNotes').val(),
+            poNumber:  $('#poNumber').val(),
+            vendor:    $('#poVendor').val(),
+            project:   $('#poProject').val(),
+            status:    $('#poStatus').val(),
+            notes:     $('#poNotes').val(),
             materials: materials
         };
 
@@ -59,6 +59,21 @@ $(document).ready(function () {
         });
     });
 });
+
+function getBadgeStyle(status) {
+    const badgeColors = {
+        'Draft':             { bg: '#6c757d', fg: '#fff' },
+        'Pending':           { bg: '#ffc107', fg: '#333' },
+        'Approved':          { bg: '#28a745', fg: '#fff' },
+        'Received':          { bg: '#17a2b8', fg: '#fff' },
+        'Cancelled':         { bg: '#dc3545', fg: '#fff' },
+        'Verified':          { bg: '#20c997', fg: '#fff' },
+        'Missing Materials': { bg: '#dc3545', fg: '#fff' },
+        'Inaccurate':        { bg: '#fd7e14', fg: '#fff' }
+    };
+    const colors = badgeColors[status] || { bg: '#6c757d', fg: '#fff' };
+    return `display:inline-block; background:${colors.bg}; color:${colors.fg}; padding:3px 10px; border-radius:12px; font-size:0.78rem; font-weight:600; margin-left:8px; vertical-align:middle;`;
+}
 
 function loadPurchaseOrders(filter = false) {
     $.get('/purchaseorders', function (orders) {
@@ -81,9 +96,8 @@ function loadPurchaseOrders(filter = false) {
         }
 
         orders.forEach(po => {
-            const project    = po.project ? po.project.name : 'N/A';
-            const badgeClass = 'badge-' + (po.status || 'Draft');
-            const matHtml    = po.materials && po.materials.length > 0
+            const project = po.project ? po.project.name : 'N/A';
+            const matHtml = po.materials && po.materials.length > 0
                 ? po.materials.map(m => `<li>${m.name} — ${m.quantity} ${m.unit}</li>`).join('')
                 : '<li style="color:#888;">No materials</li>';
 
@@ -91,7 +105,7 @@ function loadPurchaseOrders(filter = false) {
                 <div class="po-card">
                     <h3>
                         ${po.poNumber}
-                        <span class="badge ${badgeClass}">${po.status}</span>
+                        <span style="${getBadgeStyle(po.status)}">${po.status}</span>
                     </h3>
                     <p><strong>Vendor:</strong> ${po.vendor}</p>
                     <p><strong>Project:</strong> ${project}</p>
@@ -99,7 +113,7 @@ function loadPurchaseOrders(filter = false) {
                     <p><strong>Materials:</strong></p>
                     <ul class="mat-list">${matHtml}</ul>
                     <div class="po-actions">
-                        <button class="btn-edit" onclick="editPO('${po._id}')">Edit</button>
+                        <button class="btn-edit"   onclick="editPO('${po._id}')">Edit</button>
                         <button class="btn-delete" onclick="deletePO('${po._id}')">Delete</button>
                     </div>
                 </div>
