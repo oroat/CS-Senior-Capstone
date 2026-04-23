@@ -71,7 +71,6 @@
             gap: 28px;
         }
 
-        /* ── Shared card shell ── */
         .card {
             background: var(--white);
             border-radius: 20px;
@@ -80,7 +79,6 @@
             border: 1.5px solid var(--sky-dark);
         }
 
-        /* ── Project banner ── */
         .project-banner {
             background: linear-gradient(120deg, var(--accent) 0%, #00b4d8 100%);
             padding: 36px 40px 28px;
@@ -195,7 +193,6 @@
         .btn-edit { background: #ffc107; color: #333; }
         .btn-back-main { background: var(--accent); color: var(--white); }
 
-        /* ── Purchase Orders section ── */
         .po-section-header {
             display: flex;
             align-items: center;
@@ -248,22 +245,13 @@
             color: var(--muted);
         }
 
-        /* Status badges — match your existing badge colors */
         .po-status {
             margin-left: auto;
             font-size: 12px;
             font-weight: 700;
             padding: 3px 12px;
             border-radius: 20px;
-            color: #fff;
         }
-        .status-Draft           { background: #6c757d; }
-        .status-Pending         { background: #ffc107; color: #333; }
-        .status-Approved        { background: #28a745; }
-        .status-Received        { background: #17a2b8; }
-        .status-Verified        { background: #20c997; }
-        .status-Cancelled       { background: #dc3545; }
-        .status-Missing-Materials { background: #dc3545; }
 
         .po-materials {
             list-style: none;
@@ -296,7 +284,6 @@
             font-style: italic;
         }
 
-        /* ── States ── */
         .state-message { text-align: center; padding: 80px 40px; }
         .state-message .icon { font-size: 56px; margin-bottom: 16px; }
         .state-message h2 { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--ink); margin-bottom: 8px; }
@@ -324,7 +311,6 @@
 
 <div class="page-wrapper">
 
-    <!-- Project detail card -->
     <div class="card" id="projectHero">
         <div class="state-message">
             <div class="icon">⏳</div>
@@ -333,7 +319,6 @@
         </div>
     </div>
 
-    <!-- Purchase Orders card -->
     <div class="card" id="poCard" style="display:none;">
         <div class="po-section-header">
             <span class="po-section-title">📋 Purchase Orders</span>
@@ -348,8 +333,6 @@
     $(document).ready(function () {
         $("#header").load('header.html');
     });
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     function initials(name) {
         if (!name) return '?';
@@ -368,6 +351,21 @@
                 </div>`
             ).join('') +
         '</div>';
+    }
+
+    function getStatusStyle(status) {
+        const badgeColors = {
+            'Draft':             { bg: '#6c757d', fg: '#fff' },
+            'Pending':           { bg: '#ffc107', fg: '#333' },
+            'Approved':          { bg: '#28a745', fg: '#fff' },
+            'Received':          { bg: '#17a2b8', fg: '#fff' },
+            'Cancelled':         { bg: '#dc3545', fg: '#fff' },
+            'Verified':          { bg: '#20c997', fg: '#fff' },
+            'Missing Materials': { bg: '#dc3545', fg: '#fff' },
+            'Inaccurate':        { bg: '#fd7e14', fg: '#fff' }
+        };
+        const c = badgeColors[status] || { bg: '#6c757d', fg: '#fff' };
+        return `background:${c.bg}; color:${c.fg};`;
     }
 
     function renderProject(project) {
@@ -421,12 +419,11 @@
         const poList  = document.getElementById('poList');
         const poBadge = document.getElementById('poCountBadge');
 
-        // Filter to only POs belonging to this project
         const projectPOs = orders.filter(po =>
             po.project && (po.project._id === projectId || po.project === projectId)
         );
 
-        poBadge.textContent = projectPOs.length;
+        poBadge.textContent  = projectPOs.length;
         poCard.style.display = 'block';
 
         if (projectPOs.length === 0) {
@@ -435,7 +432,8 @@
         }
 
         poList.innerHTML = projectPOs.map(po => {
-            const statusClass = 'status-' + (po.status || 'Draft').replace(/\s+/g, '-');
+            const statusStyle = getStatusStyle(po.status);
+
             const matChips = po.materials && po.materials.length > 0
                 ? po.materials.map(m =>
                     `<li class="po-mat-chip">${m.name} — ${m.quantity} ${m.unit}</li>`
@@ -451,15 +449,13 @@
                     <div class="po-card-header">
                         <span class="po-number">${po.poNumber}</span>
                         <span class="po-vendor">· ${po.vendor}</span>
-                        <span class="po-status ${statusClass}">${po.status}</span>
+                        <span class="po-status" style="${statusStyle}">${po.status}</span>
                     </div>
                     <ul class="po-materials">${matChips}</ul>
                     ${notesHtml}
                 </div>`;
         }).join('');
     }
-
-    // ── Load everything ───────────────────────────────────────────────────────
 
     async function loadProject() {
         const params    = new URLSearchParams(window.location.search);
@@ -476,7 +472,6 @@
         }
 
         try {
-            // Fetch project and all POs in parallel
             const [projectRes, ordersRes] = await Promise.all([
                 fetch(`/projects/${projectId}`),
                 fetch('/purchaseorders')
