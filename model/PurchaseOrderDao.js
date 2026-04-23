@@ -11,7 +11,7 @@ const purchaseOrderSchema = new mongoose.Schema({
     vendor:    { type: String, required: true },
     status: {
         type: String,
-        enum: ['Draft', 'Pending', 'Approved', 'Received', 'Verified', 'Missing Materials'],
+        enum: ['Draft', 'Pending', 'Approved', 'Received', 'Verified', 'Missing Materials','Inaccurate'],
         default: 'Pending'
     },
     project:   { type: mongoose.Schema.Types.ObjectId, ref: 'projects', required: true },
