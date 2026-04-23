@@ -4,6 +4,7 @@ let allProjects = [];
 let allPOs = [];
 let projectPOs = [];
 let selectedPOMaterials = [];
+let selectedPOStatus = null;
 
 // ─── Message Helper
 function showMsg(msg, type = 'success') {
@@ -25,7 +26,7 @@ function closeListDelayed(listId) {
 
 function filterList(inputId, listId, dataArr, searchField, onSelect) {
     const query = document.getElementById(inputId).value.toLowerCase();
-    const list = document.getElementById(listId);
+    const list  = document.getElementById(listId);
     list.innerHTML = '';
     list.classList.add('open');
 
@@ -55,7 +56,7 @@ function filterList(inputId, listId, dataArr, searchField, onSelect) {
 // ─── Select Project → filter POs for that project
 async function selectProject(project) {
     document.getElementById('selectedProjectId').value = project._id;
-    document.getElementById('projectSearch').value = project.name;
+    document.getElementById('projectSearch').value     = project.name;
     document.getElementById('projectBadge').textContent = '✓ ' + project.name;
     document.getElementById('projectBadge').style.display = 'inline-block';
     document.getElementById('projectList').classList.remove('open');
@@ -66,9 +67,9 @@ async function selectProject(project) {
         return String(poProj) === String(project._id);
     });
 
-    // Reset PO search
     clearPOSearch();
     renderMaterialChecklist([]);
+    updateLogButton(null);
 
     if (projectPOs.length === 0) {
         document.getElementById('materialChecklist').innerHTML =
@@ -76,26 +77,55 @@ async function selectProject(project) {
     }
 }
 
-// ─── Select PO → show its materials as checkboxes
+// ─── Select PO → show its materials and check status
 function selectPO(po) {
-    document.getElementById('selectedPOId').value = po._id;
-    document.getElementById('poSearch').value = po.poNumber;
-    document.getElementById('poBadge').textContent = `✓ ${po.poNumber} — ${po.vendor}`;
+    document.getElementById('selectedPOId').value   = po._id;
+    document.getElementById('poSearch').value       = po.poNumber;
+    document.getElementById('poBadge').textContent  = `✓ ${po.poNumber} — ${po.vendor}`;
     document.getElementById('poBadge').style.display = 'inline-block';
     document.getElementById('poList').classList.remove('open');
 
+    selectedPOStatus    = po.status;
     selectedPOMaterials = po.materials || [];
+
+    updateLogButton(po.status);
     renderMaterialChecklist(selectedPOMaterials);
 }
 
+// ─── Enable/disable log button based on PO status
+function updateLogButton(status) {
+    const btn     = document.getElementById('logShipmentBtn');
+    const warning = document.getElementById('poStatusWarning');
+
+    if (!status) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        warning.style.display = 'none';
+        return;
+    }
+
+    if (status === 'Pending') {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        warning.style.display = 'none';
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        warning.textContent = `This PO has status "${status}" — only Pending POs can receive a shipment.`;
+        warning.style.display = 'block';
+    }
+}
+
 function clearPOSearch() {
-    const el = document.getElementById('poSearch');
-    const idEl = document.getElementById('selectedPOId');
+    const el    = document.getElementById('poSearch');
+    const idEl  = document.getElementById('selectedPOId');
     const badge = document.getElementById('poBadge');
-    if (el) el.value = '';
-    if (idEl) idEl.value = '';
+    if (el)    el.value = '';
+    if (idEl)  idEl.value = '';
     if (badge) badge.style.display = 'none';
     selectedPOMaterials = [];
+    selectedPOStatus    = null;
+    updateLogButton(null);
 }
 
 // ─── Render material checkboxes from selected PO
@@ -142,25 +172,25 @@ function getCheckedMaterials() {
         .filter(mat => document.getElementById(`matCheck_${mat._id}`)?.checked)
         .map(mat => ({
             materialId: mat._id,
-            name: mat.name,
-            unit: mat.unit,
-            quantity: Number(document.getElementById(`matQty_${mat._id}`)?.value || 0)
+            name:       mat.name,
+            unit:       mat.unit,
+            quantity:   Number(document.getElementById(`matQty_${mat._id}`)?.value || 0)
         }));
 }
 
 // ─── Recipient select
 function selectRecip(user) {
-    document.getElementById('selectedRecipId').value = user._id;
-    document.getElementById('recipSearch').value = user.email;
-    document.getElementById('recipBadge').textContent = '✓ ' + user.name;
+    document.getElementById('selectedRecipId').value    = user._id;
+    document.getElementById('recipSearch').value        = user.email;
+    document.getElementById('recipBadge').textContent   = '✓ ' + user.name;
     document.getElementById('recipBadge').style.display = 'inline-block';
     document.getElementById('recipList').classList.remove('open');
 }
 
 function selectUpdateRecip(user) {
-    document.getElementById('updateSelectedRecipId').value = user._id;
-    document.getElementById('updateRecipSearch').value = user.email;
-    document.getElementById('updateRecipBadge').textContent = '✓ ' + user.name;
+    document.getElementById('updateSelectedRecipId').value    = user._id;
+    document.getElementById('updateRecipSearch').value        = user.email;
+    document.getElementById('updateRecipBadge').textContent   = '✓ ' + user.name;
     document.getElementById('updateRecipBadge').style.display = 'inline-block';
     document.getElementById('updateRecipList').classList.remove('open');
 }
@@ -179,6 +209,11 @@ async function createShipment() {
         return;
     }
 
+    if (selectedPOStatus !== 'Pending') {
+        showMsg(`Cannot log a shipment — PO status is "${selectedPOStatus}". Only Pending POs can receive shipments.`,'danger');
+        return;
+    }
+
     try {
         const response = await fetch('/shipments', {
             method: 'POST',
@@ -186,13 +221,17 @@ async function createShipment() {
             body: JSON.stringify({ sender, project, po, recip, dt_recvd, materials_recvd })
         });
 
+        const result = await response.json();
+
         if (response.ok) {
             showMsg('Shipment logged successfully.');
             clearForm();
             await viewShipments(false);
             await populateShipmentDropdown();
+            // Refresh POs so the updated status is reflected in the dropdown
+            const posRes = await fetch('/purchaseorders');
+            allPOs = await posRes.json();
         } else {
-            const result = await response.json();
             showMsg('Failed to log shipment: ' + (result.error || 'Unknown error'), 'danger');
         }
     } catch (error) {
@@ -212,8 +251,10 @@ function clearForm() {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
-    projectPOs = [];
+    projectPOs          = [];
     selectedPOMaterials = [];
+    selectedPOStatus    = null;
+    updateLogButton(null);
     renderMaterialChecklist([]);
 }
 
@@ -224,8 +265,8 @@ async function viewShipments(filterApplied) {
         if (!response.ok) throw new Error('Failed to fetch');
 
         const shipments = await response.json();
-        const list = document.getElementById('shipmentList');
-        const filter = document.getElementById('filteredSender').value.toLowerCase();
+        const list      = document.getElementById('shipmentList');
+        const filter    = document.getElementById('filteredSender').value.toLowerCase();
 
         list.innerHTML = '';
         if (!filterApplied) document.getElementById('filteredSender').value = '';
@@ -294,15 +335,15 @@ async function populateUpdateForm() {
     const id = document.getElementById('updateShipmentDropdown').value;
     if (!id) return;
     try {
-        const res = await fetch(`/shipments/${id}`);
+        const res      = await fetch(`/shipments/${id}`);
         const shipment = await res.json();
         document.getElementById('updateSender').value = shipment.sender || '';
-        document.getElementById('updateDt').value = shipment.dt_recvd || '';
+        document.getElementById('updateDt').value     = shipment.dt_recvd || '';
         if (shipment.recip) {
             const recip = shipment.recip;
-            document.getElementById('updateSelectedRecipId').value = recip._id || recip;
-            document.getElementById('updateRecipSearch').value = recip.email || '';
-            document.getElementById('updateRecipBadge').textContent = '✓ ' + (recip.name || '');
+            document.getElementById('updateSelectedRecipId').value    = recip._id || recip;
+            document.getElementById('updateRecipSearch').value        = recip.email || '';
+            document.getElementById('updateRecipBadge').textContent   = '✓ ' + (recip.name || '');
             document.getElementById('updateRecipBadge').style.display = 'inline-block';
         }
     } catch (error) {
@@ -341,7 +382,7 @@ async function updateShipment() {
 // ─── Shipment dropdown for update form
 async function populateShipmentDropdown() {
     try {
-        const res = await fetch('/shipments');
+        const res      = await fetch('/shipments');
         const shipments = await res.json();
         const dd = document.getElementById('updateShipmentDropdown');
         dd.innerHTML = '<option value="" selected>Choose...</option>';
