@@ -7,7 +7,7 @@ const memorystore = require("memorystore")(session);
 const UserController = require('./controller/UserController');
 const ProjectController = require('./controller/ProjectController');
 const ToolController = require('./controller/ToolController');
-const PurchaseOrderController = require('./controller/PurchaseorderController');
+const PurchaseOrderController = require('./controller/PurchaseOrderController');
 const ShipmentController = require('./controller/ShipmentController');
 
 
